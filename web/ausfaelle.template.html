@@ -258,12 +258,14 @@
       <table>
         <thead><tr><th>Typ</th><th>Inhalt</th></tr></thead>
         <tbody>
-          <tr><td>A77</td><td>Produktionseinheit</td></tr>
+          <tr><td>A77</td><td>Produktionseinheit (Kraftwerk/Standort)</td></tr>
           <tr><td>A78</td><td>Übertragungsnetz</td></tr>
           <tr><td>A79</td><td>Offshore-Netz</td></tr>
-          <tr><td>A80</td><td>Erzeugungseinheit</td></tr>
+          <tr><td>A80</td><td>Erzeugungseinheit (einzelner Block)</td></tr>
         </tbody>
       </table>
+      <p><strong>Produktionseinheit (A77)</strong> ist das Kraftwerk als Ganzes: eine oder mehrere Maschinen hinter einem Netzanschluss. <strong>Erzeugungseinheit (A80)</strong> ist der einzelne Block bzw. Generator. Dieselbe Unverfügbarkeit kann auf beiden Ebenen gemeldet sein, deshalb gibt es mehr A80- als A77-Zeilen.</p>
+      <p><strong>Unbekannter Netzbetreiber</strong> heißt: Transparency nennt nur die Gebotszone DE/LU, Absender ist die Plattform selbst — ohne Zuordnung zu 50Hertz, Amprion, TenneT oder TransnetBW. Das betrifft vor allem Erzeugungs- und Produktionsmeldungen, nicht das Übertragungsnetz.</p>
       <p>Ursachen: Störung, geplante Wartung, Stilllegung. Status in der Tabelle: aktiv, storniert (bei Störungen: geplante Unverfügbarkeit fand nicht statt — Meldung bleibt), zurückgezogen.</p>
       <p><strong>Restleistung</strong> ist die während der Unverfügbarkeit noch verfügbare MW (Available_Period), nicht die ausgefallene Leistung. 0&nbsp;MW = vollständig nicht verfügbar.</p>
       <p>Schwelle Transparency: in der Regel ab ca. 100&nbsp;MW bzw. relevanter Grenzkuppel. Kein vollständiges Störungsgeschehen DE, kein Verteilnetz.</p>

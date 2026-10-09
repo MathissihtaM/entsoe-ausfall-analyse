@@ -20,10 +20,14 @@ Unavailability-Dokumente nach VO 543/2013:
 
 | Typ | Inhalt |
 |-----|--------|
-| A77 | Produktionseinheit |
+| A77 | Produktionseinheit (Kraftwerk/Standort) |
 | A78 | Übertragungsnetz |
 | A79 | Offshore-Netz |
-| A80 | Erzeugungseinheit |
+| A80 | Erzeugungseinheit (einzelner Block) |
+
+**Produktionseinheit (A77)** ist das Kraftwerk als Ganzes: eine oder mehrere Maschinen hinter einem Netzanschluss. **Erzeugungseinheit (A80)** ist der einzelne Block bzw. Generator. Dieselbe Unverfügbarkeit kann auf beiden Ebenen gemeldet sein, deshalb gibt es mehr A80- als A77-Zeilen.
+
+**Unbekannter Netzbetreiber** heißt: Transparency nennt nur die Gebotszone DE/LU, Absender ist die Plattform selbst — ohne Zuordnung zu 50Hertz, Amprion, TenneT oder TransnetBW. Das betrifft vor allem Erzeugungs- und Produktionsmeldungen, nicht das Übertragungsnetz.
 
 Ursachen: Störung, geplante Wartung, Stilllegung. Status in der Tabelle: aktiv, storniert (bei Störungen: geplante Unverfügbarkeit fand nicht statt — Meldung bleibt), zurückgezogen.
 
