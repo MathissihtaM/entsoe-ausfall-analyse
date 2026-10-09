@@ -1,0 +1,1500 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ENTSO-E Störungsmeldungen</title>
+  <link rel="icon" href="favicon.ico" sizes="any" />
+  <link rel="icon" href="favicon.png" type="image/png" />
+  <link rel="apple-touch-icon" href="favicon.png" />
+  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" />
+  <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  <style>
+    :root {
+      --bg: #f4f6f8;
+      --panel: #fff;
+      --ink: #1a2330;
+      --muted: #5c6b7a;
+      --line: #d5dde5;
+      --accent: #1d4ed8;
+      --hvdc: #c4b0b0;
+      --kv380: #b4aebc;
+      --kv220: #aeb2be;
+      --kv110: #a8b2bc;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); font: 14px/1.45 "Segoe UI", system-ui, sans-serif; }
+    body { display: flex; flex-direction: column; overflow: hidden; }
+    header {
+      display: flex; align-items: center; gap: 16px;
+      padding: 10px 16px; background: #0f172a; color: #e2e8f0;
+    }
+    header .header-copy {
+      flex: 1; min-width: 0;
+      display: flex; flex-direction: column; gap: 4px;
+    }
+    header .header-top {
+      display: flex; align-items: baseline; gap: 8px 16px; flex-wrap: wrap;
+    }
+    header h1 { margin: 0; font-size: 18px; font-weight: 650; }
+    header .meta { color: #94a3b8; font-size: 13px; }
+    header .scope {
+      margin: 0; max-width: none; width: 100%;
+      color: #94a3b8; font-size: 12px; line-height: 1.45;
+    }
+    .info-btn {
+      flex: 0 0 auto; margin-left: auto;
+      display: inline-flex; align-items: center; gap: 8px;
+      min-height: 36px; padding: 6px 14px 6px 10px;
+      border: 0; border-radius: 8px; cursor: pointer;
+      background: #fff; color: #0f172a;
+      font: 650 13px/1.2 "Segoe UI", system-ui, sans-serif;
+    }
+    .info-btn:hover { background: #e2e8f0; }
+    .info-btn:focus-visible { outline: 2px solid #93c5fd; outline-offset: 2px; }
+    .info-btn svg { flex: 0 0 auto; }
+    .info-dialog {
+      width: min(40rem, calc(100vw - 32px)); max-height: min(80vh, 44rem);
+      padding: 0; border: 1px solid #1e293b; border-radius: 12px;
+      color: var(--ink); background: #fff;
+      box-shadow: 0 16px 40px rgba(15, 23, 42, .28);
+    }
+    .info-dialog::backdrop { background: rgba(15, 23, 42, .55); }
+    .info-dialog-head {
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px 16px 12px; border-bottom: 1px solid var(--line);
+    }
+    .info-dialog-head h2 { margin: 0; font-size: 16px; font-weight: 650; }
+    .info-close {
+      margin-left: auto; min-height: 32px; padding: 4px 12px;
+      border: 1px solid var(--line); border-radius: 6px;
+      background: #fff; color: var(--ink); cursor: pointer;
+      font: 600 13px/1.2 "Segoe UI", system-ui, sans-serif;
+    }
+    .info-close:hover { background: #f8fafc; }
+    .info-close:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+    .info-dialog-body {
+      padding: 16px 18px 20px; overflow: auto; max-height: calc(min(80vh, 44rem) - 56px);
+      font-size: 13px; line-height: 1.5;
+    }
+    .info-dialog-body h3 { margin: 1.15em 0 .4em; font-size: 13px; font-weight: 700; }
+    .info-dialog-body h3:first-child { margin-top: 0; }
+    .info-dialog-body p, .info-dialog-body ul { margin: 0 0 .7em; }
+    .info-dialog-body ul { padding-left: 1.2em; }
+    .info-dialog-body table { width: 100%; border-collapse: collapse; margin: 0 0 .8em; }
+    .info-dialog-body th, .info-dialog-body td {
+      padding: 5px 8px; border-bottom: 1px solid var(--line); text-align: left; white-space: nowrap;
+    }
+    .info-dialog-body th { background: #f8fafc; font-weight: 650; }
+    .filters {
+      display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+      padding: 8px 16px; background: var(--panel); border-bottom: 1px solid var(--line);
+    }
+    .filter-clusters {
+      display: flex; flex-wrap: nowrap; gap: 8px; align-items: center;
+      flex: 1 1 16rem; min-width: 0; overflow-x: auto;
+    }
+    .filter-group {
+      display: flex; align-items: center; gap: 6px; flex-wrap: nowrap; flex: 0 0 auto;
+      padding: 4px 8px; background: #f8fafc;
+      border: 1px solid var(--line); border-radius: 10px;
+    }
+    .filter-name {
+      font-size: 11px; font-weight: 650; color: var(--muted);
+      text-transform: uppercase; letter-spacing: .04em; white-space: nowrap;
+    }
+    .filter-dates { flex: 0 0 auto; margin-left: auto; background: #f8fafc; }
+    .date-field {
+      display: flex; flex-direction: column; gap: 2px;
+      font-size: 10px; font-weight: 650; color: var(--muted);
+      text-transform: uppercase; letter-spacing: .03em;
+    }
+    .date-field input, .chip-face {
+      min-height: 28px; padding: 4px 8px; border: 1px solid var(--line); border-radius: 6px;
+      background: #fff; color: var(--ink); font: 12px/1.2 "Segoe UI", system-ui, sans-serif;
+      text-transform: none; letter-spacing: 0; font-weight: 500; white-space: nowrap;
+    }
+    .date-field input { min-width: 118px; }
+    .chip-row { display: flex; gap: 4px; flex-wrap: nowrap; align-items: stretch; }
+    .chip {
+      position: relative; display: inline-flex; align-items: stretch; margin: 0; cursor: pointer;
+    }
+    .chip input { position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0; pointer-events: none; }
+    .chip-face { display: flex; align-items: center; }
+    .chip:hover .chip-face { border-color: #64748b; }
+    .chip input:not(:checked) + .chip-face {
+      color: #64748b; background: #e2e8f0; border-color: #cbd5e1;
+      text-decoration: line-through; text-decoration-color: #94a3b8;
+    }
+    .chip input:checked + .chip-face {
+      color: #fff; background: var(--accent); border-color: var(--accent);
+    }
+    .chip:focus-within .chip-face { outline: 2px solid var(--accent); outline-offset: 1px; }
+    .grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 10px 16px;
+      flex: 1; min-height: 0;
+    }
+    .panel {
+      background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
+      overflow: hidden; display: flex; flex-direction: column; min-height: 0;
+    }
+    .panel h2 {
+      margin: 0; padding: 8px 12px; font-size: 13px; font-weight: 650;
+      border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center;
+    }
+    .legend { display: flex; gap: 10px; font-size: 11px; color: var(--muted); font-weight: 500; flex-wrap: wrap; }
+    .legend i { display: inline-block; width: 14px; height: 3px; margin-right: 4px; vertical-align: middle; }
+    .map-tools {
+      display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center;
+      padding: 6px 12px; border-bottom: 1px solid var(--line); background: #f8fafc;
+    }
+    .map-tools label {
+      font-size: 11px; font-weight: 650; letter-spacing: .03em; text-transform: uppercase;
+      color: var(--muted); display: flex; align-items: center; gap: 6px;
+    }
+    .map-tools select {
+      min-width: 160px; padding: 5px 8px; border: 1px solid var(--line); border-radius: 6px;
+      background: #fff; color: var(--ink); font: 13px/1.2 "Segoe UI", system-ui, sans-serif;
+      font-weight: 500; letter-spacing: 0; text-transform: none;
+    }
+    .map-tools .wleg { display: inline-flex; align-items: center; gap: 4px; color: var(--muted); font-size: 11px; }
+    .map-tools .wleg i { width: 16px; background: #64748b; margin-right: 0; border-radius: 1px; }
+    #map-match { margin-left: auto; font-size: 11px; color: var(--muted); }
+    #map { flex: 1; min-height: 0; }
+    .plot-tools {
+      display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center;
+      padding: 8px 12px; border-bottom: 1px solid var(--line); background: #f8fafc;
+    }
+    .plot-tools label {
+      font-size: 11px; font-weight: 650; letter-spacing: .03em; text-transform: uppercase;
+      color: var(--muted); display: flex; align-items: center; gap: 6px;
+    }
+    .plot-tools label[hidden] { display: none; }
+    .plot-tools select {
+      min-width: 150px; padding: 5px 8px; border: 1px solid var(--line); border-radius: 6px;
+      background: #fff; color: var(--ink); font: 13px/1.2 "Segoe UI", system-ui, sans-serif;
+      font-weight: 500; letter-spacing: 0; text-transform: none;
+    }
+    .plot-stage { flex: 1; min-height: 0; position: relative; overflow: hidden; }
+    #plot { position: absolute; inset: 0; }
+    .outages {
+      flex: 0 0 auto; height: min(260px, 34vh); min-height: 0;
+      margin: 0 16px 12px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
+      display: flex; flex-direction: column; overflow: hidden;
+    }
+    .outages.is-collapsed { height: auto; }
+    .outages.is-collapsed .table-wrap { display: none; }
+    .outages-toggle {
+      width: 100%; display: flex; align-items: center; gap: 8px;
+      margin: 0; padding: 8px 12px; border: 0; border-bottom: 1px solid var(--line);
+      background: transparent; color: inherit; font: inherit; font-size: 13px; font-weight: 650;
+      text-align: left; cursor: pointer;
+    }
+    .outages.is-collapsed .outages-toggle { border-bottom: 0; }
+    .outages-toggle:hover { background: #f8fafc; }
+    .outages-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+    .chevron {
+      width: 0; height: 0; border-style: solid;
+      border-width: 6px 5px 0 5px;
+      border-color: var(--muted) transparent transparent transparent;
+    }
+    .outages.is-collapsed .chevron {
+      border-width: 5px 0 5px 6px;
+      border-color: transparent transparent transparent var(--muted);
+    }
+    .outages-count { margin-left: auto; font-size: 12px; font-weight: 500; color: var(--muted); }
+    .table-wrap { margin: 0; border: 0; overflow: auto; flex: 1; min-height: 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    th, td { padding: 6px 8px; border-bottom: 1px solid var(--line); text-align: left; white-space: nowrap; }
+    th { position: sticky; top: 0; background: #f8fafc; z-index: 1; }
+    tr.sel { background: #dbeafe; }
+    .empty { padding: 24px; color: var(--muted); }
+    @media (max-width: 980px) {
+      body { overflow: auto; height: auto; }
+      .grid { grid-template-columns: 1fr; flex: none; min-height: 0; }
+      #map, .plot-stage { height: 360px; flex: none; }
+      .outages { height: auto; flex: none; }
+      .outages .table-wrap { max-height: 48vh; }
+      header { align-items: flex-start; }
+      .info-btn { margin-top: 2px; }
+      .filter-clusters { flex-basis: 100%; }
+      .filter-dates { margin-left: 0; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-copy">
+      <div class="header-top">
+        <h1>ENTSO-E Störungsmeldungen</h1>
+        <div class="meta" id="meta"></div>
+      </div>
+      <p class="scope" id="scope">ENTSO-E Transparency DE, letzte 5 Jahre: gemeldete Unverfügbarkeiten (i.&nbsp;d.&nbsp;R. ab ca. 100&nbsp;MW). Ohne stornierte geplante Wartungen und ohne zurückgezogene Meldungen. Karte: zuordenbare ≥110-kV-Leitungen, Kraftwerke und Schaltanlagen.</p>
+    </div>
+    <button type="button" class="info-btn" id="info-open" aria-haspopup="dialog" aria-controls="info-dialog">
+      <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
+        <circle cx="9" cy="9" r="8" fill="none" stroke="currentColor" stroke-width="1.7"/>
+        <circle cx="9" cy="5.2" r="1.05" fill="currentColor"/>
+        <path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" d="M9 8.1v5.2"/>
+      </svg>
+      Hinweise
+    </button>
+  </header>
+  <dialog class="info-dialog" id="info-dialog" aria-labelledby="info-title">
+    <div class="info-dialog-head">
+      <h2 id="info-title">Hinweise zur Auswertung</h2>
+      <button type="button" class="info-close" id="info-close">Schließen</button>
+    </div>
+    <div class="info-dialog-body">
+      <p>Lokale Auswertung der Unverfügbarkeitsmeldungen auf der ENTSO-E Transparency Platform für die Gebotszone DE/LU, Rückblick fünf Jahre. Die Daten sind in dieser Datei eingebettet.</p>
+      <h3>Was man damit macht</h3>
+      <p>Filter (ÜNB, Ursache, Kategorie, Spannung, Zeitraum) gelten überall: Karte, Diagramm, Tabelle.</p>
+      <p><strong>Karte</strong> — graues 220/380-kV- und HGÜ-Hintergrundnetz; darüber nur Anlagen/Leitungen mit Treffer im Filter. Punkt/Strich-Stärke nach Anzahl, Dauer oder Restleistung. Klick öffnet Kurzstatistik und setzt die Tabellenauswahl.</p>
+      <p><strong>Diagramm</strong> — X/Y frei (Zeit, Ursache, Dauer, Restleistung, Spannung, ÜNB, Kategorie, Anlagentyp). Y zusätzlich „Menge Ausfälle/Wartungen“ (Monatszählung). Bei Dauer Median oder Mittel. Klick oder Lasso wählt Zeilen in der Tabelle.</p>
+      <p><strong>Tabelle</strong> — Start/Ende, Dauer, Kategorie, ÜNB, Ursache, Typ, Spannung, Anlagenname, Grenze, Restleistung, Status. Zeitpunkt einer Meldung ist der <strong>Beginn</strong> der Unverfügbarkeit.</p>
+      <h3>Welche Daten drin sind</h3>
+      <p>Unavailability-Dokumente nach VO 543/2013:</p>
+      <table>
+        <thead><tr><th>Typ</th><th>Inhalt</th></tr></thead>
+        <tbody>
+          <tr><td>A77</td><td>Produktionseinheit</td></tr>
+          <tr><td>A78</td><td>Übertragungsnetz</td></tr>
+          <tr><td>A79</td><td>Offshore-Netz</td></tr>
+          <tr><td>A80</td><td>Erzeugungseinheit</td></tr>
+        </tbody>
+      </table>
+      <p>Ursachen: Störung, geplante Wartung, Stilllegung. Status in der Tabelle: aktiv, storniert (bei Störungen: geplante Unverfügbarkeit fand nicht statt — Meldung bleibt), zurückgezogen.</p>
+      <p><strong>Restleistung</strong> ist die während der Unverfügbarkeit noch verfügbare MW (Available_Period), nicht die ausgefallene Leistung. 0&nbsp;MW = vollständig nicht verfügbar.</p>
+      <p>Schwelle Transparency: in der Regel ab ca. 100&nbsp;MW bzw. relevanter Grenzkuppel. Kein vollständiges Störungsgeschehen DE, kein Verteilnetz.</p>
+      <h3>Wie die Meldungen aufbereitet sind</h3>
+      <p>Rohabruf über die vier ÜNB-Regelzonen plus Gebotszone, überlappende Zeitfenster, jeweils letzte Revision je Dokument/Anlage.</p>
+      <p>Entfernt: <strong>stornierte geplante Wartungen</strong> (finden nicht statt) und <strong>zurückgezogene</strong> Dokumente (Irrtum). Stornierte Störungen bleiben.</p>
+      <p>Koordinaten liefert Transparency praktisch nicht. Zuordnung:</p>
+      <ul>
+        <li>Erzeugung oft nur intra_zonal plus EIC → Abgleich mit der OPSD-/BNetzA-Kraftwerksliste (Name, lat/lon, EIC-Präfix). Deutsche Erzeugungs-EICs kodieren das KW oft in vier Buchstaben (NEUR → Neurath).</li>
+        <li>Netz/Offshore: sprechende Namen (Diele, DolWin, …) gegen OSM ≥110&nbsp;kV.</li>
+        <li>11W0-0000-… ist bewusst anonym — nicht kartierbar.</li>
+      </ul>
+      <p>Auf der Karte daher nur zuordenbare Höchst-/Hochspannungsanlagen und -leitungen. Tabelle und Diagramm enthalten auch die nicht verorteten Meldungen.</p>
+    </div>
+  </dialog>
+  <section class="filters">
+    <div class="filter-clusters">
+      <div class="filter-group">
+        <span class="filter-name">Netzbetreiber</span>
+      <div class="chip-row" id="flt-tso"></div>
+      </div>
+      <div class="filter-group">
+        <span class="filter-name">Ursache</span>
+      <div class="chip-row" id="flt-reason"></div>
+      </div>
+      <div class="filter-group">
+        <span class="filter-name">Kategorie</span>
+      <div class="chip-row" id="flt-category"></div>
+      </div>
+      <div class="filter-group">
+        <span class="filter-name">Spannung</span>
+      <div class="chip-row" id="flt-voltage"></div>
+      </div>
+    </div>
+    <div class="filter-group filter-dates">
+      <span class="filter-name">Zeitraum</span>
+      <label class="date-field">Von<input type="date" id="flt-from" /></label>
+      <label class="date-field">Bis<input type="date" id="flt-to" /></label>
+    </div>
+  </section>
+  <section class="grid">
+    <div class="panel">
+      <h2>
+        Hoch- und Höchstspannungsnetz
+        <span class="legend">
+          <span><i style="background:var(--hvdc);border-top:1px dashed var(--hvdc)"></i>HGÜ</span>
+          <span><i style="background:var(--kv380)"></i>≥380 kV</span>
+          <span><i style="background:var(--kv220)"></i>220 kV</span>
+          <span><i style="background:var(--kv110)"></i>110 kV</span>
+          <span><i style="background:#ea580c;height:4px"></i>Wartung</span>
+          <span><i style="background:#b91c1c;height:4px"></i>Störung</span>
+        </span>
+      </h2>
+      <div class="map-tools">
+        <label>Größe
+          <select id="map-metric">
+            <option value="count">Anzahl Meldungen</option>
+            <option value="hours">Summe Dauer</option>
+            <option value="mean">Mittlere Dauer</option>
+            <option value="mw">Summe Restleistung</option>
+            <option value="mw_mean">Mittlere Restleistung</option>
+          </select>
+        </label>
+        <span class="legend" id="map-width-legend"></span>
+        <span id="map-match"></span>
+      </div>
+      <div id="map"></div>
+    </div>
+    <div class="panel">
+      <h2>X–Y-Darstellung <span id="plot-count"></span></h2>
+      <div class="plot-tools">
+        <label id="axis-x-wrap">X <select id="axis-x"></select></label>
+        <label>Y <select id="axis-y"></select></label>
+        <label id="stat-wrap" hidden>Kennzahl
+          <select id="stat-duration">
+            <option value="median" selected>Median</option>
+            <option value="mean">Durchschnitt</option>
+          </select>
+        </label>
+      </div>
+      <div class="plot-stage"><div id="plot"></div></div>
+    </div>
+  </section>
+  <section class="outages" id="outages">
+    <button type="button" class="outages-toggle" id="outages-toggle" aria-expanded="true" aria-controls="outages-body">
+      <span class="chevron" aria-hidden="true"></span>
+      Ausfälle
+      <span class="outages-count" id="outages-count"></span>
+    </button>
+    <div class="table-wrap" id="outages-body">
+    <table>
+      <thead>
+        <tr>
+          <th>Start</th><th>Ende</th><th>Dauer h</th><th>Kategorie</th><th>ÜNB</th><th>Ursache</th>
+          <th>Typ</th><th>Spannung</th><th>Anlage</th><th>Grenze</th>
+          <th title="Verbleibende verfügbare Leistung während der Nichtverfügbarkeit (Available_Period), nicht die ausgefallene MW">Restleistung</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+  </section>
+  <script id="outages-data" type="application/json">__OUTAGES_JSON__</script>
+  <script>
+    const DATA = JSON.parse(document.getElementById("outages-data").textContent);
+    const EVENTS = Array.isArray(DATA.events) ? DATA.events : [];
+    const AXES = [
+      { id: "time", label: "Zeit", kind: "time" },
+      { id: "reason", label: "Ausfallursache", kind: "cat" },
+      { id: "duration", label: "Ausfalldauer", kind: "num", unit: "h" },
+      { id: "avail_mw", label: "Restleistung", kind: "num", unit: "MW" },
+      { id: "voltage", label: "Spannungsebene", kind: "cat" },
+      { id: "tso", label: "Netzbetreiber", kind: "cat" },
+      { id: "category", label: "Kategorie", kind: "cat" },
+      { id: "asset_type", label: "Anlagentyp", kind: "cat" },
+      { id: "monthly_count", label: "Menge Ausfälle/Wartungen", kind: "count", yOnly: true },
+    ];
+    const VOLT_ORDER = ["HGÜ", "380 kV", "220 kV", "110 kV", "unbekannt"];
+    const MONTHS_DE = ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"];
+
+    function unique(key) {
+      const s = new Set(EVENTS.map((e) => e[key] || "unbekannt"));
+      return [...s].sort((a, b) => {
+        const ia = VOLT_ORDER.indexOf(a), ib = VOLT_ORDER.indexOf(b);
+        if (key === "voltage" && ia !== -1 && ib !== -1) return ia - ib;
+        return String(a).localeCompare(String(b), "de");
+      });
+    }
+
+    function esc(s) {
+      return String(s)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function chips(el, values) {
+      el.innerHTML = values.map((v) =>
+        `<label class="chip"><input type="checkbox" value="${esc(v)}" checked /><span class="chip-face">${esc(v)}</span></label>`
+      ).join("");
+    }
+
+    function selected(id) {
+      return [...document.querySelectorAll("#" + id + " input:checked")].map((i) => i.value);
+    }
+
+    function axisValue(ev, id) {
+      if (id === "time") return ev.start || null;
+      if (id === "duration") return (typeof ev.duration_h === "number" && ev.duration_h > 0) ? ev.duration_h : null;
+      if (id === "avail_mw") return (typeof ev.avail_mw === "number" && !Number.isNaN(ev.avail_mw)) ? ev.avail_mw : null;
+      if (id === "reason") return ev.reason || "unbekannt";
+      if (id === "voltage") return ev.voltage || "unbekannt";
+      if (id === "tso") return ev.tso || "unbekannt";
+      if (id === "category") return ev.category || ev.doc_type || "unbekannt";
+      if (id === "asset_type") return ev.asset_type || "unbekannt";
+      return null;
+    }
+
+    function axisTitle(def) {
+      if (!def) return "";
+      return def.unit ? def.label + " (" + def.unit + ")" : def.label;
+    }
+
+    function overlayY(id) {
+      return id === "duration" || id === "avail_mw";
+    }
+
+    function filtered() {
+      const tso = new Set(selected("flt-tso"));
+      const reason = new Set(selected("flt-reason"));
+      const voltage = new Set(selected("flt-voltage"));
+      const category = new Set(selected("flt-category"));
+      const from = document.getElementById("flt-from").value;
+      const to = document.getElementById("flt-to").value;
+      return EVENTS.filter((e) => {
+        if (!tso.size || !tso.has(e.tso || "unbekannt")) return false;
+        if (!reason.size || !reason.has(e.reason || "unbekannt")) return false;
+        if (!voltage.size || !voltage.has(e.voltage || "unbekannt")) return false;
+        if (!category.size || !category.has(e.category || e.doc_type || "unbekannt")) return false;
+        if (from && (!e.start || e.start.slice(0, 10) < from)) return false;
+        if (to && (!e.start || e.start.slice(0, 10) > to)) return false;
+        return true;
+      });
+    }
+
+    function fmtTs(s) {
+      if (!s) return "–";
+      return s.replace("T", " ").replace("Z", " UTC");
+    }
+
+    let selectedMrids = new Set();
+    let ignorePlotSelect = false;
+
+    function renderTable(rows) {
+      const body = document.getElementById("rows");
+      const show = rows.slice(0, 800);
+      if (!show.length) {
+        body.innerHTML = `<tr><td class="empty" colspan="12">Keine Meldungen für die Filter.</td></tr>`;
+        return;
+      }
+      body.innerHTML = show.map((e) => {
+        const sel = selectedMrids.has(e.mrid) ? "sel" : "";
+        return `<tr class="${sel}" data-mrid="${e.mrid}">
+          <td>${fmtTs(e.start)}</td><td>${fmtTs(e.end)}</td>
+          <td>${e.duration_h ?? "–"}</td><td>${e.category || e.doc_type || "–"}</td>
+          <td>${e.tso || "–"}</td>
+          <td>${e.reason || "–"}</td><td>${e.asset_type || "–"}</td><td>${e.voltage || "–"}</td>
+          <td title="${e.asset_eic || ""}">${e.asset_name || "–"}</td>
+          <td>${e.border || "–"}</td><td>${e.avail_mw ?? "–"}</td>
+          <td>${e.status || "–"}</td>
+        </tr>`;
+      }).join("");
+    }
+
+    function counts(rows, key) {
+      const m = new Map();
+      for (const e of rows) {
+        const k = axisValue(e, key) || "unbekannt";
+        m.set(k, (m.get(k) || 0) + 1);
+      }
+      return [...m.entries()].sort((a, b) => String(a[0]).localeCompare(String(b[0]), "de"));
+    }
+
+    function heatmap(rows, xId, yId) {
+      const xs = [...new Set(rows.map((e) => axisValue(e, xId) || "unbekannt"))].sort();
+      const ys = [...new Set(rows.map((e) => axisValue(e, yId) || "unbekannt"))].sort();
+      const idx = new Map(xs.map((x, i) => [x, i]));
+      const idy = new Map(ys.map((y, i) => [y, i]));
+      const z = ys.map(() => xs.map(() => 0));
+      for (const e of rows) {
+        const xi = idx.get(axisValue(e, xId) || "unbekannt");
+        const yi = idy.get(axisValue(e, yId) || "unbekannt");
+        if (xi != null && yi != null) z[yi][xi] += 1;
+      }
+      return { type: "heatmap", x: xs, y: ys, z, colorscale: "Blues", hoverongaps: false };
+    }
+
+    function extent(nums) {
+      let lo = Infinity, hi = -Infinity;
+      for (const n of nums) {
+        if (n < lo) lo = n;
+        if (n > hi) hi = n;
+      }
+      return [lo, hi];
+    }
+
+    function summarize(values, which) {
+      if (!values.length) return null;
+      if (which === "mean") return values.reduce((a, b) => a + b, 0) / values.length;
+      const sorted = values.slice().sort((a, b) => a - b);
+      const mid = Math.floor(sorted.length / 2);
+      return sorted.length % 2 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
+    }
+
+    function sortCats(keys, axisId) {
+      return keys.sort((a, b) => {
+        if (axisId === "voltage") {
+          const ia = VOLT_ORDER.indexOf(a), ib = VOLT_ORDER.indexOf(b);
+          if (ia !== -1 && ib !== -1) return ia - ib;
+        }
+        return String(a).localeCompare(String(b), "de");
+      });
+    }
+
+    function numericOverlay(rows, xId, xDef, which, yId) {
+      const yDef = AXES.find((a) => a.id === yId) || {};
+      const unit = yDef.unit || "";
+      const name = which === "mean" ? "Durchschnitt" : "Median";
+      const style = {
+        type: "scatter",
+        mode: "lines+markers",
+        name,
+        showlegend: false,
+        line: { color: "#b91c1c", width: 3 },
+        marker: { size: 9, color: "#b91c1c", line: { width: 1.5, color: "#fff" } },
+      };
+      const withVal = rows.filter((e) => {
+        const v = axisValue(e, yId);
+        if (typeof v !== "number" || Number.isNaN(v)) return false;
+        return yId !== "duration" || v > 0;
+      });
+      if (!withVal.length) return null;
+      const fmt = (v) => (v == null ? "–" : v.toFixed(1) + (unit ? " " + unit : ""));
+
+      if (xDef.kind === "cat") {
+        const groups = new Map();
+        for (const e of withVal) {
+          const k = String(axisValue(e, xId) || "unbekannt");
+          if (!groups.has(k)) groups.set(k, []);
+          groups.get(k).push(axisValue(e, yId));
+        }
+        const keys = sortCats([...groups.keys()], xId);
+        return Object.assign(style, {
+          x: keys,
+          y: keys.map((k) => summarize(groups.get(k), which)),
+          text: keys.map((k) => String(groups.get(k).length)),
+          hovertemplate: name + ": %{y:.1f} " + unit + "<br>%{text} Meldungen<extra></extra>",
+        });
+      }
+
+      if (xDef.kind === "time") {
+        const times = withVal.map((e) => Date.parse(e.start)).filter((t) => !Number.isNaN(t));
+        if (!times.length) return null;
+        const [tMin, tMax] = extent(times);
+        const spanDays = (tMax - tMin) / 86400000;
+        const bucket = (iso) => {
+          if (spanDays <= 45) {
+            const day = iso.slice(0, 10);
+            return { key: day, x: day, label: day };
+          }
+          if (spanDays <= 180) {
+            const d = new Date(iso);
+            d.setUTCDate(d.getUTCDate() - ((d.getUTCDay() + 6) % 7));
+            const day = d.toISOString().slice(0, 10);
+            return { key: day, x: day, label: "Woche ab " + day };
+          }
+          const month = iso.slice(0, 7);
+          return { key: month, x: month + "-15", label: month };
+        };
+        const groups = new Map();
+        for (const e of withVal) {
+          if (!e.start) continue;
+          const b = bucket(e.start);
+          if (!groups.has(b.key)) groups.set(b.key, { x: b.x, label: b.label, values: [] });
+          groups.get(b.key).values.push(axisValue(e, yId));
+        }
+        const keys = [...groups.keys()].sort();
+        if (!keys.length) return null;
+        return Object.assign(style, {
+          x: keys.map((k) => groups.get(k).x),
+          y: keys.map((k) => summarize(groups.get(k).values, which)),
+          hovertext: keys.map((k) => {
+            const g = groups.get(k);
+            return name + ": " + fmt(summarize(g.values, which)) + "<br>" + g.label + "<br>" + g.values.length + " Meldungen";
+          }),
+          hoverinfo: "text",
+        });
+      }
+
+      const y = summarize(withVal.map((e) => axisValue(e, yId)), which);
+      const xs = withVal.map((e) => axisValue(e, xId)).filter((v) => typeof v === "number" && !Number.isNaN(v));
+      if (y == null || !xs.length) return null;
+      const [xMin, xMax] = extent(xs);
+      return Object.assign(style, {
+        mode: "lines",
+        x: [xMin, xMax],
+        y: [y, y],
+        hovertemplate: name + ": %{y:.1f} " + unit + "<extra></extra>",
+      });
+    }
+
+    function lerpLog(a, b, t) {
+      if (!(a > 0) || !(b > 0)) return a + (b - a) * t;
+      return Math.exp(Math.log(a) + (Math.log(b) - Math.log(a)) * t);
+    }
+
+    function densifyBand(xs, ys, logX) {
+      if (!xs || xs.length < 2) return { x: xs || [], y: ys || [] };
+      const asNumber = typeof xs[0] === "number";
+      const nums = xs.map((x) => asNumber ? x : Date.parse(x));
+      if (nums.some((n) => Number.isNaN(n)) || ys.some((y) => typeof y !== "number")) {
+        return { x: xs, y: ys };
+      }
+      const steps = Math.max(8, Math.round(240 / (xs.length - 1)));
+      const x = [];
+      const y = [];
+      for (let i = 0; i < xs.length - 1; i++) {
+        for (let s = 0; s < steps; s++) {
+          const t = s / steps;
+          const n = logX ? lerpLog(nums[i], nums[i + 1], t) : nums[i] + (nums[i + 1] - nums[i]) * t;
+          x.push(asNumber ? n : new Date(n).toISOString());
+          y.push(lerpLog(ys[i], ys[i + 1], t));
+        }
+      }
+      x.push(xs[xs.length - 1]);
+      y.push(ys[ys.length - 1]);
+      return { x, y };
+    }
+
+    function durationStat() {
+      const el = document.getElementById("stat-duration");
+      return el ? el.value : "median";
+    }
+
+    function eventKind(e) {
+      const r = e.reason || "";
+      if (r === "Störung") return "fault";
+      if (r === "Geplante Wartung") return "maint";
+      return null;
+    }
+
+    function kindSummary(rows) {
+      let fault = 0;
+      let maint = 0;
+      for (const e of rows) {
+        const k = eventKind(e);
+        if (k === "fault") fault += 1;
+        else if (k === "maint") maint += 1;
+      }
+      return { fault, maint };
+    }
+
+    function formatKindSummary(rows) {
+      const { fault, maint } = kindSummary(rows);
+      return `${fault.toLocaleString("de-DE")} Ausfälle · ${maint.toLocaleString("de-DE")} Wartungen`;
+    }
+
+    function monthLabel(key) {
+      const y = key.slice(0, 4);
+      const m = Number(key.slice(5, 7));
+      return (MONTHS_DE[m - 1] || key.slice(5, 7)) + " " + y;
+    }
+
+    function monthRange(rows) {
+      const fromEl = document.getElementById("flt-from").value;
+      const toEl = document.getElementById("flt-to").value;
+      let min = fromEl ? fromEl.slice(0, 7) : null;
+      let max = toEl ? toEl.slice(0, 7) : null;
+      if (!min || !max) {
+        for (const e of rows) {
+          if (!e.start || e.start.length < 7) continue;
+          const k = e.start.slice(0, 7);
+          if (!min || k < min) min = k;
+          if (!max || k > max) max = k;
+        }
+      }
+      if (!min || !max) return [];
+      const keys = [];
+      let y = Number(min.slice(0, 4));
+      let m = Number(min.slice(5, 7));
+      const endY = Number(max.slice(0, 4));
+      const endM = Number(max.slice(5, 7));
+      while (y < endY || (y === endY && m <= endM)) {
+        keys.push(y + "-" + String(m).padStart(2, "0"));
+        m += 1;
+        if (m > 12) { m = 1; y += 1; }
+      }
+      return keys;
+    }
+
+    function monthlyKindCounts(rows) {
+      const keys = monthRange(rows);
+      const fault = Object.fromEntries(keys.map((k) => [k, 0]));
+      const maint = Object.fromEntries(keys.map((k) => [k, 0]));
+      for (const e of rows) {
+        if (!e.start || e.start.length < 7) continue;
+        const k = e.start.slice(0, 7);
+        const kind = eventKind(e);
+        if (kind === "fault" && k in fault) fault[k] += 1;
+        if (kind === "maint" && k in maint) maint[k] += 1;
+      }
+      return { keys, fault, maint };
+    }
+
+    function kindCountSeries(x, faultY, maintY, type) {
+      const line = type === "scatter";
+      return [
+        {
+          type,
+          mode: line ? "lines+markers" : undefined,
+          name: "Störungen",
+          x,
+          y: faultY,
+          line: line ? { color: "#b91c1c", width: 2.5 } : undefined,
+          marker: { size: line ? 7 : undefined, color: "#b91c1c" },
+          hovertemplate: "%{x}<br>Störungen: %{y}<extra></extra>",
+        },
+        {
+          type,
+          mode: line ? "lines+markers" : undefined,
+          name: "Wartungen",
+          x,
+          y: maintY,
+          line: line ? { color: "#ea580c", width: 2.5 } : undefined,
+          marker: { size: line ? 7 : undefined, color: "#ea580c" },
+          hovertemplate: "%{x}<br>Wartungen: %{y}<extra></extra>",
+        },
+      ];
+    }
+
+    function monthlyCountTraces(rows) {
+      const { keys, fault, maint } = monthlyKindCounts(rows);
+      const labels = keys.map(monthLabel);
+      return kindCountSeries(labels, keys.map((k) => fault[k]), keys.map((k) => maint[k]), "scatter");
+    }
+
+    function countKindPlot(rows, xId, xDef) {
+      if (!xDef || xDef.kind === "time") {
+        return { traces: monthlyCountTraces(rows), xTitle: "Monat", tickangle: -45, yTitle: "Anzahl je Monat" };
+      }
+      if (xDef.kind === "num") {
+        const faultX = [];
+        const maintX = [];
+        for (const e of rows) {
+          const v = axisValue(e, xId);
+          if (typeof v !== "number" || Number.isNaN(v)) continue;
+          const kind = eventKind(e);
+          if (kind === "fault") faultX.push(v);
+          else if (kind === "maint") maintX.push(v);
+        }
+        return {
+          traces: [
+            {
+              type: "histogram",
+              name: "Störungen",
+              x: faultX,
+              marker: { color: "#b91c1c", opacity: 0.72 },
+              hovertemplate: "Störungen: %{y}<extra></extra>",
+            },
+            {
+              type: "histogram",
+              name: "Wartungen",
+              x: maintX,
+              marker: { color: "#ea580c", opacity: 0.72 },
+              hovertemplate: "Wartungen: %{y}<extra></extra>",
+            },
+          ],
+          xTitle: axisTitle(xDef),
+          yTitle: "Anzahl",
+          barmode: "overlay",
+        };
+      }
+      const keys = sortCats(
+        [...new Set(rows.map((e) => String(axisValue(e, xId) || "unbekannt")))],
+        xId,
+      );
+      const fault = Object.fromEntries(keys.map((k) => [k, 0]));
+      const maint = Object.fromEntries(keys.map((k) => [k, 0]));
+      for (const e of rows) {
+        const key = String(axisValue(e, xId) || "unbekannt");
+        const kind = eventKind(e);
+        if (kind === "fault" && key in fault) fault[key] += 1;
+        if (kind === "maint" && key in maint) maint[key] += 1;
+      }
+      return {
+        traces: kindCountSeries(keys, keys.map((k) => fault[k]), keys.map((k) => maint[k]), "bar"),
+        xTitle: xDef.label,
+        yTitle: "Anzahl",
+        barmode: "group",
+      };
+    }
+
+    function syncStatControl() {
+      const wrap = document.getElementById("stat-wrap");
+      if (!wrap) return;
+      wrap.hidden = !overlayY(document.getElementById("axis-y").value);
+    }
+
+    function syncAxisControls() {
+      const xWrap = document.getElementById("axis-x-wrap");
+      if (xWrap) xWrap.hidden = false;
+      syncStatControl();
+    }
+
+    function renderPlot(rows) {
+      const xId = document.getElementById("axis-x").value;
+      const yId = document.getElementById("axis-y").value;
+      const xDef = AXES.find((a) => a.id === xId);
+      const yDef = AXES.find((a) => a.id === yId);
+      syncAxisControls();
+      document.getElementById("plot-count").textContent = `${rows.length} Meldungen`;
+      let traces = [];
+      let layout = {
+        margin: { t: 16, r: 16, b: 80, l: 70 },
+        paper_bgcolor: "#fff",
+        plot_bgcolor: "#fff",
+        font: { size: 12 },
+        xaxis: { title: xDef.label },
+        yaxis: { title: yDef.label },
+      };
+
+      if (yId === "monthly_count") {
+        const plotted = countKindPlot(rows, xId, xDef);
+        traces = plotted.traces;
+        layout.xaxis.title = plotted.xTitle;
+        layout.yaxis.title = plotted.yTitle;
+        layout.yaxis.rangemode = "tozero";
+        layout.legend = { orientation: "h", x: 0, y: 1.12, yanchor: "bottom" };
+        layout.margin.t = 36;
+        layout.margin.b = 70;
+        if (plotted.tickangle) layout.xaxis.tickangle = plotted.tickangle;
+        if (plotted.barmode) layout.barmode = plotted.barmode;
+      } else if (xDef.kind === "cat" && yDef.kind === "cat") {
+        traces = [heatmap(rows, xId, yId)];
+        layout.yaxis.autorange = "reversed";
+      } else if (xDef.kind === "cat" && yDef.kind === "num") {
+        const groups = {};
+        for (const e of rows) {
+          const k = axisValue(e, xId) || "unbekannt";
+          (groups[k] ||= []).push(axisValue(e, yId));
+        }
+        traces = sortCats(Object.keys(groups), xId).map((k) => ({
+          type: "box", name: k, y: groups[k].filter((v) => v != null), boxpoints: "outliers",
+        }));
+        layout.yaxis.title = axisTitle(yDef);
+      } else if (yDef.kind === "cat" && xDef.kind === "num") {
+        const groups = {};
+        for (const e of rows) {
+          const k = axisValue(e, yId) || "unbekannt";
+          (groups[k] ||= []).push(axisValue(e, xId));
+        }
+        traces = Object.keys(groups).sort().map((k) => ({
+          type: "box", name: k, x: groups[k].filter((v) => v != null), boxpoints: "outliers",
+        }));
+        layout.xaxis.title = axisTitle(xDef);
+      } else if (xDef.kind === "time" && yDef.kind === "cat") {
+        traces = [{
+          type: "scattergl", mode: "markers",
+          x: rows.map((e) => axisValue(e, "time")),
+          y: rows.map((e) => axisValue(e, yId)),
+          customdata: rows.map((e) => e.mrid),
+          text: rows.map((e) => e.asset_name),
+          hovertemplate: "%{x}<br>%{y}<br>%{text}<extra></extra>",
+          marker: { size: 8, opacity: 0.65, color: "#1d4ed8" },
+        }];
+      } else if (yDef.kind === "time" && xDef.kind === "cat") {
+        traces = [{
+          type: "scattergl", mode: "markers",
+          y: rows.map((e) => axisValue(e, "time")),
+          x: rows.map((e) => axisValue(e, xId)),
+          customdata: rows.map((e) => e.mrid),
+          text: rows.map((e) => e.asset_name),
+          hovertemplate: "%{y}<br>%{x}<br>%{text}<extra></extra>",
+          marker: { size: 8, opacity: 0.65, color: "#1d4ed8" },
+        }];
+      } else if (xDef.kind === "cat" && yDef.kind === "cat") {
+        traces = [heatmap(rows, xId, yId)];
+      } else if ((xDef.kind === "num" || xDef.kind === "time") && (yDef.kind === "num" || yDef.kind === "time")) {
+        traces = [{
+          type: "scattergl",
+          mode: "markers",
+          x: rows.map((e) => axisValue(e, xId)),
+          y: rows.map((e) => axisValue(e, yId)),
+          customdata: rows.map((e) => e.mrid),
+          text: rows.map((e) => `${e.asset_name}<br>${e.reason}<br>${e.tso}`),
+          hovertemplate: "%{text}<extra></extra>",
+          marker: { size: 8, opacity: 0.6, color: "#6d28d9" },
+        }];
+        if (yDef.unit) layout.yaxis.title = axisTitle(yDef);
+        if (xDef.unit) layout.xaxis.title = axisTitle(xDef);
+      } else if (xDef.kind === "cat" && xId === yId) {
+        const c = counts(rows, xId);
+        traces = [{ type: "bar", x: c.map((d) => d[0]), y: c.map((d) => d[1]) }];
+        layout.yaxis.title = "Anzahl";
+      } else {
+        const c = counts(rows, xDef.kind === "cat" ? xId : yId);
+        traces = [{ type: "bar", x: c.map((d) => d[0]), y: c.map((d) => d[1]) }];
+        layout.yaxis.title = "Anzahl";
+      }
+
+      if (overlayY(yId) && rows.length) {
+        const overlay = numericOverlay(rows, xId, xDef, durationStat(), yId);
+        if (overlay) {
+          overlay.showlegend = true;
+          for (const trace of traces) trace.showlegend = false;
+          const coversPoints = traces.some((t) => t.type === "scatter" || t.type === "scattergl");
+          if (coversPoints) {
+            overlay.type = "scattergl";
+            const band = densifyBand(overlay.x, overlay.y, xId === "duration");
+            traces.push({
+              type: "scattergl",
+              mode: "markers",
+              x: band.x,
+              y: band.y,
+              showlegend: false,
+              hoverinfo: "skip",
+              marker: { size: 16, color: "#ffffff" },
+            });
+            traces.push({
+              type: "scattergl",
+              mode: "markers",
+              x: band.x,
+              y: band.y,
+              showlegend: false,
+              hoverinfo: "skip",
+              marker: { size: 7, color: "#b91c1c" },
+            });
+          }
+          traces.push(overlay);
+          layout.legend = { orientation: "h", x: 0, y: 1.12, yanchor: "bottom" };
+          layout.margin.t = 36;
+        }
+      }
+
+      if (!rows.length) {
+        traces = [];
+        layout.annotations = [{ text: "Keine Daten", showarrow: false, xref: "paper", yref: "paper", x: 0.5, y: 0.5 }];
+      }
+      if (yId === "duration") {
+        layout.yaxis.type = "log";
+        layout.yaxis.exponentformat = "none";
+      }
+      if (xId === "duration") {
+        layout.xaxis.type = "log";
+        layout.xaxis.exponentformat = "none";
+      }
+      ignorePlotSelect = true;
+      Plotly.react("plot", withSelection(traces), layout, { responsive: true, displaylogo: false });
+      requestAnimationFrame(() => { ignorePlotSelect = false; });
+    }
+
+    function withSelection(traces) {
+      if (!selectedMrids.size) return traces;
+      return traces.map((t) => {
+        if (!Array.isArray(t.customdata) || !t.marker) return t;
+        const on = t.customdata.map((id) => selectedMrids.has(id));
+        const baseSize = typeof t.marker.size === "number" ? t.marker.size : 8;
+        return Object.assign({}, t, {
+          marker: Object.assign({}, t.marker, {
+            opacity: on.map((s) => s ? 1 : 0.12),
+            size: on.map((s) => s ? baseSize + 3 : baseSize),
+          }),
+        });
+      });
+    }
+
+    function formatUnmappedPct(miss, n) {
+      if (!n) return "—";
+      const p = (100 * miss) / n;
+      const rounded = p >= 10 ? Math.round(p) : Math.round(p * 10) / 10;
+      return `${rounded.toLocaleString("de-DE")}\u00a0%`;
+    }
+
+    function fillScopeCoverage() {
+      const el = document.getElementById("scope");
+      if (!el) return;
+      const mapped = new Uint8Array(EVENTS.length);
+      const feats = (DATA.network && DATA.network.matched && DATA.network.matched.features) || [];
+      for (const f of feats) {
+        const ev = f.properties && f.properties.ev;
+        if (!ev) continue;
+        for (const i of ev) {
+          if (i >= 0 && i < EVENTS.length) mapped[i] = 1;
+        }
+      }
+      let all = 0, allMiss = 0, gen = 0, genMiss = 0, grid = 0, gridMiss = 0;
+      for (let i = 0; i < EVENTS.length; i++) {
+        const doc = EVENTS[i].doc_type;
+        const miss = !mapped[i];
+        all += 1;
+        if (miss) allMiss += 1;
+        if (doc === "A77" || doc === "A80") {
+          gen += 1;
+          if (miss) genMiss += 1;
+        } else if (doc === "A78" || doc === "A79") {
+          grid += 1;
+          if (miss) gridMiss += 1;
+        }
+      }
+      const years = DATA.years || 5;
+      el.textContent =
+        `ENTSO-E Transparency DE, letzte ${years} Jahre: gemeldete Unverfügbarkeiten (i. d. R. ab ca. 100 MW). ` +
+        `Ohne stornierte geplante Wartungen und ohne zurückgezogene Meldungen. ` +
+        `Karte: zuordenbare ≥110-kV-Leitungen, Kraftwerke und Schaltanlagen. ` +
+        `Nicht verortet: ${formatUnmappedPct(allMiss, all)} aller Meldungen · ` +
+        `Erzeugung ${formatUnmappedPct(genMiss, gen)} · ` +
+        `Netz/Offshore ${formatUnmappedPct(gridMiss, grid)} ` +
+        `(Verteilnetz und anonymisierte Erzeugung intra_zonal / 11W0-0000).`;
+    }
+
+    function refresh() {
+      const rows = filtered();
+      const shown = selectedMrids.size ? rows.filter((e) => selectedMrids.has(e.mrid)) : rows;
+      renderPlot(rows);
+      renderTable(shown);
+      const stand = DATA.generated_at ? String(DATA.generated_at).slice(0, 10) : "";
+      document.getElementById("meta").textContent =
+        `${DATA.country_label || "—"} · ${rows.length} von ${EVENTS.length} Meldungen` +
+        (stand ? ` · Stand ${stand}` : "");
+      document.getElementById("outages-count").textContent = selectedMrids.size
+        ? formatKindSummary(shown)
+        : shown.length.toLocaleString("de-DE");
+      scheduleOutageOverlay(rows);
+    }
+
+    function initDateRange() {
+      let min = null;
+      let max = null;
+      for (const e of EVENTS) {
+        const d = e.start && e.start.length >= 10 ? e.start.slice(0, 10) : null;
+        if (!d) continue;
+        if (min === null || d < min) min = d;
+        if (max === null || d > max) max = d;
+      }
+      const from = document.getElementById("flt-from");
+      const to = document.getElementById("flt-to");
+      if (min) {
+        from.min = min;
+        to.min = min;
+        from.value = min;
+      }
+      if (max) {
+        from.max = max;
+        to.max = max;
+        to.value = max;
+      }
+    }
+
+    function initFilters() {
+      const tsoVals = (DATA.tsos && DATA.tsos.length) ? DATA.tsos.concat(["unbekannt"]).filter((v, i, a) => a.indexOf(v) === i) : unique("tso");
+      chips(document.getElementById("flt-tso"), tsoVals);
+      chips(document.getElementById("flt-reason"), unique("reason"));
+      chips(document.getElementById("flt-voltage"), unique("voltage"));
+      chips(document.getElementById("flt-category"), unique("category"));
+      initDateRange();
+      const xSel = document.getElementById("axis-x");
+      const ySel = document.getElementById("axis-y");
+      xSel.innerHTML = AXES.filter((a) => !a.yOnly).map((a) => `<option value="${a.id}">${a.label}</option>`).join("");
+      ySel.innerHTML = AXES.map((a) => `<option value="${a.id}">${a.label}</option>`).join("");
+      xSel.value = "time";
+      ySel.value = "duration";
+      document.querySelector(".filters").addEventListener("change", () => { selectedMrids = new Set(); refresh(); });
+      xSel.addEventListener("change", refresh);
+      ySel.addEventListener("change", () => { syncAxisControls(); refresh(); });
+      const statEl = document.getElementById("stat-duration");
+      if (statEl) statEl.addEventListener("change", refresh);
+      const mapMetricEl = document.getElementById("map-metric");
+      if (mapMetricEl) {
+        mapMetricEl.addEventListener("change", () => {
+          scheduleOutageOverlay(overlayRows.length ? overlayRows : filtered());
+        });
+      }
+      syncAxisControls();
+    }
+
+    let mapView = null;
+    let overlayRows = [];
+    const EMPTY_FC = { type: "FeatureCollection", features: [] };
+    const NETWORK = (DATA.network && DATA.network.background)
+      ? DATA.network
+      : { background: EMPTY_FC, matched: EMPTY_FC };
+    const MRID_IDX = new Map(EVENTS.map((e, i) => [e.mrid, i]));
+    const MAG_STEPS = 5;
+    const WIDTH_PX = [2.2, 3.3, 4.6, 6.2, 8.2];
+    const RADIUS_PX = [4, 5.5, 7, 8.8, 11];
+
+    function mapMetric() {
+      const el = document.getElementById("map-metric");
+      return (el && el.value) || "count";
+    }
+
+    function formatHours(h) {
+      if (h == null || !isFinite(h)) return "–";
+      if (h < 10) return `${h.toLocaleString("de-DE", { maximumFractionDigits: 1 })} h`;
+      return `${Math.round(h).toLocaleString("de-DE")} h`;
+    }
+
+    function formatMw(v) {
+      if (v == null || !isFinite(v)) return "–";
+      if (v === 0) return "0 MW";
+      if (Math.abs(v) < 10) return `${v.toLocaleString("de-DE", { maximumFractionDigits: 1 })} MW`;
+      return `${Math.round(v).toLocaleString("de-DE")} MW`;
+    }
+
+    function formatMetricValue(v, metric) {
+      if (metric === "mw" || metric === "mw_mean") {
+        if (!(v >= 0) || !isFinite(v)) return "–";
+        const label = formatMw(v);
+        return metric === "mw_mean" ? label.replace(" MW", " MW Ø") : label;
+      }
+      if (!(v > 0)) return "–";
+      if (metric === "count") return Math.round(v).toLocaleString("de-DE");
+      const label = formatHours(v);
+      return metric === "mean" ? label.replace(" h", " h Ø") : label;
+    }
+
+    function blankSide() {
+      return { n: 0, hours: 0, mw: 0, mwN: 0, mrids: [] };
+    }
+
+    function addSide(s, e) {
+      s.n += 1;
+      s.hours += Number(e.duration_h) || 0;
+      if (typeof e.avail_mw === "number" && !Number.isNaN(e.avail_mw)) {
+        s.mw += e.avail_mw;
+        s.mwN += 1;
+      }
+      s.mrids.push(e.mrid);
+    }
+
+    function sideOut(s) {
+      return {
+        n: s.n, hours: s.hours, mean: s.n ? s.hours / s.n : 0,
+        mw: s.mw, mwN: s.mwN, mwMean: s.mwN ? s.mw / s.mwN : 0, mrids: s.mrids,
+      };
+    }
+
+    function combineSides(a, b) {
+      const n = a.n + b.n;
+      const hours = a.hours + b.hours;
+      const mwN = a.mwN + b.mwN;
+      return {
+        n, hours, mean: n ? hours / n : 0,
+        mw: a.mw + b.mw, mwMean: mwN ? (a.mw + b.mw) / mwN : 0,
+        mrids: a.mrids.concat(b.mrids),
+      };
+    }
+
+    const round1 = (v) => Math.round(v * 10) / 10;
+
+    function metricValue(stats, metric) {
+      if (metric === "hours") return stats.hours;
+      if (metric === "mean") return stats.mean;
+      if (metric === "mw") return stats.mw;
+      if (metric === "mw_mean") return stats.mwMean;
+      return stats.n;
+    }
+
+    function valueToBin(v, vmin, vmax) {
+      if (!(v > 0)) return 0;
+      if (!(vmax > vmin)) return Math.floor(MAG_STEPS / 2);
+      const t = (Math.log(v) - Math.log(vmin)) / (Math.log(vmax) - Math.log(vmin));
+      return Math.min(MAG_STEPS - 1, Math.max(0, Math.round(t * (MAG_STEPS - 1))));
+    }
+
+    function renderWidthLegend(vmin, vmax, metric) {
+      const el = document.getElementById("map-width-legend");
+      if (!el) return;
+      if (!(vmax > 0)) {
+        el.innerHTML = "";
+        return;
+      }
+      const ticks = [];
+      if (!(vmax > vmin)) {
+        ticks.push({ v: vmax, w: WIDTH_PX[Math.floor(MAG_STEPS / 2)] });
+      } else {
+        for (const i of [0, 2, 4]) {
+          const t = i / (MAG_STEPS - 1);
+          ticks.push({
+            v: Math.exp(Math.log(vmin) + t * (Math.log(vmax) - Math.log(vmin))),
+            w: WIDTH_PX[i],
+          });
+        }
+      }
+      const unit = metric === "count" ? "Meldungen"
+        : metric === "mean" ? "mittlere Dauer"
+        : metric === "hours" ? "Summe Dauer"
+        : metric === "mw_mean" ? "mittlere Restleistung"
+        : metric === "mw" ? "Summe Restleistung"
+        : "Summe Dauer";
+      el.innerHTML = `<span>${unit}</span>` + ticks.map((t) =>
+        `<span class="wleg"><i style="height:${Math.max(2, t.w)}px"></i>${formatMetricValue(t.v, metric)}</span>`
+      ).join("");
+    }
+
+    function scheduleOutageOverlay(rows) {
+      overlayRows = rows;
+      updateOutageOverlay();
+    }
+
+    function updateOutageOverlay() {
+      if (!mapView || !mapView.getSource("out")) return;
+      const metric = mapMetric();
+      const inFilter = new Uint8Array(EVENTS.length);
+      for (const e of overlayRows) {
+        const i = MRID_IDX.get(e.mrid);
+        if (i != null) inFilter[i] = 1;
+      }
+      const statsList = [];
+      let vmin = Infinity;
+      let vmax = 0;
+      for (const f of NETWORK.matched.features) {
+        const ev = f.properties && f.properties.ev;
+        if (!ev || !ev.length) continue;
+        const sides = { fault: blankSide(), maint: blankSide() };
+        for (const i of ev) {
+          if (!inFilter[i]) continue;
+          const e = EVENTS[i];
+          if (!e) continue;
+          const k = eventKind(e);
+          if (k) addSide(sides[k], e);
+        }
+        const fault = sideOut(sides.fault);
+        const maint = sideOut(sides.maint);
+        const combined = combineSides(fault, maint);
+        if (!combined.n) continue;
+        const value = metricValue(combined, metric);
+        statsList.push({ f, fault, maint, combined, value });
+        if (value > 0) {
+          if (value < vmin) vmin = value;
+          if (value > vmax) vmax = value;
+        }
+      }
+      if (!(vmin < Infinity)) vmin = vmax;
+      if (metric === "count" || metric === "mw" || metric === "mw_mean") vmin = Math.max(1, vmin);
+      else vmin = Math.max(0.25, vmin);
+      const active = [];
+      for (const st of statsList) {
+        const bin = valueToBin(st.value, vmin, vmax);
+        active.push({
+          type: "Feature",
+          geometry: st.f.geometry,
+          properties: {
+            name: st.f.properties.name,
+            kind: st.fault.n ? "fault" : "maint",
+            w: WIDTH_PX[bin],
+            r: RADIUS_PX[bin],
+            fn: st.fault.n, fh: round1(st.fault.hours), fmean: round1(st.fault.mean),
+            fmw: st.fault.mw, fmwm: round1(st.fault.mwMean),
+            mn: st.maint.n, mh: round1(st.maint.hours), mmean: round1(st.maint.mean),
+            mmw: st.maint.mw, mmwm: round1(st.maint.mwMean),
+            mrids: st.combined.mrids.join(","),
+          },
+        });
+      }
+      const hint = document.getElementById("map-match");
+      if (hint) {
+        hint.textContent = active.length
+          ? `${active.length} Leitungen/Anlagen`
+          : (NETWORK.matched.features.length ? "keine Meldung im Filter" : "keine Netzdaten");
+      }
+      renderWidthLegend(vmin, vmax, metric);
+      mapView.getSource("out").setData({ type: "FeatureCollection", features: active });
+    }
+
+
+    function zoomRamp(lo, mid, hi) {
+      return ["interpolate", ["linear"], ["zoom"], 2, lo, 6, mid, 12, hi];
+    }
+
+    function initMap() {
+      const center = (DATA.map && DATA.map.center) ? DATA.map.center : [10.45, 51.16];
+      const zoom = (DATA.map && DATA.map.zoom) ? DATA.map.zoom : 5.6;
+      const bounds = DATA.map && DATA.map.bounds;
+      const map = new maplibregl.Map({
+        container: "map",
+        style: "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json",
+        center,
+        zoom,
+        minZoom: 2,
+        maxZoom: 17,
+        attributionControl: true,
+      });
+      mapView = map;
+      map.addControl(new maplibregl.NavigationControl(), "top-right");
+      const gridOpacity = zoomRamp(0.82, 0.48, 0.38);
+      const bgColor = [
+        "case",
+        [">=", ["get", "v"], 380], "#b4aebc",
+        [">=", ["get", "v"], 220], "#aeb2be",
+        "#a8b2bc",
+      ];
+      const bgWidth = [
+        "interpolate", ["linear"], ["zoom"],
+        2, ["case", [">=", ["get", "v"], 380], 2.6, [">=", ["get", "v"], 220], 2.1, 1.7],
+        6, ["case", [">=", ["get", "v"], 380], 1.35, [">=", ["get", "v"], 220], 1.1, 0.9],
+        12, ["case", [">=", ["get", "v"], 380], 1.9, [">=", ["get", "v"], 220], 1.5, 1.2],
+      ];
+      map.on("load", () => {
+        if (bounds) map.fitBounds(bounds, { padding: 28, duration: 0, maxZoom: 6.2 });
+        map.addSource("net", {
+          type: "geojson",
+          data: NETWORK.background,
+          attribution: "\u00a9 OpenStreetMap",
+        });
+        map.addSource("out", { type: "geojson", data: EMPTY_FC });
+        map.addLayer({
+          id: "net-hvdc",
+          type: "line",
+          source: "net",
+          filter: ["==", ["get", "d"], 1],
+          paint: {
+            "line-color": "#c4b0b0",
+            "line-width": zoomRamp(2.2, 1.1, 1.5),
+            "line-dasharray": [2, 1.4],
+            "line-opacity": gridOpacity,
+          },
+        });
+        map.addLayer({
+          id: "net-ac",
+          type: "line",
+          source: "net",
+          filter: ["!=", ["get", "d"], 1],
+          paint: { "line-color": bgColor, "line-width": bgWidth, "line-opacity": gridOpacity },
+        });
+        map.addLayer({
+          id: "out-lines",
+          type: "line",
+          source: "out",
+          filter: ["in", ["geometry-type"], ["literal", ["LineString", "MultiLineString"]]],
+          paint: {
+            "line-color": ["match", ["get", "kind"], "fault", "#b91c1c", "#ea580c"],
+            "line-width": [
+              "interpolate", ["linear"], ["zoom"],
+              2, ["*", ["get", "w"], 0.7],
+              6, ["get", "w"],
+              12, ["*", ["get", "w"], 1.15],
+            ],
+            "line-opacity": 1,
+          },
+          layout: { "line-cap": "round", "line-join": "round" },
+        });
+        map.addLayer({
+          id: "out-pts",
+          type: "circle",
+          source: "out",
+          filter: ["in", ["geometry-type"], ["literal", ["Point", "MultiPoint"]]],
+          paint: {
+            "circle-radius": [
+              "interpolate", ["linear"], ["zoom"],
+              2, ["*", ["get", "r"], 0.55],
+              6, ["get", "r"],
+              12, ["*", ["get", "r"], 1.12],
+            ],
+            "circle-color": ["match", ["get", "kind"], "fault", "#b91c1c", "#ea580c"],
+            "circle-stroke-width": 1.5,
+            "circle-stroke-color": "#fff",
+          },
+        });
+        const popup = new maplibregl.Popup({ closeButton: true, closeOnClick: false });
+        let pinned = false;
+        function overlayPopupHtml(p) {
+          const metric = mapMetric();
+          const useMw = metric === "mw" || metric === "mw_mean";
+          const row = (label, n, tot, mean) => {
+            if (!n) return `0 ${label}`;
+            const extra = useMw
+              ? `${formatMw(tot)} \u00b7 \u00d8 ${formatMw(mean)}`
+              : `${formatHours(tot)} \u00b7 \u00d8 ${formatHours(mean)}`;
+            return `${n.toLocaleString("de-DE")} ${label} \u00b7 ${extra}`;
+          };
+          return `<strong>${p.name || "Anlage"}</strong><br>` +
+            `${row("Ausf\u00e4lle", p.fn, useMw ? p.fmw : p.fh, useMw ? p.fmwm : p.fmean)}<br>` +
+            `${row("Wartungen", p.mn, useMw ? p.mmw : p.mh, useMw ? p.mmwm : p.mmean)}`;
+        }
+        function onEnter(e) {
+          map.getCanvas().style.cursor = "pointer";
+          if (pinned) return;
+          const p = e.features && e.features[0] && e.features[0].properties;
+          if (!p || !p.mrids) return;
+          popup.setLngLat(e.lngLat).setHTML(overlayPopupHtml(p)).addTo(map);
+        }
+        function onLeave() {
+          map.getCanvas().style.cursor = "";
+          if (!pinned) popup.remove();
+        }
+        function onClick(e) {
+          const p = e.features && e.features[0] && e.features[0].properties;
+          if (!p || !p.mrids) return;
+          pinned = true;
+          selectedMrids = new Set(String(p.mrids).split(","));
+          popup.setLngLat(e.lngLat).setHTML(overlayPopupHtml(p)).addTo(map);
+          refresh();
+        }
+        popup.on("close", () => {
+          pinned = false;
+          if (selectedMrids.size) {
+            selectedMrids = new Set();
+            refresh();
+          }
+        });
+        for (const id of ["out-lines", "out-pts"]) {
+          map.on("mouseenter", id, onEnter);
+          map.on("mouseleave", id, onLeave);
+          map.on("click", id, onClick);
+        }
+        updateOutageOverlay();
+      });
+    }
+
+
+    function resizeViews() {
+      const plotEl = document.getElementById("plot");
+      if (plotEl && plotEl.classList.contains("js-plotly-plot") && window.Plotly && window.Plotly.Plots) {
+        Plotly.Plots.resize(plotEl);
+      }
+      if (mapView) mapView.resize();
+    }
+
+    function initInfoDialog() {
+      const dlg = document.getElementById("info-dialog");
+      const openBtn = document.getElementById("info-open");
+      const closeBtn = document.getElementById("info-close");
+      if (!dlg || !openBtn) return;
+      openBtn.addEventListener("click", () => dlg.showModal());
+      closeBtn.addEventListener("click", () => dlg.close());
+      dlg.addEventListener("click", (ev) => {
+        const r = dlg.getBoundingClientRect();
+        if (ev.clientX < r.left || ev.clientX > r.right || ev.clientY < r.top || ev.clientY > r.bottom) {
+          dlg.close();
+        }
+      });
+    }
+
+    function initOutagesToggle() {
+      const section = document.getElementById("outages");
+      const btn = document.getElementById("outages-toggle");
+      btn.addEventListener("click", () => {
+        const collapsed = section.classList.toggle("is-collapsed");
+        btn.setAttribute("aria-expanded", collapsed ? "false" : "true");
+        requestAnimationFrame(resizeViews);
+      });
+    }
+
+    function watchLayout() {
+      const grid = document.querySelector(".grid");
+      if (!window.ResizeObserver || !grid) return;
+      let frame = 0;
+      new ResizeObserver(() => {
+        cancelAnimationFrame(frame);
+        frame = requestAnimationFrame(resizeViews);
+      }).observe(grid);
+    }
+
+    initFilters();
+    initMap();
+    initOutagesToggle();
+    initInfoDialog();
+    fillScopeCoverage();
+    watchLayout();
+    refresh();
+
+    document.getElementById("plot").on("plotly_click", (ev) => {
+      if (ignorePlotSelect) return;
+      const pt = ev.points && ev.points[0];
+      if (!pt || pt.customdata == null) return;
+      selectedMrids = new Set([pt.customdata]);
+      refresh();
+    });
+    document.getElementById("plot").on("plotly_selected", (ev) => {
+      if (ignorePlotSelect) return;
+      if (!ev || !ev.points || !ev.points.length) return;
+      selectedMrids = new Set(ev.points.map((p) => p.customdata).filter(Boolean));
+      refresh();
+    });
+    document.getElementById("plot").on("plotly_deselect", () => {
+      if (ignorePlotSelect || !selectedMrids.size) return;
+      selectedMrids = new Set();
+      refresh();
+    });
+  </script>
+</body>
+</html>
