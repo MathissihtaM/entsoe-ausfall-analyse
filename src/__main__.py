@@ -1,4 +1,10 @@
-"""python -m analysis --country DE --years 5"""
+"""Start der Auswertung: ``python -m src --country DE --years 5``.
+
+Ohne Zusatzflags werden fehlende API-Fenster nachgeladen, alle ZIP-Dateien
+neu gelesen und Karte plus HTML geschrieben. ``--cache-only`` überspringt
+die API. ``--rebuild-network`` lässt die Meldungen in ``outages.json`` stehen
+und ordnet sie nur neu dem Netz zu; ``--years`` gilt dann nicht.
+"""
 
 from __future__ import annotations
 
@@ -6,10 +12,11 @@ import argparse
 import json
 import sys
 
-from analysis.countries import get_country
-from analysis.fetch_outages import FETCH_WORKERS, OUTAGES_JSON, fetch_country, load_token
-from analysis.osm_network import build_network
-from analysis.write_html import write_html
+from src.countries import get_country, relabel_event_tso
+from src.fetch_outages import FETCH_WORKERS, OUTAGES_JSON, fetch_country, load_token
+from src.osm_network import build_network
+from src.parse_outages import keep_event
+from src.write_html import write_html
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -31,7 +38,12 @@ def main(argv: list[str] | None = None) -> int:
             print(f"fehlt: {OUTAGES_JSON}", file=sys.stderr)
             return 1
         payload = json.loads(OUTAGES_JSON.read_text(encoding="utf-8"))
-        payload["network"] = build_network(country, payload.get("events") or [])
+        events = [ev for ev in (payload.get("events") or []) if keep_event(ev, country)]
+        for ev in events:
+            relabel_event_tso(country, ev)
+        payload["events"] = events
+        payload["count"] = len(events)
+        payload["network"] = build_network(country, events)
         OUTAGES_JSON.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
         dest = write_html(payload)
         print(f"{payload.get('count', 0)} Meldungen -> {dest}")

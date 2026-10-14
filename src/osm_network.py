@@ -1,6 +1,30 @@
-"""OSM-Netzdaten per Overpass laden, auf die Laendermaske schneiden und mit
-ENTSO-E-Meldungen matchen. Ergebnis: schlankes GeoJSON fuer die HTML-Karte,
-damit im Browser weder Vektorkacheln noch Laufzeit-Matching noetig sind."""
+"""OpenStreetMap-Netz laden, zuschneiden und mit den Meldungen verbinden.
+
+Die Transparency-Dokumente haben praktisch keine Koordinaten. Die Karte
+bekommt deshalb zwei GeoJSON-Sammlungen:
+
+- ``background``: graues 220/380-kV- und HGÜ-Netz, ohne Meldungsbezug.
+  Kurze Feldnamen, weil dieses Netz in jede HTML-Datei kopiert wird:
+  ``v`` Spannung in kV, ``d`` 1 bei HGÜ.
+- ``matched``: nur Anlagen mit Treffer. ``properties.ev`` sind Indizes in
+  die Meldungsliste, ``name`` der OSM-Name, ``op_tso`` der Betreiber aus OSM.
+
+Zwei Caches, beide unter ``data/cache/<Land>/``:
+
+- Rohantworten von Overpass, je Kachel eine Datei: ``osm_lines_<n>.json``,
+  ``osm_points_<n>_0.json`` (Umspannwerke), ``osm_points_<n>_1.json``
+  (Kraftwerke). Eine einzelne Abfrage fürs ganze Land läuft regelmäßig
+  in den Timeout.
+- ``osm_prepared.json``: schon auf die Landesmaske geschnittene und
+  ausgedünnte Geometrie. Gültig, solange Dateiname, Größe und
+  Änderungszeit der Rohdateien und die Maske gleich sind. Die Meldungen
+  stehen hier nicht drin. ``--rebuild-network`` ordnet deshalb neu zu,
+  ohne Overpass noch einmal zu fragen.
+
+Zuordnung einer Meldung, in dieser Reihenfolge: Namensteile gegen OSM
+(nicht bei ``unlocated``), Anlagen-EIC gegen die Kraftwerks-CSV,
+Kürzel in der EIC (``NEUR`` → Neurath) auf genau ein OSM-Kraftwerk.
+"""
 
 from __future__ import annotations
 
@@ -15,11 +39,11 @@ from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 import requests
 
-from analysis.countries import MAP_BOUNDS, MAP_MASKS, Country
+from src.countries import MAP_BOUNDS, MAP_MASKS, Country, foreign_grid_eic, tso_from_operator_name
 
 ROOT = Path(__file__).resolve().parent.parent
-RAW_DIR = ROOT / "data" / "raw"
-EIC_PLANTS_PATH = ROOT / "data" / "conventional_power_plants_DE.csv"
+RAW_DIR = ROOT / "data" / "cache"
+EIC_PLANTS_PATH = ROOT / "data" / "ref" / "conventional_power_plants_DE.csv"
 
 OVERPASS_URLS = [
     "https://overpass-api.de/api/interpreter",
@@ -31,22 +55,39 @@ MAX_RETRIES = 4
 PAUSE_SEC = 1.5
 RETRYABLE_HTTP = {429, 500, 502, 503, 504}
 MIN_KV = 110.0
-BG_MIN_KV = 220.0  # Hintergrund nur Uebertragungsnetz; 110-kV-Stoerungen kommen ueber matched
+BG_MIN_KV = 220.0  # Hintergrund nur Übertragungsnetz; 110-kV-Störungen kommen über matched
+# A79: Küste (Nord- oder Ostsee) oder bekannte Anlande- und Konverterpunkte, auch NRW
+# (A-Nord endet in Osterath). Eine reine Breitengrenze würde NRW abschneiden.
+A79_MIN_LAT = 52.55
+# Ein Namensteil gilt als ortsfest, wenn alle OSM-Vorkommen in diesem Fenster liegen.
+TOKEN_SPAN_DEG = 2.0
+_PLATFORM_RE = re.compile(r"(dolwin|borwin|helwin|sylwin|nordlink|kontek)")
+_TSO_LABELS = {"50Hertz", "TenneT", "Amprion", "TransnetBW"}
+A79_PLACES = {
+    "diele", "doerpen", "emden", "buettel", "buttel", "wilster", "lubmin",
+    "hagermarsch", "garrel", "conneforde", "hanekenfaehr", "meppen",
+    "borkum", "riffgrund", "nordlink", "arkona", "wikinger",
+    "dolwin", "borwin", "helwin", "sylwin",
+    "osterath", "meerbusch", "rommerskirchen", "oberzier", "anord",
+}
 COORD_DIGITS = 4
 BG_COORD_DIGITS = 3
 BG_SIMPLIFY_DEG = 0.004
 MATCH_SIMPLIFY_DEG = 0.0015
-# Nur echte Hoch/Hoechstspannung serverseitig vorfiltern (110-420 kV).
-# Overpass mag keine Anker/Gruppen im Regex (504) -> schlichte Alternation,
-# exakte Werte werden in Python nachgefiltert.
+# Nur echte Hoch- und Höchstspannung schon in der Abfrage filtern (110–420 kV).
+# Overpass verträgt keine Anker und Gruppen im regulären Ausdruck (HTTP 504),
+# deshalb eine einfache Aufzählung. Die exakten Werte filtert Python danach.
 HV_TAG_RE = "110000|150000|220000|225000|380000|400000|420000"
 
 NAME_STOP = {
     "ttg", "amp", "50h", "50hertz", "tennet", "amprion", "transnet", "transnetbw",
     "nord", "sued", "west", "ost", "blau", "weiss", "schwarz", "rot", "leitung",
     "line", "grid", "intra", "zonal", "cross", "gmbh", "senne", "awz", "nrw",
-    "land", "trasse", "umspannwerk", "kraftwerk",
-    # Franzoesische RTE-Namen: sonst matcht "liaison" (7 Zeichen) jede FR-Leitung
+    "land", "trasse", "umspannwerk", "umspannstation", "kraftwerk",
+    "schaltanlage", "unterwerk", "konverter", "konverterstation",
+    "windpark", "offshore",
+    "sudost", "nordost", "sudwest", "nordwest", "suedost", "suedwest",
+    # Französische RTE-Namen: sonst trifft „liaison“ (7 Zeichen) jede französische Leitung
     "liaison", "ligne", "poste", "piquage", "circuit", "centrale", "reseau",
     "rte", "edf",
     # Stadtnamen: sonst landet jede Hamburg-Meldung auf jedem UW Hamburg/*
@@ -57,7 +98,7 @@ NAME_STOP = {
     "karlsruhe", "mannheim", "augsburg", "chemnitz", "krefeld", "potsdam",
 }
 
-_ZONAL_RE = re.compile(r"intra.?zonal|cross.?zonal", re.I)
+_ZONAL_RE = re.compile(r"intra.?zonal|cross.?zonal|unlocated", re.I)
 _SPLIT_RE = re.compile(r"[^a-z0-9]+")
 _DIGITS_RE = re.compile(r"^\d+$")
 _KV_RE = re.compile(r"\d+")
@@ -66,7 +107,7 @@ _EIC_CORE = re.compile(r"11WD\d*([A-Za-z]{3,})", re.I)
 _ANON_EIC = re.compile(r"^11W0+$")
 _PLANT_SOURCE = re.compile(r"coal|lignite|gas|nuclear|hydro|biomass|waste|oil|geothermal", re.I)
 _HV_SUBSTATION = {"transmission", "transition", "converter", "compression"}
-# Kuerzel aus deutschen Erzeugungs-EICs -> OSM-/Anlagenname
+# Kürzel aus deutschen Erzeugungs-EICs, abgebildet auf den OSM- oder Anlagennamen
 _EIC_ALIAS = {
     "neur": ["neurath"],
     "nied": ["niederaussem"],
@@ -85,10 +126,10 @@ _EIC_ALIAS = {
     "wals": ["walsum"],
     "scho": ["scholven"],
     "hern": ["herne"],
+    # nicht "berg"/"west": zu viele EICs, sonst landet alles auf Bergkamen/Westfalen
     "tief": ["tiefstack"],
     "kwkn": ["knapsack"],
     "lich": ["lichterfelde"],
-    "berg": ["bergkamen"],
     "via": ["vianden"],
     "vian": ["vianden"],
     "swsw": ["schluchsee"],
@@ -102,7 +143,7 @@ _EIC_ALIAS = {
     "ibbe": ["ibbenbueren"],
     "ensd": ["ensdorf"],
     "mehr": ["mehrum"],
-    "west": ["westfalen"],
+    "westf": ["westfalen"],
     "erzh": ["erzhausen"],
     "wilk": ["wilhelmshaven"],
     "hoh2": ["hohenwarte"],
@@ -119,20 +160,42 @@ def _fold(text: str) -> str:
 
 
 def _tokens(text: str) -> List[str]:
-    return [
-        t
-        for t in _SPLIT_RE.split(_fold(text))
-        if len(t) >= 4 and t not in NAME_STOP and not _DIGITS_RE.match(t)
-    ]
+    out: List[str] = []
+    seen = set()
+    for raw in _SPLIT_RE.split(_fold(text)):
+        pieces = [raw]
+        if len(raw) >= 8:
+            for part in _PLATFORM_RE.findall(raw):
+                if part != raw:
+                    pieces.append(part)
+        for t in pieces:
+            if len(t) < 4 or t in NAME_STOP or t in seen or _DIGITS_RE.match(t):
+                continue
+            seen.add(t)
+            out.append(t)
+    return out
 
 
 def _eic_compact(eic: str) -> str:
     return re.sub(r"[^A-Za-z0-9]", "", eic or "").upper()
 
 
-def _eic_tokens(eic: str, extra: Optional[Dict[str, List[str]]] = None) -> List[str]:
-    """Zieht sprechende Kuerzel aus 11WD7NEUR-B-KW-B -> neurath."""
-    aliases = _EIC_ALIAS if extra is None else {**_EIC_ALIAS, **extra}
+def _alias_table(extra: Optional[Dict[str, List[str]]] = None) -> Dict[str, List[str]]:
+    """Einmal zusammenführen. Pro Meldung eine neue Tabelle zu bauen kostet Sekunden."""
+    if not extra:
+        return _EIC_ALIAS
+    merged = dict(_EIC_ALIAS)
+    merged.update(extra)
+    return merged
+
+
+def _eic_tokens(
+    eic: str,
+    extra: Optional[Dict[str, List[str]]] = None,
+    aliases: Optional[Dict[str, List[str]]] = None,
+) -> List[str]:
+    """Zieht sprechende Kürzel aus 11WD7NEUR-B-KW-B, zum Beispiel neurath."""
+    table = aliases if aliases is not None else _alias_table(extra)
     text = eic or ""
     parts = _EIC_LETTERS.findall(re.sub(r"\d+", " ", text))
     core = _EIC_CORE.search(text)
@@ -143,7 +206,7 @@ def _eic_tokens(eic: str, extra: Optional[Dict[str, List[str]]] = None) -> List[
     for part in parts:
         raw = part.lower()
         folded = _fold(part)
-        extras = [raw, folded, *aliases.get(raw, []), *aliases.get(folded, [])]
+        extras = [raw, folded, *table.get(raw, []), *table.get(folded, [])]
         for token in extras:
             if token in NAME_STOP or token in seen:
                 continue
@@ -267,6 +330,14 @@ def _in_map_bounds(lon: float, lat: float, country: Country) -> bool:
     return (west - pad) <= lon <= (east + pad) and (south - pad) <= lat <= (north + pad)
 
 
+def _in_country_mask(lon: float, lat: float, country: Country) -> bool:
+    """True nur innerhalb der Landesmaske, nicht im Rechteck um die Nachbarn."""
+    ring = (MAP_MASKS.get(country.code) or {}).get("coordinates", [[]])[0]
+    if not ring:
+        return _in_map_bounds(lon, lat, country)
+    return _point_in_ring(lon, lat, ring)
+
+
 def _attach_eic_plants(
     events: List[Dict[str, Any]],
     matched: List[Dict[str, Any]],
@@ -279,8 +350,10 @@ def _attach_eic_plants(
     for i, ev in enumerate(events):
         if ev.get("reason") not in ("Störung", "Geplante Wartung"):
             continue
+        if ev.get("doc_type") not in ("A77", "A80"):
+            continue
         plant = _lookup_plant(ev.get("asset_eic") or "", lookup)
-        if not plant or not _in_map_bounds(plant["lon"], plant["lat"], country):
+        if not plant or not _in_country_mask(plant["lon"], plant["lat"], country):
             continue
         key = (round(plant["lat"], 3), round(plant["lon"], 3), plant["name"])
         rec = buckets.get(key)
@@ -339,6 +412,7 @@ def _attach_unique_osm_plants(
     extra_aliases: Optional[Dict[str, List[str]]] = None,
 ) -> int:
     """Restliche Erzeugungs-EICs auf genau ein OSM-Kraftwerk gleichen Namens legen."""
+    aliases = _alias_table(extra_aliases)
     by_token: Dict[str, List[Dict[str, Any]]] = {}
     for pt in points:
         if pt.get("kind") != "plant":
@@ -352,7 +426,9 @@ def _attach_unique_osm_plants(
             continue
         if ev.get("reason") not in ("Störung", "Geplante Wartung"):
             continue
-        for tok in _eic_tokens(ev.get("asset_eic") or "", extra_aliases):
+        if ev.get("doc_type") not in ("A77", "A80"):
+            continue
+        for tok in _eic_tokens(ev.get("asset_eic") or "", aliases=aliases):
             if len(tok) < 6:
                 continue
             hits = by_token.get(tok) or []
@@ -407,8 +483,11 @@ def _point_rank(name: str) -> int:
     return 1
 
 
+_DEDUPE_DEG = 0.08
+
+
 def _dedupe_points(matched: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-    """Fasst OSM-Duplikate am selben Ort und identische Event-Sets zusammen."""
+    """Fasst OSM-Duplikate am selben Ort und identische Meldungsmengen zusammen."""
     lines: List[Dict[str, Any]] = []
     points: List[Dict[str, Any]] = []
     for feat in matched:
@@ -416,32 +495,58 @@ def _dedupe_points(matched: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
             lines.append(feat)
         else:
             points.append(feat)
+    folded: List[str] = []
+    coords: List[Tuple[float, float]] = []
+    ev_sets: List[set] = []
+    buckets: Dict[Tuple[int, int], List[int]] = {}
+    for i, feat in enumerate(points):
+        lon, lat = feat["geometry"]["coordinates"]
+        coords.append((lon, lat))
+        folded.append(_fold((feat.get("properties") or {}).get("name") or ""))
+        ev_sets.append(set((feat.get("properties") or {}).get("ev") or []))
+        key = (int(lon // _DEDUPE_DEG), int(lat // _DEDUPE_DEG))
+        buckets.setdefault(key, []).append(i)
     used = [False] * len(points)
     collapsed: List[Dict[str, Any]] = []
-    for i, feat in enumerate(points):
+    for i in range(len(points)):
         if used[i]:
             continue
-        lon, lat = feat["geometry"]["coordinates"]
-        name = _fold(feat.get("properties", {}).get("name") or "")
-        evs = set(feat.get("properties", {}).get("ev") or [])
+        lon, lat = coords[i]
+        name = folded[i]
+        evs = set(ev_sets[i])
         group = [i]
-        for j in range(i + 1, len(points)):
-            if used[j]:
+        cx, cy = int(lon // _DEDUPE_DEG), int(lat // _DEDUPE_DEG)
+        # Index-Reihenfolge beibehalten: ein späterer Treffer darf die Meldungsmenge
+        # vergrößern, bevor der nächste Punkt verglichen wird.
+        cands: List[int] = []
+        for dx in (-1, 0, 1):
+            for dy in (-1, 0, 1):
+                cands.extend(buckets.get((cx + dx, cy + dy), ()))
+        cands.sort()
+        for j in cands:
+            if j <= i or used[j]:
                 continue
-            other = points[j]
-            olon, olat = other["geometry"]["coordinates"]
-            oname = _fold(other.get("properties", {}).get("name") or "")
-            oevs = set(other.get("properties", {}).get("ev") or [])
-            near = abs(olon - lon) < 0.08 and abs(olat - lat) < 0.08
-            same_name = bool(name) and name == oname
-            same_evs = bool(evs) and evs == oevs
-            if near and (same_name or same_evs):
+            olon, olat = coords[j]
+            if abs(olon - lon) >= _DEDUPE_DEG or abs(olat - lat) >= _DEDUPE_DEG:
+                continue
+            oname = folded[j]
+            oevs = ev_sets[j]
+            if (name and name == oname) or (evs and evs == oevs):
                 evs.update(oevs)
                 group.append(j)
                 used[j] = True
-        best = min(group, key=lambda k: (_point_rank(points[k]["properties"].get("name") or ""), -len(points[k]["properties"].get("name") or "")))
+        best = min(
+            group,
+            key=lambda k: (
+                _point_rank(points[k]["properties"].get("name") or ""),
+                -len(points[k]["properties"].get("name") or ""),
+            ),
+        )
         keep = points[best]
         keep["properties"]["ev"] = sorted(evs)
+        labels = {(points[k]["properties"].get("op_tso") or "") for k in group}
+        labels.discard("")
+        keep["properties"]["op_tso"] = labels.pop() if len(labels) == 1 else ""
         collapsed.append(keep)
         used[i] = True
     return lines + collapsed
@@ -497,7 +602,7 @@ def _clip_line_to_ring(
     coords: List[List[float]],
     ring: Sequence[Sequence[float]],
 ) -> List[List[List[float]]]:
-    """Schneidet eine Linie auf die Maske; Grenzuebertritte werden interpoliert."""
+    """Schneidet eine Linie auf die Maske; Grenzübertritte werden interpoliert."""
     if len(coords) < 2 or not ring:
         return [coords] if len(coords) >= 2 else []
     runs: List[List[List[float]]] = []
@@ -572,55 +677,62 @@ def _overpass(query: str, cache_path: Path, allow_fetch: bool) -> Dict[str, Any]
         except requests.RequestException as exc:
             last_err = exc
         if attempt + 1 < MAX_RETRIES:
-            # Sofort naechster Spiegel; nur nach einer vollen Spiegelrunde warten.
+            # Sofort der nächste Spiegel; nur nach einer vollen Spiegelrunde warten.
             pause = 0.2 if (attempt + 1) % len(OVERPASS_URLS) else PAUSE_SEC * (attempt + 1)
             time.sleep(pause)
     raise RuntimeError(f"Overpass fehlgeschlagen: {last_err}")
 
 
 def _bbox(country: Country) -> Tuple[float, float, float, float]:
+    """Rechteck Süd, West, Nord, Ost, so wie Overpass es erwartet."""
     bounds = MAP_BOUNDS.get(country.code)
     if not bounds:
-        c = country.map_center
-        return (c[1] - 4, c[0] - 6, c[1] + 4, c[0] + 6)
-    (w, s), (e, n) = bounds
-    return (s, w, n, e)
+        center_lon, center_lat = country.map_center
+        return (center_lat - 4, center_lon - 6, center_lat + 4, center_lon + 6)
+    (west, south), (east, north) = bounds
+    return (south, west, north, east)
 
 
 def _bbox_chunks(country: Country, n_split: int = 4) -> List[Tuple[float, float, float, float]]:
-    s, w, n, e = _bbox(country)
-    lat_step = (n - s) / n_split
-    lon_step = (e - w) / n_split
+    """Gitter aus ``n_split`` mal ``n_split`` Kacheln, jede wieder Süd/West/Nord/Ost."""
+    south, west, north, east = _bbox(country)
+    lat_step = (north - south) / n_split
+    lon_step = (east - west) / n_split
     chunks = []
-    for i in range(n_split):
-        for j in range(n_split):
-            chunks.append((s + i * lat_step, w + j * lon_step, s + (i + 1) * lat_step, w + (j + 1) * lon_step))
+    for row in range(n_split):
+        for col in range(n_split):
+            chunks.append((
+                south + row * lat_step,
+                west + col * lon_step,
+                south + (row + 1) * lat_step,
+                west + (col + 1) * lon_step,
+            ))
     return chunks
 
 
-def _line_query(s: float, w: float, n: float, e: float) -> str:
+def _line_query(south: float, west: float, north: float, east: float) -> str:
     return f"""[out:json][timeout:90];
 (
-  way["power"="line"]["voltage"~"{HV_TAG_RE}"]({s},{w},{n},{e});
-  way["power"="cable"]["voltage"~"{HV_TAG_RE}"]({s},{w},{n},{e});
+  way["power"="line"]["voltage"~"{HV_TAG_RE}"]({south},{west},{north},{east});
+  way["power"="cable"]["voltage"~"{HV_TAG_RE}"]({south},{west},{north},{east});
 );
 out tags geom;"""
 
 
-def _sub_query(s: float, w: float, n: float, e: float) -> str:
+def _sub_query(south: float, west: float, north: float, east: float) -> str:
     return f"""[out:json][timeout:90];
 (
-  nwr["power"="substation"]["name"]["voltage"~"{HV_TAG_RE}"]({s},{w},{n},{e});
-  nwr["power"="substation"]["name"]["substation"~"transmission|converter|transition"]({s},{w},{n},{e});
+  nwr["power"="substation"]["name"]["voltage"~"{HV_TAG_RE}"]({south},{west},{north},{east});
+  nwr["power"="substation"]["name"]["substation"~"transmission|converter|transition"]({south},{west},{north},{east});
 );
 out tags center;"""
 
 
-def _plant_query(s: float, w: float, n: float, e: float) -> str:
+def _plant_query(south: float, west: float, north: float, east: float) -> str:
     return f"""[out:json][timeout:90];
 (
-  nwr["power"="plant"]["name"]["plant:source"]({s},{w},{n},{e});
-  nwr["power"="plant"]["name"]["plant:output:electricity"]({s},{w},{n},{e});
+  nwr["power"="plant"]["name"]["plant:source"]({south},{west},{north},{east});
+  nwr["power"="plant"]["name"]["plant:output:electricity"]({south},{west},{north},{east});
 );
 out tags center;"""
 
@@ -630,7 +742,7 @@ def _round_coords(coords: List[List[float]], digits: int = COORD_DIGITS) -> List
 
 
 def _decimate(coords: List[List[float]], min_deg: float) -> List[List[float]]:
-    """Laesst Punkte weg, die naeher als min_deg am Vorgaenger liegen."""
+    """Lässt Punkte weg, die näher als min_deg am Vorgänger liegen."""
     if len(coords) <= 2:
         return coords
     out = [coords[0]]
@@ -642,7 +754,7 @@ def _decimate(coords: List[List[float]], min_deg: float) -> List[List[float]]:
 
 
 def _fetch_all(jobs: List[Tuple[Path, str]], allow_fetch: bool, workers: int = 6) -> List[Dict[str, Any]]:
-    """Laedt alle (Cache-Pfad, Query)-Jobs parallel; gecachte werden uebersprungen."""
+    """Lädt alle Aufträge (Cache-Pfad und Abfrage) parallel; gespeicherte werden übersprungen."""
     missing = [(p, q) for p, q in jobs if not (p.is_file() and p.stat().st_size > 100)]
     results: Dict[Path, Dict[str, Any]] = {}
     if missing:
@@ -655,7 +767,7 @@ def _fetch_all(jobs: List[Tuple[Path, str]], allow_fetch: bool, workers: int = 6
                 try:
                     results[path] = fut.result()
                 except Exception as exc:
-                    # Einzelner Chunk darf die Karte nicht blockieren
+                    # Eine einzelne Kachel darf die Karte nicht blockieren
                     print(f"  OSM {path.stem} uebersprungen: {exc}", flush=True)
                     results[path] = {"elements": []}
                 done += 1
@@ -669,22 +781,78 @@ def _fetch_all(jobs: List[Tuple[Path, str]], allow_fetch: bool, workers: int = 6
     return out
 
 
-def load_osm(country: Country, allow_fetch: bool = True) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]]]:
-    """Gibt (lines, points) zurueck, bereits auf die Laendermaske geschnitten."""
-    folder = RAW_DIR / country.code
-    ring = (MAP_MASKS.get(country.code) or {}).get("coordinates", [[]])[0]
+# Hochzählen, wenn sich Zuschnitt oder die behaltenen Leitungen ändern.
+PREPARED_VERSION = 3
 
+
+def _osm_jobs(country: Country) -> Tuple[List[Tuple[Path, str]], int]:
+    """Leitungen, Umspannwerke, Kraftwerke. Kraftwerke bleiben kachelweise
+    in osm_points_*_1.json. Eine einzelne Abfrage fürs ganze Land
+    (osm_plants.json) wurde bei jedem Neuaufbau erneut bei Overpass geholt,
+    weil die Datei nie im Cache ankam."""
+    folder = RAW_DIR / country.code
     chunks = _bbox_chunks(country)
     jobs: List[Tuple[Path, str]] = []
-    for ci, (s, w, n, e) in enumerate(chunks):
-        jobs.append((folder / f"osm_lines_{ci}.json", _line_query(s, w, n, e)))
+    for tile_index, (south, west, north, east) in enumerate(chunks):
+        jobs.append((folder / f"osm_lines_{tile_index}.json", _line_query(south, west, north, east)))
     point_start = len(jobs)
-    for ci, (s, w, n, e) in enumerate(chunks):
-        jobs.append((folder / f"osm_points_{ci}_0.json", _sub_query(s, w, n, e)))
-    bbox = _bbox(country)
-    jobs.append((folder / "osm_plants.json", _plant_query(*bbox)))
-    datasets = _fetch_all(jobs, allow_fetch)
+    for tile_index, (south, west, north, east) in enumerate(chunks):
+        jobs.append((folder / f"osm_points_{tile_index}_0.json", _sub_query(south, west, north, east)))
+    for tile_index, (south, west, north, east) in enumerate(chunks):
+        jobs.append((folder / f"osm_points_{tile_index}_1.json", _plant_query(south, west, north, east)))
+    return jobs, point_start
 
+
+def _source_stamp(paths: Sequence[Path]) -> List[List[Any]]:
+    stamp: List[List[Any]] = []
+    for path in paths:
+        st = path.stat()
+        stamp.append([path.name, st.st_size, st.st_mtime_ns])
+    return stamp
+
+
+def _mask_key(ring: Sequence[Sequence[float]]) -> List[List[float]]:
+    return [[round(float(pt[0]), 5), round(float(pt[1]), 5)] for pt in ring]
+
+
+def _read_prepared(
+    path: Path,
+    stamp: List[List[Any]],
+    mask: List[List[float]],
+) -> Optional[Tuple[List[Dict[str, Any]], List[Dict[str, Any]]]]:
+    if not path.is_file() or path.stat().st_size < 100:
+        return None
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    if data.get("v") != PREPARED_VERSION or data.get("stamp") != stamp or data.get("mask") != mask:
+        return None
+    lines, points = data.get("lines"), data.get("points")
+    if not isinstance(lines, list) or not isinstance(points, list):
+        return None
+    return lines, points
+
+
+def _write_prepared(
+    path: Path,
+    stamp: List[List[Any]],
+    mask: List[List[float]],
+    lines: List[Dict[str, Any]],
+    points: List[Dict[str, Any]],
+) -> None:
+    payload = {"v": PREPARED_VERSION, "stamp": stamp, "mask": mask, "lines": lines, "points": points}
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_suffix(".json.tmp")
+    tmp.write_text(json.dumps(payload, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+    tmp.replace(path)
+
+
+def _parse_osm(
+    datasets: Sequence[Dict[str, Any]],
+    point_start: int,
+    ring: Sequence[Sequence[float]],
+) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]]]:
     lines: List[Dict[str, Any]] = []
     seen_ways = set()
     for data in datasets[:point_start]:
@@ -698,60 +866,106 @@ def load_osm(country: Country, allow_fetch: bool = True) -> Tuple[List[Dict[str,
             kv = _max_kv(str(tags.get("voltage") or ""))
             if kv < MIN_KV:
                 continue
+            name = tags.get("name") or tags.get("name:de") or tags.get("ref") or ""
+            hvdc = _is_hvdc(tags)
+            # Unbenannte 110-kV-Leitungen landen weder im Hintergrund noch in der Zuordnung.
+            if not name and kv < BG_MIN_KV and not hvdc:
+                continue
             coords = [[pt["lon"], pt["lat"]] for pt in el["geometry"]]
             if ring:
                 inside_n = sum(1 for lon, lat in coords if _point_in_ring(lon, lat, ring))
                 # Nur ein Punkt in der Maske: typisch FR/CH-Leitung, die den Rhein streift
                 if inside_n < 2:
                     continue
-                runs = _clip_line_to_ring(coords, ring)
+                if inside_n == len(coords):
+                    runs = [coords]
+                else:
+                    runs = _clip_line_to_ring(coords, ring)
             else:
                 runs = [coords] if len(coords) >= 2 else []
             if not runs:
                 continue
-            name = tags.get("name") or tags.get("name:de") or tags.get("ref") or ""
+            op_tso = tso_from_operator_name(str(tags.get("operator") or ""))
             for run in runs:
                 lines.append({
                     "name": name,
                     "kv": int(round(kv)),
-                    "hvdc": _is_hvdc(tags),
+                    "hvdc": hvdc,
+                    "op_tso": op_tso,
                     "coords": _round_coords(run),
                 })
 
     points: List[Dict[str, Any]] = []
     seen_pts = set()
-    elements: List[Dict[str, Any]] = []
     for data in datasets[point_start:]:
-        elements.extend(data.get("elements", []))
-    for el in elements:
-        key = (el.get("type"), el.get("id"))
-        if key in seen_pts:
-            continue
-        seen_pts.add(key)
-        tags = el.get("tags") or {}
-        name = tags.get("name") or tags.get("name:de") or ""
-        if not name:
-            continue
-        power = tags.get("power")
-        if power == "substation" and not _keep_substation(tags):
-            continue
-        if power == "plant" and not _keep_plant(tags):
-            continue
-        if el.get("type") == "node":
-            lat, lon = el.get("lat"), el.get("lon")
-        else:
-            center = el.get("center") or {}
-            lat, lon = center.get("lat"), center.get("lon")
-        if lat is None or lon is None:
-            continue
-        if ring and not _point_in_ring(lon, lat, ring):
-            continue
-        points.append({
-            "name": name,
-            "kind": "sub" if power == "substation" else "plant",
-            "lon": round(lon, COORD_DIGITS),
-            "lat": round(lat, COORD_DIGITS),
-        })
+        for el in data.get("elements", []):
+            key = (el.get("type"), el.get("id"))
+            if key in seen_pts:
+                continue
+            seen_pts.add(key)
+            tags = el.get("tags") or {}
+            name = tags.get("name") or tags.get("name:de") or ""
+            if not name:
+                continue
+            power = tags.get("power")
+            if power == "substation" and not _keep_substation(tags):
+                continue
+            if power == "plant" and not _keep_plant(tags):
+                continue
+            if el.get("type") == "node":
+                lat, lon = el.get("lat"), el.get("lon")
+            else:
+                center = el.get("center") or {}
+                lat, lon = center.get("lat"), center.get("lon")
+            if lat is None or lon is None:
+                continue
+            if ring and not _point_in_ring(lon, lat, ring):
+                continue
+            points.append({
+                "name": name,
+                "kind": "sub" if power == "substation" else "plant",
+                "op_tso": tso_from_operator_name(str(tags.get("operator") or "")),
+                "lon": round(lon, COORD_DIGITS),
+                "lat": round(lat, COORD_DIGITS),
+            })
+    return lines, points
+
+
+def _cached_sources(paths: Sequence[Path]) -> bool:
+    return all(path.is_file() and path.stat().st_size > 100 for path in paths)
+
+
+def load_osm(country: Country, allow_fetch: bool = True) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]]]:
+    """Leitungen und Punkte, schon auf die Landesmaske geschnitten.
+
+    Liegt ``osm_prepared.json`` zur aktuellen Rohdatei und Maske vor, wird
+    es gelesen. Sonst kommen die Kachel-Caches oder, wenn die fehlen, Overpass.
+    """
+    folder = RAW_DIR / country.code
+    ring = (MAP_MASKS.get(country.code) or {}).get("coordinates", [[]])[0]
+    jobs, point_start = _osm_jobs(country)
+    paths = [path for path, _query in jobs]
+    prepared = folder / "osm_prepared.json"
+    mask = _mask_key(ring) if ring else []
+    if _cached_sources(paths):
+        hit = _read_prepared(prepared, _source_stamp(paths), mask)
+        if hit is not None:
+            print(
+                f"  OSM: Geometrie aus Cache ({len(hit[0])} Leitungen, {len(hit[1])} Punkte)",
+                flush=True,
+            )
+            return hit
+    datasets = _fetch_all(jobs, allow_fetch)
+    lines, points = _parse_osm(datasets, point_start, ring)
+    if _cached_sources(paths):
+        try:
+            _write_prepared(prepared, _source_stamp(paths), mask, lines, points)
+            print(
+                f"  OSM: Geometrie gecacht ({len(lines)} Leitungen, {len(points)} Punkte)",
+                flush=True,
+            )
+        except OSError as exc:
+            print(f"  OSM: Geometrie-Cache nicht geschrieben: {exc}", flush=True)
     return lines, points
 
 
@@ -761,56 +975,212 @@ def _event_index(
 ) -> Tuple[List[Tuple[int, List[str]]], Dict[str, List[int]]]:
     items: List[Tuple[int, List[str]]] = []
     token_index: Dict[str, List[int]] = {}
-    for i, ev in enumerate(events):
-        reason = ev.get("reason") or ""
+    aliases = _alias_table(extra_aliases)
+    for event_index, event in enumerate(events):
+        reason = event.get("reason") or ""
         if reason not in ("Störung", "Geplante Wartung"):
             continue
-        raw = f"{ev.get('asset_name') or ''} {ev.get('location') or ''}"
-        eic_toks = _eic_tokens(ev.get("asset_eic") or "", extra_aliases)
-        name_toks = _tokens(raw)
-        if _ZONAL_RE.search(raw):
-            # intra_zonal hat keine Ortsnamen; Koordinaten kommen aus der EIC-Kraftwerksliste.
+        raw_name = f"{event.get('asset_name') or ''} {event.get('location') or ''}"
+        eic_tokens = _eic_tokens(event.get("asset_eic") or "", aliases=aliases)
+        name_tokens = _tokens(raw_name)
+        if _ZONAL_RE.search(raw_name):
+            # unlocated hat keine Ortsnamen; Koordinaten kommen aus der EIC-Kraftwerksliste.
             continue
-        toks = _uniq_tokens(name_toks, eic_toks)
-        if not toks:
+        tokens = _uniq_tokens(name_tokens, eic_tokens)
+        if not tokens:
             continue
-        items.append((i, toks))
-        for t in toks:
-            if len(t) >= 5:
-                token_index.setdefault(t, []).append(len(items) - 1)
+        items.append((event_index, tokens))
+        for token in tokens:
+            if len(token) >= 5:
+                token_index.setdefault(token, []).append(len(items) - 1)
     return items, token_index
 
 
-def _match(name: str, items: List[Tuple[int, List[str]]], token_index: Dict[str, List[int]]) -> List[int]:
-    ot = _tokens(name)
-    if not ot:
+def _region_tso(lon: float, lat: float) -> str:
+    """Grobe Regelzonen-Lage. Unsicher bleibt leer, dann greift kein Filter."""
+    if not (5.5 <= lon <= 15.6 and 47.2 <= lat <= 55.6):
+        return ""
+    if 47.5 <= lat <= 49.75 and 7.5 <= lon <= 10.55:
+        return "TransnetBW"
+    if lon >= 10.9 and lat >= 50.55:
+        return "50Hertz"
+    if lat < 50.55 and lon > 9.4:
+        return "TenneT"
+    if lat >= 51.75 and lon <= 10.85:
+        return "TenneT"
+    if lon <= 9.4 and lat <= 52.5:
+        return "Amprion"
+    return ""
+
+
+def _unique_local_tokens(
+    lines: Sequence[Dict[str, Any]],
+    points: Sequence[Dict[str, Any]],
+) -> set:
+    """Namensteile, deren OSM-Objekte in einem lokalen Fenster liegen."""
+    boxes: Dict[str, List[float]] = {}
+    for line in lines:
+        coords = line.get("coords") or []
+        name = line.get("name") or ""
+        if not name or len(coords) < 2:
+            continue
+        lon = sum(c[0] for c in coords) / len(coords)
+        lat = sum(c[1] for c in coords) / len(coords)
+        for t in _tokens(name):
+            if len(t) < 5:
+                continue
+            b = boxes.get(t)
+            if b is None:
+                boxes[t] = [lon, lat, lon, lat]
+            else:
+                b[0] = min(b[0], lon)
+                b[1] = min(b[1], lat)
+                b[2] = max(b[2], lon)
+                b[3] = max(b[3], lat)
+    for pt in points:
+        name = pt.get("name") or ""
+        lon, lat = pt.get("lon"), pt.get("lat")
+        if not name or lon is None or lat is None:
+            continue
+        for t in _tokens(name):
+            if len(t) < 5:
+                continue
+            b = boxes.get(t)
+            if b is None:
+                boxes[t] = [lon, lat, lon, lat]
+            else:
+                b[0] = min(b[0], lon)
+                b[1] = min(b[1], lat)
+                b[2] = max(b[2], lon)
+                b[3] = max(b[3], lat)
+    return {
+        t
+        for t, b in boxes.items()
+        if (b[2] - b[0]) <= TOKEN_SPAN_DEG and (b[3] - b[1]) <= TOKEN_SPAN_DEG
+    }
+
+
+def _a79_place_tokens(*texts: str) -> set:
+    blob = " ".join(texts)
+    blob = blob.replace("A-Nord", " anord ").replace("a-nord", " anord ")
+    return set(_tokens(blob))
+
+
+def _a79_ok(lat: float, osm_name: str, ev: Optional[Dict[str, Any]] = None) -> bool:
+    if lat >= A79_MIN_LAT:
+        return True
+    osm = _a79_place_tokens(osm_name or "")
+    if osm & A79_PLACES:
+        return True
+    if not ev:
+        return False
+    named = _a79_place_tokens(ev.get("asset_name") or "", ev.get("location") or "")
+    return bool(named & A79_PLACES & osm)
+
+
+def _filter_hits(
+    hits: List[int],
+    events: List[Dict[str, Any]],
+    *,
+    lat: float,
+    name: str = "",
+    plant: bool = False,
+) -> List[int]:
+    out = []
+    for i in hits:
+        doc = events[i].get("doc_type")
+        if plant and doc not in ("A77", "A80"):
+            continue
+        if doc == "A79" and not _a79_ok(lat, name, events[i]):
+            continue
+        out.append(i)
+    return out
+
+
+def _match(
+    name: str,
+    items: List[Tuple[int, List[str]]],
+    token_index: Dict[str, List[int]],
+    unique_tokens: Optional[set] = None,
+    region_tso: str = "",
+    events: Optional[List[Dict[str, Any]]] = None,
+) -> List[int]:
+    """Indizes der Meldungen, deren Name zur OSM-Anlage passt.
+
+    Stoppwörter sind schon aus den Namensteilen. Ein Treffer braucht zwei
+    gemeinsame Namensteile oder ein längeres, das in OSM nur an einem Ort
+    vorkommt. Liegt die Anlage in einer anderen Regelzone als die Meldung,
+    fällt dieser Treffer mit nur einem Namensteil weg.
+    """
+    osm_tokens = _tokens(name)
+    if not osm_tokens:
         return []
-    cand = set()
-    for t in ot:
-        cand.update(token_index.get(t, []))
-    joined = " " + " ".join(ot) + " "
+    candidates = set()
+    for token in osm_tokens:
+        candidates.update(token_index.get(token, []))
+    joined = " " + " ".join(osm_tokens) + " "
     hits: List[int] = []
-    for it in cand:
-        _, toks = items[it]
-        n = 0
-        strong = False
-        for t in toks:
-            if f" {t} " in joined:
-                n += 1
-                if len(t) >= 6:
-                    strong = True
-        if n >= 2 or (n == 1 and (strong or (len(ot) == 1 and len(ot[0]) >= 5))):
-            hits.append(items[it][0])
+    for item_index in candidates:
+        event_index, event_tokens = items[item_index]
+        overlap = 0
+        matched_tokens: List[str] = []
+        for token in event_tokens:
+            if f" {token} " in joined:
+                overlap += 1
+                matched_tokens.append(token)
+        long_token = any(len(token) >= 6 for token in matched_tokens)
+        accepted = overlap >= 2
+        if not accepted and overlap == 1 and (long_token or (len(osm_tokens) == 1 and len(osm_tokens[0]) >= 5)):
+            token = matched_tokens[0]
+            if unique_tokens is None:
+                accepted = True
+            else:
+                accepted = token in unique_tokens
+            if accepted and region_tso and events:
+                event_tso = events[event_index].get("tso") or ""
+                if event_tso in _TSO_LABELS and event_tso != region_tso:
+                    accepted = False
+        if accepted:
+            hits.append(event_index)
     return hits
 
 
+def _backfill_tso_from_operator(events: List[Dict[str, Any]], matched: List[Dict[str, Any]]) -> int:
+    """Setzt unbekannten ÜNB, wenn alle Treffer derselben Leitung denselben Betreiber nennen."""
+    votes: Dict[int, set] = {}
+    for feat in matched:
+        label = (feat.get("properties") or {}).get("op_tso") or ""
+        if not label:
+            continue
+        for i in (feat.get("properties") or {}).get("ev") or []:
+            if not isinstance(i, int) or i < 0 or i >= len(events):
+                continue
+            event = events[i]
+            if (event.get("tso") or "") != "unbekannt":
+                continue
+            if foreign_grid_eic(event.get("asset_eic") or ""):
+                continue
+            votes.setdefault(i, set()).add(label)
+    changed = 0
+    for i, labels in votes.items():
+        if len(labels) == 1:
+            events[i]["tso"] = next(iter(labels))
+            changed += 1
+    return changed
+
+
 def build_network(country: Country, events: List[Dict[str, Any]], allow_fetch: bool = True) -> Dict[str, Any]:
-    """Erzeugt {'background': FC, 'matched': FC}. matched-Features tragen die
-    Indizes ihrer Meldungen in ``events`` unter properties.ev."""
+    """Hintergrundnetz und die Anlagen mit mindestens einer Meldung.
+
+    ``matched``-Features tragen unter ``properties.ev`` die Indizes in
+    ``events``. Stilllegungen und ``unlocated`` ohne EIC-Treffer fehlen
+    auf der Karte, bleiben aber in der Meldungsliste.
+    """
     lines, points = load_osm(country, allow_fetch=allow_fetch)
     plants = load_eic_plants()
     extra_aliases = _aliases_from_plants(plants)
     items, token_index = _event_index(events, extra_aliases)
+    unique_tokens = _unique_local_tokens(lines, points)
 
     background = []
     matched = []
@@ -823,11 +1193,21 @@ def build_network(country: Country, events: List[Dict[str, Any]], allow_fetch: b
                     "type": "LineString",
                     "coordinates": _round_coords(_decimate(line["coords"], BG_SIMPLIFY_DEG), BG_COORD_DIGITS),
                 },
-                "properties": {"v": line["kv"], "d": 1 if line["hvdc"] else 0, "n": line["name"]},
+                "properties": {"v": line["kv"], "d": 1 if line["hvdc"] else 0},
             })
         if not line["name"]:
             continue
-        hits = _match(line["name"], items, token_index)
+        coords = line["coords"]
+        clon = sum(c[0] for c in coords) / len(coords)
+        clat = sum(c[1] for c in coords) / len(coords)
+        hits = _match(
+            line["name"], items, token_index,
+            unique_tokens=unique_tokens,
+            region_tso=_region_tso(clon, clat),
+            events=events,
+        )
+        max_lat = max(pt[1] for pt in coords) if coords else 0.0
+        hits = _filter_hits(hits, events, lat=max_lat, name=line["name"])
         if not hits:
             continue
         ev_idx = sorted(set(hits))
@@ -838,10 +1218,16 @@ def build_network(country: Country, events: List[Dict[str, Any]], allow_fetch: b
                 "type": "LineString",
                 "coordinates": _round_coords(_decimate(line["coords"], MATCH_SIMPLIFY_DEG)),
             },
-            "properties": {"name": line["name"], "ev": ev_idx},
+            "properties": {"name": line["name"], "ev": ev_idx, "op_tso": line.get("op_tso") or ""},
         })
     for pt in points:
-        hits = _match(pt["name"], items, token_index)
+        hits = _match(
+            pt["name"], items, token_index,
+            unique_tokens=unique_tokens,
+            region_tso=_region_tso(pt["lon"], pt["lat"]),
+            events=events,
+        )
+        hits = _filter_hits(hits, events, lat=pt["lat"], name=pt["name"], plant=pt.get("kind") == "plant")
         if not hits:
             continue
         ev_idx = sorted(set(hits))
@@ -849,18 +1235,21 @@ def build_network(country: Country, events: List[Dict[str, Any]], allow_fetch: b
         matched.append({
             "type": "Feature",
             "geometry": {"type": "Point", "coordinates": [pt["lon"], pt["lat"]]},
-            "properties": {"name": pt["name"], "ev": ev_idx},
+            "properties": {"name": pt["name"], "ev": ev_idx, "op_tso": pt.get("op_tso") or ""},
         })
 
     eic_pts = _attach_eic_plants(events, matched, matched_events, plants, country)
     osm_pts = _attach_unique_osm_plants(events, points, matched, matched_events, extra_aliases)
     matched = _dedupe_points(matched)
+    n_op = _backfill_tso_from_operator(events, matched)
+    for feat in matched:
+        (feat.get("properties") or {}).pop("op_tso", None)
     n_all = sum(1 for e in events if e.get("reason") in ("Störung", "Geplante Wartung"))
     n_pts = sum(1 for f in matched if f.get("geometry", {}).get("type") == "Point")
     print(
         f"  Netz: {len(lines)} Leitungen, {len(points)} OSM-Stationen, {len(plants)} EIC-Kraftwerke | "
         f"gematcht: {len(matched)} Objekte ({n_pts} Punkte, {eic_pts} via EIC, {osm_pts} via OSM-EIC), "
-        f"{len(matched_events)}/{n_all} Meldungen",
+        f"{len(matched_events)}/{n_all} Meldungen, ÜNB aus OSM-Betreiber: {n_op}",
         flush=True,
     )
     return {

@@ -1,4 +1,22 @@
-"""Rohabruf A78/A79: Jahreschunks, Pagination, ZIP-Cache."""
+"""Abruf der Unverfügbarkeitsmeldungen und Ablage der Rohantworten.
+
+Die Transparency-API antwortet mit einem ZIP voller XML-Dokumente, höchstens
+200 je Aufruf (``offset`` blättert weiter, Obergrenze 4800). Ein Zeitraum von
+mehreren Jahren passt nicht in einen Aufruf: er wird in Fenster von etwa
+350 Tagen geschnitten. Übertragungsnetz (A78) wird je Richtung zwischen
+Gebotszone und Nachbar, jeder Regelzone und Nachbar sowie intern zwischen
+den Regelzonen abgefragt. Erzeugung und Offshore (A77, A79, A80) je
+Gebotszone und Regelzone.
+
+Jede Antwort liegt unter ``data/cache/<Land>/`` als
+``<Dokumentart>_<Zonen>_<von>_<bis>_off<offset>.zip``. Eine leere fachliche
+Antwort („no matching data“) wird als ``.empty`` gemerkt, damit sie nicht
+erneut geholt wird. Ist die letzte Seite noch voll und der Offset am Limit,
+war das Fenster zu groß und wird halbiert.
+
+``fetch_country`` liest danach alle ZIP-Dateien, behält je Dokument und Anlage
+die höchste Revision und schreibt ``data/outages.json``.
+"""
 
 from __future__ import annotations
 
@@ -19,28 +37,25 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import requests
 
-from analysis.countries import MAP_BOUNDS, MAP_MASKS, Country
-from analysis.osm_network import build_network
-from analysis.parse_outages import keep_published, latest_revision, parse_zip
+from src.countries import MAP_BOUNDS, MAP_MASKS, Country
+from src.osm_network import build_network
+from src.parse_outages import keep_event, latest_revision, parse_zip
 
 API_URL = "https://web-api.tp.entsoe.eu/api"
 CHUNK_DAYS = 350
 PAGE_SIZE = 200
 MAX_OFFSET = 4800
 PAUSE_SEC = 1.2
-REQUEST_GAP = 0.12
-FETCH_WORKERS = 8
+FETCH_WORKERS = 24
 REQUEST_TIMEOUT = 180
 MAX_RETRIES = 5
-_rate_lock = threading.Lock()
-_next_request = 0.0
 WINDOW_SLACK = timedelta(days=2)
 MIN_SPLIT = timedelta(days=3)
 _PERIOD_IN_NAME = re.compile(r"_(\d{12})_(\d{12})_off(\d+)")
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = ROOT / "data"
-RAW_DIR = DATA_DIR / "raw"
+RAW_DIR = DATA_DIR / "cache"
 OUTAGES_JSON = DATA_DIR / "outages.json"
 
 
@@ -53,28 +68,39 @@ def _fmt(dt: datetime) -> str:
 
 
 def year_windows(years: int, *, now: Optional[datetime] = None) -> List[tuple[datetime, datetime]]:
+    """Zeitfenster von heute rückwärts, jedes höchstens ``CHUNK_DAYS`` lang."""
     end = (now or _utc_now()).astimezone(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
     end = end + timedelta(days=1)
     start = end - timedelta(days=365 * years)
     windows: List[tuple[datetime, datetime]] = []
     cursor = start
     while cursor < end:
-        nxt = min(cursor + timedelta(days=CHUNK_DAYS), end)
-        windows.append((cursor, nxt))
-        cursor = nxt
+        window_end = min(cursor + timedelta(days=CHUNK_DAYS), end)
+        windows.append((cursor, window_end))
+        cursor = window_end
     return windows
 
 
-def parse_all_cached(country: Country) -> List[Dict[str, Any]]:
+def parse_all_cached(country: Country, workers: int = FETCH_WORKERS) -> List[Dict[str, Any]]:
     folder = RAW_DIR / country.code
     if not folder.is_dir():
         return []
-    events: List[Dict[str, Any]] = []
-    for path in sorted(folder.glob("*.zip")):
-        if path.stat().st_size < 50:
-            continue
+    paths = [p for p in folder.glob("*.zip") if p.stat().st_size >= 50]
+    n = max(1, workers)
+    print(f"{len(paths)} ZIP-Dateien lesen, {n} parallel", flush=True)
+
+    def one(path: Path) -> List[Dict[str, Any]]:
         doc_type = path.name[:3] if path.name[:3] in {"A77", "A78", "A79", "A80"} else "A78"
-        events.extend(parse_zip(path.read_bytes(), country=country, doc_type=doc_type))
+        return parse_zip(path.read_bytes(), country=country, doc_type=doc_type)
+
+    events: List[Dict[str, Any]] = []
+    done = 0
+    with ThreadPoolExecutor(max_workers=n) as pool:
+        for rows in pool.map(one, paths):
+            events.extend(rows)
+            done += 1
+            if done % 500 == 0 or done == len(paths):
+                print(f"  {done}/{len(paths)} ZIP", flush=True)
     return events
 
 
@@ -143,21 +169,10 @@ def _is_no_data(content: bytes) -> bool:
     return b"no matching data" in low or b"nomatchingdata" in low
 
 
-def _rate_wait() -> None:
-    global _next_request
-    with _rate_lock:
-        now = time.monotonic()
-        wait = _next_request - now
-        if wait > 0:
-            time.sleep(wait)
-        _next_request = time.monotonic() + REQUEST_GAP
-
-
 def _request(params: Dict[str, Any], token: str) -> Optional[bytes]:
     query = {**params, "securityToken": token}
     last_err: Optional[Exception] = None
     for attempt in range(MAX_RETRIES):
-        _rate_wait()
         try:
             resp = requests.get(API_URL, params=query, timeout=REQUEST_TIMEOUT)
         except requests.RequestException as exc:
@@ -200,7 +215,7 @@ def _store(path: Path, data: Optional[bytes]) -> None:
 
 
 def _payload(country: Country, years: int, events: List[Dict[str, Any]]) -> Dict[str, Any]:
-    unique = [ev for ev in latest_revision(events) if keep_published(ev)]
+    unique = [ev for ev in latest_revision(events) if keep_event(ev, country)]
     unique.sort(key=lambda e: e.get("start") or "", reverse=True)
     payload = {
         "generated_at": _utc_now().strftime("%Y-%m-%dT%H:%M:%SZ"),
@@ -284,9 +299,14 @@ def _period_from_stem(stem: str) -> Optional[Dict[str, str]]:
 
 
 def _stem_progress(country_code: str, stem: str) -> str:
-    """missing | empty | ok | capped | incomplete"""
+    """Zustand dieses Cache-Stamms: missing, empty, ok, capped oder incomplete.
+
+    ``capped``: jede Seite hat noch ``PAGE_SIZE`` Dokumente und der Offset
+    ist am Limit, das Fenster muss geteilt werden. ``incomplete``: eine
+    Seite fehlt mitten in der Reihe.
+    """
     offset = 0
-    last_n = 0
+    page_documents = 0
     saw_zip = False
     while offset <= MAX_OFFSET:
         cached = _load_cached(_cache_file(country_code, stem, offset))
@@ -295,11 +315,11 @@ def _stem_progress(country_code: str, stem: str) -> str:
         if cached is None:
             return "ok" if saw_zip else "empty"
         saw_zip = True
-        last_n = _xml_count(cached)
-        if last_n < PAGE_SIZE:
+        page_documents = _xml_count(cached)
+        if page_documents < PAGE_SIZE:
             return "ok"
         offset += PAGE_SIZE
-    return "capped" if last_n >= PAGE_SIZE else "ok"
+    return "capped" if page_documents >= PAGE_SIZE else "ok"
 
 
 def _stem_capped(country_code: str, stem: str) -> bool:
@@ -307,18 +327,22 @@ def _stem_capped(country_code: str, stem: str) -> bool:
 
 
 def window_state(country_code: str, prefix: str, start: datetime, end: datetime) -> str:
-    """missing | empty | ok | capped | incomplete — only the same time window, not later chunks."""
+    """Wie vollständig dieses eine Zeitfenster im Cache liegt.
+
+    Rückgabe: missing, empty, ok, capped oder incomplete. Ein späteres,
+    längeres Fenster zählt nicht als Ersatz.
+    """
     stems = _matched_stems(country_code, prefix, start, end)
     if not stems:
         return "missing"
     states = [_stem_progress(country_code, stem) for stem in stems]
-    if any(s == "capped" for s in states):
+    if any(state == "capped" for state in states):
         return "capped"
-    if any(s == "incomplete" for s in states):
+    if any(state == "incomplete" for state in states):
         return "incomplete"
-    if any(s == "ok" for s in states):
+    if any(state == "ok" for state in states):
         return "ok"
-    if all(s == "empty" for s in states):
+    if all(state == "empty" for state in states):
         return "empty"
     return "missing"
 
@@ -327,14 +351,18 @@ def fetch_pages(
     *,
     token: str,
     country: Country,
-    doc_type: str,
     stem: str,
     params: Dict[str, Any],
     cache_only: bool,
 ) -> Tuple[List[bytes], bool]:
+    """Seiten eines Fensters aus dem Cache oder von der API.
+
+    Rückgabe: die ZIP-Inhalte und ob das Offset-Limit bei voller letzter
+    Seite erreicht wurde. Die Dokumentart steckt schon im Dateinamen ``stem``.
+    """
     zips: List[bytes] = []
     offset = 0
-    last_n = 0
+    page_documents = 0
     while offset <= MAX_OFFSET:
         path = _cache_file(country.code, stem, offset)
         cached = _load_cached(path)
@@ -348,11 +376,11 @@ def fetch_pages(
         if data is None:
             break
         zips.append(data)
-        last_n = _xml_count(data)
-        if last_n < PAGE_SIZE:
+        page_documents = _xml_count(data)
+        if page_documents < PAGE_SIZE:
             return zips, False
         offset += PAGE_SIZE
-    capped = bool(zips) and last_n >= PAGE_SIZE and offset > MAX_OFFSET
+    capped = bool(zips) and page_documents >= PAGE_SIZE and offset > MAX_OFFSET
     return zips, capped
 
 
@@ -411,7 +439,6 @@ def _download_window(
             _blobs, capped = fetch_pages(
                 token=token,
                 country=country,
-                doc_type=doc_type,
                 stem=use_stem,
                 params={**base_params, **use_period},
                 cache_only=False,
@@ -441,8 +468,9 @@ def fetch_country(
     token: Optional[str] = None,
     workers: int = FETCH_WORKERS,
 ) -> Dict[str, Any]:
+    """Meldungen eines Landes: fehlende Fenster laden, Cache lesen, JSON schreiben."""
     if cache_only:
-        return _payload(country, years, parse_all_cached(country))
+        return _payload(country, years, parse_all_cached(country, workers))
 
     token = token or load_token()
     windows = year_windows(years)
@@ -463,14 +491,14 @@ def fetch_country(
                     end,
                 )
             )
-        for doctype in bidding_docs:
+        for doc_type in bidding_docs:
             for zone in zones:
                 jobs.extend(
                     _expand_jobs(
                         country,
-                        doctype,
-                        (doctype, zone.code),
-                        {"documentType": doctype, "biddingZone_Domain": zone.eic},
+                        doc_type,
+                        (doc_type, zone.code),
+                        {"documentType": doc_type, "biddingZone_Domain": zone.eic},
                         start,
                         end,
                     )
@@ -523,25 +551,4 @@ def fetch_country(
                 fut.result()
 
     print("Cache einlesen …", flush=True)
-    return _payload(country, years, parse_all_cached(country))
-
-
-def load_or_empty(country: Country) -> Dict[str, Any]:
-    if OUTAGES_JSON.is_file():
-        return json.loads(OUTAGES_JSON.read_text(encoding="utf-8"))
-    return {
-        "generated_at": None,
-        "years": 5,
-        "country": country.code,
-        "country_label": country.label,
-        "map": {
-            "center": list(country.map_center),
-            "zoom": country.map_zoom,
-            "mask": MAP_MASKS.get(country.code),
-            "bounds": MAP_BOUNDS.get(country.code),
-        },
-        "tsos": [z.label for z in country.control_areas],
-        "count": 0,
-        "events": [],
-        "network": None,
-    }
+    return _payload(country, years, parse_all_cached(country, workers))

@@ -1,4 +1,11 @@
-"""Schreibt web/ausfaelle.html mit eingebetteten Ausfalldaten."""
+"""Schreibt ``out/ausfaelle.html`` aus der Vorlage und dem Auswertungs-JSON.
+
+Die Vorlage enthält den Platzhalter ``__OUTAGES_JSON__`` in einem
+``<script type="application/json">``. Er wird durch das JSON ersetzt.
+``<`` wird zu ``\\u003c``, damit ein Wert wie ``</script>`` das HTML nicht
+vorzeitig beendet. Die Favicons bleiben in ``web/``; die Seite verweist
+dorthin. Die fertige Datei braucht keinen Server.
+"""
 
 from __future__ import annotations
 
@@ -8,7 +15,7 @@ from typing import Any, Dict
 
 ROOT = Path(__file__).resolve().parent.parent
 TEMPLATE = ROOT / "web" / "ausfaelle.template.html"
-OUTPUT = ROOT / "web" / "ausfaelle.html"
+OUTPUT = ROOT / "out" / "ausfaelle.html"
 PLACEHOLDER = "__OUTAGES_JSON__"
 
 

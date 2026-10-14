@@ -2,10 +2,11 @@ __pycache__/
 *.py[cod]
 .venv/
 venv/
-data/raw/
+data/cache/
 data/outages.json
 entsoe/
 .pytest_cache/
 .DS_Store
 .env
 .env.local
+keynotes.md

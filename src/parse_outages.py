@@ -1,4 +1,40 @@
-"""XML-Parser für ENTSO-E Unavailability-Dokumente (A78, A79)."""
+"""XML der Transparency-API in eine Zeile je Meldung.
+
+Die API liefert ZIP-Archive. Darin liegt je Dokument ein
+``Unavailability_MarketDocument``. Ein Dokument hat eine Kennung (``mRID``),
+eine Revisionsnummer und einen Status, und darunter eine oder mehrere
+``TimeSeries`` — je gemeldeter Anlage eine. Klartext steht dort kaum:
+Dokumentart, Ursache, Status und Anlagentyp sind Codes.
+
+Dokumentart, wie sie in der Abfrage angefordert wird:
+
+- A77 Produktionseinheit (Kraftwerk als Ganzes)
+- A78 Übertragungsnetz
+- A79 Offshore-Netz
+- A80 Erzeugungseinheit (einzelner Block)
+
+Ursache im Element ``Reason``: B18 Störung, B19 geplante Wartung, B20 Stilllegung.
+Fehlt der Code, steht ersatzweise ``businessType`` A54 (Störung) oder A53 (Wartung).
+
+Status im ``docStatus``: A05 aktiv, A09 storniert, A13 zurückgezogen.
+
+Anlagentyp im ``psrType``: B01–B24 (Braunkohle, AC-Leitung, HGÜ, …).
+Die Bezeichnung in der Tabelle ist die Übersetzung, nicht der Code.
+
+Leistung: ``Available_Period`` / ``quantity`` ist die noch verfügbare MW
+(Restleistung), nicht die ausgefallene. ``nominalP`` ist die Nennleistung
+und fehlt bei Leitungen oft. Koordinaten sind im Dokument fast immer leer.
+
+Ausgabe je TimeSeries, die Felder, die Karte und Tabelle lesen:
+
+- ``mrid``, ``revision``, ``created``, ``status``, ``sender_eic``
+- ``doc_type``, ``category``, ``tso``, ``reason``, ``reason_text``
+- ``start``, ``end``, ``duration_h`` (UTC, Dauer in Stunden)
+- ``asset_name``, ``asset_eic``, ``asset_type``, ``location``, ``voltage``
+  Der Ortsplatzhalter ``intra_zonal`` aus dem Dokument heißt ``unlocated``.
+- ``border``, ``in_domain``, ``out_domain``, ``bidding_domain`` (EIC der Zonen)
+- ``avail_mw``, ``nominal_mw``, ``lat``, ``lon``
+"""
 
 from __future__ import annotations
 
@@ -9,7 +45,17 @@ from io import BytesIO
 from typing import Any, Dict, Iterable, List, Optional
 from xml.etree import ElementTree as ET
 
-from analysis.countries import Country, tso_label
+from src.countries import Country, fully_abroad, tso_label
+
+_UNLOCATED_RE = re.compile(r"^intra[-_ ]?zonal$", re.IGNORECASE)
+
+
+def label_unlocated(value: str) -> str:
+    """Ortsplatzhalter aus dem Dokument heißen unlocated."""
+    text = value or ""
+    if _UNLOCATED_RE.match(text.strip()):
+        return "unlocated"
+    return text
 
 REASON_LABELS = {
     "B18": "Störung",
@@ -175,9 +221,16 @@ def _kv_class(kv: float) -> str:
     return f"{int(round(kv))} kV"
 
 
-def classify_voltage(*, xml_kv: Optional[float], psr: str, name: str, location: str) -> str:
+def classify_voltage(*, xml_kv: Optional[float], type_code: str, name: str, location: str) -> str:
+    """Spannungsklasse für die Anzeige.
+
+    ``type_code`` ist der Anlagentyp aus dem Dokument (B22 = HGÜ). Sonst zählt
+    die kV-Angabe im XML, und wenn die fehlt, eine Zahl im Anlagenamen
+    (``L-380``, ``400-S2``). Unter 100 kV bleibt die Zahl stehen, darüber
+    wird auf 110, 220 oder 380 kV gerundet.
+    """
     blob = f"{name} {location}"
-    if psr == "B22" or HVDC_IN_NAME.search(blob):
+    if type_code == "B22" or HVDC_IN_NAME.search(blob):
         return "HGÜ"
     if xml_kv is not None:
         return _kv_class(xml_kv)
@@ -189,6 +242,11 @@ def classify_voltage(*, xml_kv: Optional[float], psr: str, name: str, location: 
 
 
 def _reason(root: ET.Element, series: ET.Element) -> tuple[str, str]:
+    """Deutsche Ursache und der freie Text daneben.
+
+    Zuerst ein Reason-Code B18/B19/B20, sonst businessType A53/A54.
+    Der zweite Rückgabewert ist ein zusätzlicher Freitext, der kein Code ist.
+    """
     codes: List[str] = []
     texts: List[str] = []
     for node in list(root) + list(series):
@@ -213,6 +271,12 @@ def _reason(root: ET.Element, series: ET.Element) -> tuple[str, str]:
 
 
 def _period_bounds(series: ET.Element, root: ET.Element) -> tuple[Optional[str], Optional[str]]:
+    """Beginn und Ende der Unverfügbarkeit, UTC, oder None wenn das Feld fehlt.
+
+    Die Dokumente legen das Intervall an unterschiedlichen Stellen ab:
+    eigene Start/Ende-Felder, ``Available_Period``, oder das Intervall
+    im Dokumentkopf.
+    """
     start = _combine_date_time(
         _first_text(series, "start_DateAndOrTime.date"),
         _first_text(series, "start_DateAndOrTime.time"),
@@ -242,6 +306,7 @@ def _period_bounds(series: ET.Element, root: ET.Element) -> tuple[Optional[str],
 
 
 def _avail_qty(series: ET.Element) -> Optional[float]:
+    """Kleinste Restleistung in MW innerhalb der Meldung, nicht die ausgefallene."""
     values: List[float] = []
     for period_name in ("Available_Period", "WindPowerFeedin_Period"):
         period = _child(series, period_name)
@@ -258,6 +323,12 @@ def _avail_qty(series: ET.Element) -> Optional[float]:
 
 
 def _asset(series: ET.Element) -> Dict[str, str]:
+    """Anlage aus der TimeSeries.
+
+    Netz-Dokumente nennen sie ``Asset_RegisteredResource``, Erzeugung
+    ``production_RegisteredResource``. ``type_code`` ist der rohe Anlagentyp
+    (B01–B24), ``nominal`` die Nennleistung als Text.
+    """
     asset = _child(series, "Asset_RegisteredResource")
     prod = _child(series, "production_RegisteredResource")
     node = asset if asset is not None else prod
@@ -278,7 +349,7 @@ def _asset(series: ET.Element) -> Dict[str, str]:
         ),
         "location": _first_text(node, "location.name")
         or _first_text(series, "production_RegisteredResource.location.name"),
-        "psr": (
+        "type_code": (
             _first_text(asset, "asset_PSRType.psrType")
             or _first_text(series, "production_RegisteredResource.pSRType.psrType")
             or _first_text(prod, "pSRType.psrType")
@@ -305,6 +376,7 @@ def _coords(asset_el: Optional[ET.Element]) -> tuple[Optional[float], Optional[f
 
 
 def parse_unavailability_xml(xml_bytes: bytes, *, country: Country, doc_type: str) -> List[Dict[str, Any]]:
+    """Eine XML-Datei, eine Zeile je TimeSeries. ``doc_type`` ist die Abfrage (A77–A80)."""
     try:
         root = ET.fromstring(xml_bytes)
     except ET.ParseError:
@@ -343,29 +415,31 @@ def parse_unavailability_xml(xml_bytes: bytes, *, country: Country, doc_type: st
             border = "intern" if internal or not (in_eic and out_eic) else f"{out_label} → {in_label}"
 
         xml_kv = _to_float(asset["voltage_raw"])
+        # Einheit VT im Dokument heißt Volt, die Anzeige rechnet in kV.
         if xml_kv is not None and asset["voltage_unit"].upper() == "VT":
             xml_kv = xml_kv / 1000.0
 
         reason, reason_text = _reason(root, series)
+        asset_name = label_unlocated(asset["name"] or asset["location"] or asset["eic"] or mrid)
+        location = label_unlocated(asset["location"])
         tso = tso_label(
             country,
             sender,
             (in_eic, out_eic, bidding_eic),
             asset_eic=asset["eic"],
-            asset_name=asset["name"] or asset["location"],
-            location=asset["location"],
+            asset_name=asset_name,
+            location=location,
         )
 
         asset_el = _child(series, "Asset_RegisteredResource")
         if asset_el is None:
             asset_el = _child(series, "production_RegisteredResource")
         lat, lon = _coords(asset_el)
-        asset_name = asset["name"] or asset["location"] or asset["eic"] or mrid
         voltage = classify_voltage(
             xml_kv=xml_kv,
-            psr=asset["psr"],
+            type_code=asset["type_code"],
             name=asset_name,
-            location=asset["location"],
+            location=location,
         )
 
         events.append(
@@ -385,8 +459,8 @@ def parse_unavailability_xml(xml_bytes: bytes, *, country: Country, doc_type: st
                 "voltage": voltage,
                 "asset_name": asset_name,
                 "asset_eic": asset["eic"],
-                "asset_type": PSR_LABELS.get(asset["psr"], asset["psr"] or "unbekannt"),
-                "location": asset["location"],
+                "asset_type": PSR_LABELS.get(asset["type_code"], asset["type_code"] or "unbekannt"),
+                "location": location,
                 "border": border,
                 "in_domain": in_eic,
                 "out_domain": out_eic,
@@ -416,20 +490,45 @@ def parse_zip(data: bytes, *, country: Country, doc_type: str) -> List[Dict[str,
 
 
 def latest_revision(events: Iterable[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    """Je Dokumentkennung und Anlage nur die höchste Revisionsnummer."""
     best: Dict[str, Dict[str, Any]] = {}
-    for ev in events:
-        key = f"{ev.get('mrid')}|{ev.get('asset_eic') or ev.get('asset_name')}"
+    for event in events:
+        key = f"{event.get('mrid')}|{event.get('asset_eic') or event.get('asset_name')}"
         prev = best.get(key)
-        if prev is None or int(ev.get("revision") or 0) >= int(prev.get("revision") or 0):
-            best[key] = ev
+        if prev is None or int(event.get("revision") or 0) >= int(prev.get("revision") or 0):
+            best[key] = event
     return list(best.values())
 
 
-def keep_published(ev: Dict[str, Any]) -> bool:
-    """Drop cancelled planned maintenance (A09) and withdrawn documents (A13)."""
-    status = ev.get("status") or ""
+def keep_published(event: Dict[str, Any]) -> bool:
+    """Stornierte Wartung und zurückgezogene Dokumente entfallen.
+
+    Eine stornierte Störung bleibt: die Meldung sagt, dass eine geplante
+    Nichtverfügbarkeit nicht stattfand. Zurückgezogen heißt, das Dokument
+    war ein Irrtum.
+    """
+    status = event.get("status") or ""
     if status == "zurückgezogen":
         return False
-    if status == "storniert" and ev.get("reason") == "Geplante Wartung":
+    if status == "storniert" and event.get("reason") == "Geplante Wartung":
+        return False
+    return True
+
+
+def keep_event(event: Dict[str, Any], country: Country) -> bool:
+    """Veröffentlichte Meldung, die zum ausgewerteten Land gehört.
+
+    Für DE entfallen Anlagen komplett im Nachbarland: ausländische EIC
+    (RTE, Swissgrid, Energinet, …), Kuppel ohne DE (BE–FR) und Namen
+    ohne deutsches Ende (Westtirol–Bürs, Tauern–Lienz). DE-Kuppel und
+    deutsche ``11…``-Codes bleiben.
+    """
+    if not keep_published(event):
+        return False
+    if country.code == "DE" and fully_abroad(
+        event.get("asset_eic") or "",
+        event.get("asset_name") or "",
+        event.get("location") or "",
+    ):
         return False
     return True

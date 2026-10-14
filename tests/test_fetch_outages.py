@@ -3,7 +3,7 @@ from io import BytesIO
 from pathlib import Path
 from zipfile import ZipFile
 
-from analysis.fetch_outages import MAX_OFFSET, PAGE_SIZE, _parse_period, _stem_capped, _stem_progress, window_state
+from src.fetch_outages import MAX_OFFSET, PAGE_SIZE, _parse_period, _stem_capped, _stem_progress, window_state
 
 
 def _dt(text: str) -> datetime:
@@ -27,7 +27,7 @@ def test_parse_period_rejects_sibling_prefix():
 
 
 def test_later_chunk_not_covered_by_first_window(tmp_path: Path, monkeypatch):
-    from analysis import fetch_outages
+    from src import fetch_outages
 
     monkeypatch.setattr(fetch_outages, "RAW_DIR", tmp_path)
     folder = tmp_path / "DE"
@@ -40,7 +40,7 @@ def test_later_chunk_not_covered_by_first_window(tmp_path: Path, monkeypatch):
 
 
 def test_near_equal_timestamps_count_as_same_window(tmp_path: Path, monkeypatch):
-    from analysis import fetch_outages
+    from src import fetch_outages
 
     monkeypatch.setattr(fetch_outages, "RAW_DIR", tmp_path)
     folder = tmp_path / "DE"
@@ -51,7 +51,7 @@ def test_near_equal_timestamps_count_as_same_window(tmp_path: Path, monkeypatch)
 
 
 def test_full_page_before_max_is_incomplete(tmp_path: Path, monkeypatch):
-    from analysis import fetch_outages
+    from src import fetch_outages
 
     monkeypatch.setattr(fetch_outages, "RAW_DIR", tmp_path)
     folder = tmp_path / "DE"
@@ -65,7 +65,7 @@ def test_full_page_before_max_is_incomplete(tmp_path: Path, monkeypatch):
 
 
 def test_full_last_page_is_capped(tmp_path: Path, monkeypatch):
-    from analysis import fetch_outages
+    from src import fetch_outages
 
     monkeypatch.setattr(fetch_outages, "RAW_DIR", tmp_path)
     folder = tmp_path / "DE"

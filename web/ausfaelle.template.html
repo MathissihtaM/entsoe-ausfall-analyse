@@ -4,9 +4,9 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>ENTSO-E Störungsmeldungen</title>
-  <link rel="icon" href="favicon.ico" sizes="any" />
-  <link rel="icon" href="favicon.png" type="image/png" />
-  <link rel="apple-touch-icon" href="favicon.png" />
+  <link rel="icon" href="../web/favicon.ico" sizes="any" />
+  <link rel="icon" href="../web/favicon.png" type="image/png" />
+  <link rel="apple-touch-icon" href="../web/favicon.png" />
   <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" />
   <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
   <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
@@ -27,43 +27,36 @@
     html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); font: 14px/1.45 "Segoe UI", system-ui, sans-serif; }
     body { display: flex; flex-direction: column; overflow: hidden; }
     header {
-      display: flex; align-items: center; gap: 16px;
-      padding: 10px 16px; background: #0f172a; color: #e2e8f0;
+      display: flex; flex-direction: column; align-items: stretch; gap: 0;
+      position: relative; z-index: 5;
+      padding: 8px 16px 6px; background: #f8fafc; color: var(--ink);
+      border-bottom: 1px solid var(--line);
     }
-    header .header-copy {
-      flex: 1; min-width: 0;
-      display: flex; flex-direction: column; gap: 4px;
-    }
-    header .header-top {
-      display: flex; align-items: baseline; gap: 8px 16px; flex-wrap: wrap;
-    }
-    header h1 { margin: 0; font-size: 18px; font-weight: 650; }
-    header .meta { color: #94a3b8; font-size: 13px; }
-    header .scope {
-      margin: 0; max-width: none; width: 100%;
-      color: #94a3b8; font-size: 12px; line-height: 1.45;
+    .header-bar {
+      display: flex; align-items: stretch; gap: 12px; min-width: 0;
     }
     .info-btn {
-      flex: 0 0 auto; margin-left: auto;
-      display: inline-flex; align-items: center; gap: 8px;
-      min-height: 36px; padding: 6px 14px 6px 10px;
-      border: 0; border-radius: 8px; cursor: pointer;
-      background: #fff; color: #0f172a;
-      font: 650 13px/1.2 "Segoe UI", system-ui, sans-serif;
+      flex: 0 0 auto; align-self: stretch; margin-left: auto;
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 4px 12px;
+      border: 1px solid var(--line); border-radius: 10px; cursor: pointer;
+      background: #fff; color: var(--ink);
+      font: 650 12px/1.2 "Segoe UI", system-ui, sans-serif;
     }
-    .info-btn:hover { background: #e2e8f0; }
-    .info-btn:focus-visible { outline: 2px solid #93c5fd; outline-offset: 2px; }
+    .info-btn:hover { background: #f8fafc; }
+    .info-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     .info-btn svg { flex: 0 0 auto; }
     .info-dialog {
-      width: min(40rem, calc(100vw - 32px)); max-height: min(80vh, 44rem);
+      width: min(46rem, calc(100vw - 24px)); max-height: min(86vh, 48rem);
       padding: 0; border: 1px solid #1e293b; border-radius: 12px;
       color: var(--ink); background: #fff;
       box-shadow: 0 16px 40px rgba(15, 23, 42, .28);
     }
+    .info-dialog.is-wide { width: min(76rem, calc(100vw - 24px)); }
     .info-dialog::backdrop { background: rgba(15, 23, 42, .55); }
     .info-dialog-head {
       display: flex; align-items: center; gap: 12px;
-      padding: 14px 16px 12px; border-bottom: 1px solid var(--line);
+      padding: 14px 16px 10px;
     }
     .info-dialog-head h2 { margin: 0; font-size: 16px; font-weight: 650; }
     .info-close {
@@ -73,38 +66,186 @@
       font: 600 13px/1.2 "Segoe UI", system-ui, sans-serif;
     }
     .info-close:hover { background: #f8fafc; }
-    .info-close:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+    .info-close:focus-visible { outline: 2px solid #64748b; outline-offset: 1px; }
+    .info-tabs {
+      display: flex; flex-wrap: wrap; gap: 6px;
+      padding: 0 16px 12px; border-bottom: 1px solid var(--line);
+    }
+    .info-tab {
+      min-height: 30px; padding: 4px 11px;
+      border: 1px solid var(--line); border-radius: 6px;
+      background: #f8fafc; color: var(--ink); cursor: pointer;
+      font: 650 12px/1.2 "Segoe UI", system-ui, sans-serif;
+    }
+    .info-tab:hover { border-color: #64748b; }
+    .info-tab[aria-selected="true"] {
+      color: #fff; background: #334155; border-color: #334155;
+    }
+    .info-tab:focus-visible { outline: 2px solid #64748b; outline-offset: 1px; }
     .info-dialog-body {
-      padding: 16px 18px 20px; overflow: auto; max-height: calc(min(80vh, 44rem) - 56px);
+      padding: 16px 18px 20px; overflow: auto; max-height: calc(min(86vh, 48rem) - 120px);
       font-size: 13px; line-height: 1.5;
     }
     .info-dialog-body h3 { margin: 1.15em 0 .4em; font-size: 13px; font-weight: 700; }
     .info-dialog-body h3:first-child { margin-top: 0; }
-    .info-dialog-body p, .info-dialog-body ul { margin: 0 0 .7em; }
-    .info-dialog-body ul { padding-left: 1.2em; }
+    .info-dialog-body p, .info-dialog-body ul, .info-dialog-body ol { margin: 0 0 .7em; }
+    .info-dialog-body ul, .info-dialog-body ol { padding-left: 1.2em; }
+    .info-dialog-body li { margin: 0 0 .35em; }
+    .info-dialog-body .mono { font-family: ui-monospace, Consolas, monospace; font-size: 0.92em; }
     .info-dialog-body table { width: 100%; border-collapse: collapse; margin: 0 0 .8em; }
     .info-dialog-body th, .info-dialog-body td {
       padding: 5px 8px; border-bottom: 1px solid var(--line); text-align: left; white-space: nowrap;
     }
     .info-dialog-body th { background: #f8fafc; font-weight: 650; }
+    .info-dialog-body td.num, .info-dialog-body th.num { text-align: right; font-variant-numeric: tabular-nums; }
+    .info-panel[hidden] { display: none; }
+    .duty-legend {
+      display: flex; flex-wrap: wrap; gap: 8px 16px;
+      margin: 0 0 1em; padding: 0; list-style: none;
+    }
+    .duty-legend li { display: flex; align-items: center; gap: 6px; }
+    .duty-swatch { width: 14px; height: 14px; border-radius: 3px; flex: 0 0 auto; }
+    .duty-scroll { overflow-x: auto; margin: 0 0 .35em; }
+    .duty-table th { position: static; }
+    .duty-table th:first-child,
+    .duty-table td:first-child {
+      position: sticky; left: 0; z-index: 1;
+      background: #fff; box-shadow: 1px 0 0 var(--line);
+    }
+    .duty-table th:first-child { background: #f8fafc; z-index: 2; }
+    .duty-table td.duty-pct { font-weight: 650; }
+    .duty-pct.is-good, .duty-swatch.is-good { background: #dcfce7; color: #14532d; }
+    .duty-pct.is-mid, .duty-swatch.is-mid { background: #ffedd5; color: #9a3412; }
+    .duty-pct.is-bad, .duty-swatch.is-bad { background: #fee2e2; color: #991b1b; }
+    .duty-pct.is-excused, .duty-swatch.is-excused { background: #dbeafe; color: #1e3a8a; }
+    .duty-span {
+      display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+      margin: 0 0 1em;
+    }
+    .duty-span-btn {
+      min-height: 30px; padding: 4px 11px;
+      border: 1px solid var(--line); border-radius: 6px;
+      background: #f8fafc; color: var(--ink); cursor: pointer;
+      font: 650 12px/1.2 "Segoe UI", system-ui, sans-serif;
+    }
+    .duty-span-btn:hover { border-color: #64748b; }
+    .duty-span-btn[aria-checked="true"] {
+      color: #fff; background: #334155; border-color: #334155;
+    }
+    .duty-span-btn:focus-visible { outline: 2px solid #64748b; outline-offset: 1px; }
+    .duty-span-label { font-weight: 650; }
     .filters {
-      display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
-      padding: 8px 16px; background: var(--panel); border-bottom: 1px solid var(--line);
+      display: flex; flex-wrap: nowrap; gap: 8px; align-items: center;
+      flex: 1; min-width: 0; padding: 0; background: transparent; border: 0;
     }
     .filter-clusters {
       display: flex; flex-wrap: nowrap; gap: 8px; align-items: center;
-      flex: 1 1 16rem; min-width: 0; overflow-x: auto;
+      flex: 1 1 auto; min-width: 0;
     }
+    .filter-drop { position: relative; flex: 0 1 auto; min-width: 0; }
+    .filter-toggle {
+      display: inline-flex; align-items: center; gap: 6px;
+      min-height: 32px; padding: 4px 10px;
+      border: 1px solid var(--line); border-radius: 8px;
+      background: #fff; color: var(--ink); cursor: pointer;
+      font: 600 12px/1.2 "Segoe UI", system-ui, sans-serif;
+    }
+    .filter-toggle.is-narrowed { border-color: #334155; background: #f8fafc; }
+    .filter-toggle:hover, .filter-drop.is-open .filter-toggle { border-color: #64748b; }
+    .filter-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+    .filter-toggle .filter-name {
+      font-size: 12px; font-weight: 600; color: var(--ink);
+      text-transform: none; letter-spacing: 0;
+    }
+    .filter-count {
+      font-variant-numeric: tabular-nums;
+      font-weight: 500; color: var(--muted);
+    }
+    .filter-toggle.is-narrowed .filter-count { color: var(--ink); font-weight: 650; }
+    .filter-caret {
+      flex: 0 0 auto; width: 0; height: 0; border-style: solid;
+      border-width: 4px 3.5px 0 3.5px;
+      border-color: var(--muted) transparent transparent transparent;
+    }
+    .filter-drop.is-open .filter-caret {
+      border-width: 0 3.5px 4px 3.5px;
+      border-color: transparent transparent var(--muted) transparent;
+    }
+    .filter-panel {
+      position: absolute; top: calc(100% + 4px); left: 0; z-index: 30;
+      display: flex; flex-direction: column;
+      min-width: 12.5rem; max-height: 16rem; overflow: auto;
+      padding: 6px; background: #fff; border: 1px solid var(--line); border-radius: 8px;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, .12);
+    }
+    .filter-panel[hidden] { display: none; }
+    .filter-bulk {
+      display: flex; gap: 4px; padding: 2px 2px 6px; margin-bottom: 2px;
+      border-bottom: 1px solid var(--line);
+      position: sticky; top: 0; background: #fff; z-index: 1;
+    }
+    .filter-bulk button {
+      min-height: 22px; padding: 1px 8px;
+      border: 1px solid var(--line); border-radius: 5px;
+      background: #f8fafc; color: var(--muted); cursor: pointer;
+      font: 600 11px/1.2 "Segoe UI", system-ui, sans-serif;
+    }
+    .filter-bulk button:hover { border-color: #64748b; color: var(--ink); background: #fff; }
+    .filter-bulk button:focus-visible { outline: 2px solid #64748b; outline-offset: 1px; }
     .filter-group {
       display: flex; align-items: center; gap: 6px; flex-wrap: nowrap; flex: 0 0 auto;
-      padding: 4px 8px; background: #f8fafc;
+      padding: 4px 8px; background: #fff;
       border: 1px solid var(--line); border-radius: 10px;
     }
     .filter-name {
       font-size: 11px; font-weight: 650; color: var(--muted);
       text-transform: uppercase; letter-spacing: .04em; white-space: nowrap;
     }
-    .filter-dates { flex: 0 0 auto; margin-left: auto; background: #f8fafc; }
+    .filter-dates { flex: 0 0 auto; margin-left: auto; background: #fff; }
+    .filter-live {
+      display: grid;
+      grid-template-columns: max-content max-content 8px max-content max-content;
+      grid-template-rows: auto auto;
+      column-gap: 6px;
+      row-gap: 2px;
+      justify-content: start;
+      align-items: start;
+      align-self: start;
+      width: fit-content;
+      max-width: 100%;
+      padding: 4px 0 0; min-width: 0;
+    }
+    .live-group {
+      display: grid;
+      grid-template-columns: subgrid;
+      column-gap: 6px;
+      align-items: start;
+      min-width: 0;
+    }
+    .live-group:nth-child(odd) { grid-column: 1 / 3; }
+    .live-group:nth-child(even) { grid-column: 4 / 6; }
+    .live-label {
+      font-size: 10px; font-weight: 650; color: var(--muted);
+      text-transform: uppercase; letter-spacing: .04em;
+      padding-top: 6px; white-space: nowrap;
+    }
+    .live-chips {
+      display: flex; flex-wrap: wrap; gap: 3px; align-items: center; min-width: 0;
+    }
+    .live-chip {
+      display: inline-flex; align-items: center; gap: 4px;
+      min-height: 22px; padding: 1px 6px 1px 8px;
+      border: 1px solid #64748b; border-radius: 5px;
+      background: #fff; color: var(--ink); cursor: pointer;
+      font: 500 12px/1.2 "Segoe UI", system-ui, sans-serif;
+    }
+    .live-chip:hover { background: #f8fafc; border-color: #1e293b; }
+    .live-chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+    .live-chip .live-x {
+      font-size: 11px; line-height: 1; color: var(--muted); font-weight: 650;
+    }
+    .live-chip:hover .live-x { color: var(--ink); }
+    .live-empty { font-size: 12px; color: var(--muted); font-weight: 500; }
     .date-field {
       display: flex; flex-direction: column; gap: 2px;
       font-size: 10px; font-weight: 650; color: var(--muted);
@@ -116,7 +257,6 @@
       text-transform: none; letter-spacing: 0; font-weight: 500; white-space: nowrap;
     }
     .date-field input { min-width: 118px; }
-    .chip-row { display: flex; gap: 4px; flex-wrap: nowrap; align-items: stretch; }
     .chip {
       position: relative; display: inline-flex; align-items: stretch; margin: 0; cursor: pointer;
     }
@@ -128,9 +268,23 @@
       text-decoration: line-through; text-decoration-color: #94a3b8;
     }
     .chip input:checked + .chip-face {
-      color: #fff; background: var(--accent); border-color: var(--accent);
+      color: var(--ink); background: #fff; border-color: #64748b;
     }
     .chip:focus-within .chip-face { outline: 2px solid var(--accent); outline-offset: 1px; }
+    .filter-panel .chip { display: flex; align-items: center; gap: 8px; padding: 4px 6px; border-radius: 4px; }
+    .filter-panel .chip:hover { background: #f8fafc; }
+    .filter-panel .chip input {
+      position: static; opacity: 1; width: 14px; height: 14px; margin: 0; pointer-events: auto;
+      accent-color: #334155;
+    }
+    .filter-panel .chip-face,
+    .filter-panel .chip input:not(:checked) + .chip-face,
+    .filter-panel .chip input:checked + .chip-face {
+      border: 0; min-height: 0; padding: 0; background: transparent; color: var(--ink);
+      text-decoration: none;
+    }
+    .filter-panel .chip input:not(:checked) + .chip-face { color: var(--muted); }
+    .filter-panel .chip:focus-within .chip-face { outline: none; }
     .grid {
       display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 10px 16px;
       flex: 1; min-height: 0;
@@ -160,7 +314,11 @@
     }
     .map-tools .wleg { display: inline-flex; align-items: center; gap: 4px; color: var(--muted); font-size: 11px; }
     .map-tools .wleg i { width: 16px; background: #64748b; margin-right: 0; border-radius: 1px; }
-    #map-match { margin-left: auto; font-size: 11px; color: var(--muted); }
+    .metric-note {
+      font-size: 11px; font-weight: 500; color: #ea580c; white-space: nowrap;
+    }
+    .metric-note[hidden] { display: none; }
+    #map-match { margin-left: auto; font-size: 11px; color: var(--muted); white-space: nowrap; }
     #map { flex: 1; min-height: 0; }
     .plot-tools {
       display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center;
@@ -216,22 +374,60 @@
       #map, .plot-stage { height: 360px; flex: none; }
       .outages { height: auto; flex: none; }
       .outages .table-wrap { max-height: 48vh; }
-      header { align-items: flex-start; }
-      .info-btn { margin-top: 2px; }
-      .filter-clusters { flex-basis: 100%; }
+      header { flex-wrap: nowrap; }
+      .header-bar { flex-wrap: wrap; }
+      .filters { flex-wrap: wrap; flex-basis: 100%; }
+      .filter-clusters { flex-basis: 100%; flex-wrap: wrap; }
       .filter-dates { margin-left: 0; }
+      .filter-live { column-gap: 6px; row-gap: 2px; }
+      .live-chips { max-width: calc(50vw - 7rem); }
     }
   </style>
 </head>
 <body>
   <header>
-    <div class="header-copy">
-      <div class="header-top">
-        <h1>ENTSO-E Störungsmeldungen</h1>
-        <div class="meta" id="meta"></div>
+    <div class="header-bar">
+    <section class="filters">
+      <div class="filter-clusters">
+        <div class="filter-drop">
+          <button type="button" class="filter-toggle" aria-expanded="false" aria-controls="flt-tso">
+            <span class="filter-name">Netzbetreiber</span>
+            <span class="filter-count"></span>
+            <span class="filter-caret" aria-hidden="true"></span>
+          </button>
+          <div class="filter-panel" id="flt-tso" hidden></div>
+        </div>
+        <div class="filter-drop">
+          <button type="button" class="filter-toggle" aria-expanded="false" aria-controls="flt-reason">
+            <span class="filter-name">Ursache</span>
+            <span class="filter-count"></span>
+            <span class="filter-caret" aria-hidden="true"></span>
+          </button>
+          <div class="filter-panel" id="flt-reason" hidden></div>
+        </div>
+        <div class="filter-drop">
+          <button type="button" class="filter-toggle" aria-expanded="false" aria-controls="flt-category">
+            <span class="filter-name">Kategorie</span>
+            <span class="filter-count"></span>
+            <span class="filter-caret" aria-hidden="true"></span>
+          </button>
+          <div class="filter-panel" id="flt-category" hidden></div>
+        </div>
+        <div class="filter-drop">
+          <button type="button" class="filter-toggle" aria-expanded="false" aria-controls="flt-voltage">
+            <span class="filter-name">Spannung</span>
+            <span class="filter-count"></span>
+            <span class="filter-caret" aria-hidden="true"></span>
+          </button>
+          <div class="filter-panel" id="flt-voltage" hidden></div>
+        </div>
       </div>
-      <p class="scope" id="scope">ENTSO-E Transparency DE, letzte 5 Jahre: gemeldete Unverfügbarkeiten (i.&nbsp;d.&nbsp;R. ab ca. 100&nbsp;MW). Ohne stornierte geplante Wartungen und ohne zurückgezogene Meldungen. Karte: zuordenbare ≥110-kV-Leitungen, Kraftwerke und Schaltanlagen.</p>
-    </div>
+      <div class="filter-group filter-dates">
+        <span class="filter-name">Zeitraum</span>
+        <label class="date-field">Von<input type="date" id="flt-from" /></label>
+        <label class="date-field">Bis<input type="date" id="flt-to" /></label>
+      </div>
+    </section>
     <button type="button" class="info-btn" id="info-open" aria-haspopup="dialog" aria-controls="info-dialog">
       <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
         <circle cx="9" cy="9" r="8" fill="none" stroke="currentColor" stroke-width="1.7"/>
@@ -240,72 +436,156 @@
       </svg>
       Hinweise
     </button>
+    </div>
+    <div class="filter-live" id="filter-live" aria-label="Aktive Filter"></div>
   </header>
   <dialog class="info-dialog" id="info-dialog" aria-labelledby="info-title">
     <div class="info-dialog-head">
       <h2 id="info-title">Hinweise zur Auswertung</h2>
       <button type="button" class="info-close" id="info-close">Schließen</button>
     </div>
+    <div class="info-tabs" role="tablist" aria-label="Hinweisabschnitte">
+      <button type="button" class="info-tab" role="tab" id="info-tab-nutzen" aria-controls="info-panel-nutzen" aria-selected="true">Nutzung</button>
+      <button type="button" class="info-tab" role="tab" id="info-tab-daten" aria-controls="info-panel-daten" aria-selected="false">Daten</button>
+      <button type="button" class="info-tab" role="tab" id="info-tab-zuordnung" aria-controls="info-panel-zuordnung" aria-selected="false">Zuordnung</button>
+      <button type="button" class="info-tab" role="tab" id="info-tab-karte" aria-controls="info-panel-karte" aria-selected="false">Karte</button>
+      <button type="button" class="info-tab" role="tab" id="info-tab-aufbau" aria-controls="info-panel-aufbau" aria-selected="false">Aufbau</button>
+      <button type="button" class="info-tab" role="tab" id="info-tab-stahl" aria-controls="info-panel-stahl" aria-selected="false">ENTSO-E Intransparency</button>
+    </div>
     <div class="info-dialog-body">
-      <p>Lokale Auswertung der Unverfügbarkeitsmeldungen auf der ENTSO-E Transparency Platform für die Gebotszone DE/LU, Rückblick fünf Jahre. Die Daten sind in dieser Datei eingebettet.</p>
-      <h3>Was man damit macht</h3>
-      <p>Filter (ÜNB, Ursache, Kategorie, Spannung, Zeitraum) gelten überall: Karte, Diagramm, Tabelle.</p>
-      <p><strong>Karte</strong> — graues 220/380-kV- und HGÜ-Hintergrundnetz; darüber nur Anlagen/Leitungen mit Treffer im Filter. Punkt/Strich-Stärke nach Anzahl, Dauer oder Restleistung. Klick öffnet Kurzstatistik und setzt die Tabellenauswahl.</p>
-      <p><strong>Diagramm</strong> — X/Y frei (Zeit, Ursache, Dauer, Restleistung, Spannung, ÜNB, Kategorie, Anlagentyp). Y zusätzlich „Menge Ausfälle/Wartungen“ (Monatszählung). Bei Dauer Median oder Mittel. Klick oder Lasso wählt Zeilen in der Tabelle.</p>
-      <p><strong>Tabelle</strong> — Start/Ende, Dauer, Kategorie, ÜNB, Ursache, Typ, Spannung, Anlagenname, Grenze, Restleistung, Status. Zeitpunkt einer Meldung ist der <strong>Beginn</strong> der Unverfügbarkeit.</p>
-      <h3>Welche Daten drin sind</h3>
-      <p>Unavailability-Dokumente nach VO 543/2013:</p>
-      <table>
-        <thead><tr><th>Typ</th><th>Inhalt</th></tr></thead>
-        <tbody>
-          <tr><td>A77</td><td>Produktionseinheit (Kraftwerk/Standort)</td></tr>
-          <tr><td>A78</td><td>Übertragungsnetz</td></tr>
-          <tr><td>A79</td><td>Offshore-Netz</td></tr>
-          <tr><td>A80</td><td>Erzeugungseinheit (einzelner Block)</td></tr>
-        </tbody>
-      </table>
-      <p><strong>Produktionseinheit (A77)</strong> ist das Kraftwerk als Ganzes: eine oder mehrere Maschinen hinter einem Netzanschluss. <strong>Erzeugungseinheit (A80)</strong> ist der einzelne Block bzw. Generator. Dieselbe Unverfügbarkeit kann auf beiden Ebenen gemeldet sein, deshalb gibt es mehr A80- als A77-Zeilen.</p>
-      <p><strong>Unbekannter Netzbetreiber</strong> heißt: Transparency nennt nur die Gebotszone DE/LU, Absender ist die Plattform selbst — ohne Zuordnung zu 50Hertz, Amprion, TenneT oder TransnetBW. Das betrifft vor allem Erzeugungs- und Produktionsmeldungen, nicht das Übertragungsnetz.</p>
-      <p>Ursachen: Störung, geplante Wartung, Stilllegung. Status in der Tabelle: aktiv, storniert (bei Störungen: geplante Unverfügbarkeit fand nicht statt — Meldung bleibt), zurückgezogen.</p>
-      <p><strong>Restleistung</strong> ist die während der Unverfügbarkeit noch verfügbare MW (Available_Period), nicht die ausgefallene Leistung. 0&nbsp;MW = vollständig nicht verfügbar.</p>
-      <p>Schwelle Transparency: in der Regel ab ca. 100&nbsp;MW bzw. relevanter Grenzkuppel. Kein vollständiges Störungsgeschehen DE, kein Verteilnetz.</p>
-      <h3>Wie die Meldungen aufbereitet sind</h3>
-      <p>Rohabruf über die vier ÜNB-Regelzonen plus Gebotszone, überlappende Zeitfenster, jeweils letzte Revision je Dokument/Anlage.</p>
-      <p>Entfernt: <strong>stornierte geplante Wartungen</strong> (finden nicht statt) und <strong>zurückgezogene</strong> Dokumente (Irrtum). Stornierte Störungen bleiben.</p>
-      <p>Koordinaten liefert Transparency praktisch nicht. Zuordnung:</p>
-      <ul>
-        <li>Erzeugung oft nur intra_zonal plus EIC → Abgleich mit der OPSD-/BNetzA-Kraftwerksliste (Name, lat/lon, EIC-Präfix). Deutsche Erzeugungs-EICs kodieren das KW oft in vier Buchstaben (NEUR → Neurath).</li>
-        <li>Netz/Offshore: sprechende Namen (Diele, DolWin, …) gegen OSM ≥110&nbsp;kV.</li>
-        <li>11W0-0000-… ist bewusst anonym — nicht kartierbar.</li>
-      </ul>
-      <p>Auf der Karte daher nur zuordenbare Höchst-/Hochspannungsanlagen und -leitungen. Tabelle und Diagramm enthalten auch die nicht verorteten Meldungen.</p>
+      <div class="info-panel" role="tabpanel" id="info-panel-nutzen" aria-labelledby="info-tab-nutzen">
+        <p>Lokale Auswertung der Unverfügbarkeitsmeldungen auf der ENTSO-E Transparency Platform für <span id="info-scope"></span><span id="info-years"></span>. Die Daten sind in dieser Datei eingebettet. Außer der html braucht man also nichts. 
+        <h3>Was man damit macht</h3>
+        <p>Filter (ÜNB, Ursache, Kategorie, Spannung, Zeitraum) gelten überall: Karte, Diagramm, Tabelle.</p>
+        <p><strong>Diagramm und Tabelle zeigen jede Meldung im Filter. Die Netzkarte zeigt davon nur den verorteten Teil.</strong> Ein relevanter Teil konnte nicht verortet werden, steht aber im Diagramm. Mehr dazu im Reiter Karte.</p>
+        <p><strong>Karte</strong> — graues 220/380-kV- und HGÜ-Hintergrundnetz; darüber nur Anlagen/Leitungen mit Treffer im Filter und mit zuordenbarer Lage. Punkt/Strich-Stärke nach Anzahl, Dauer oder Ausfallleistung. Klick filtert die Tabelle auf diese Anlage; die Filter oben bleiben aktiv. Hover, Verlassen der Karte und Klicks daneben ändern die Tabelle nicht. Ein anderer Klick auf Karte oder Diagramm wechselt die Auswahl.</p>
+        <p><strong>Diagramm</strong> — X/Y frei (Zeit, Ursache, Dauer, Ausfallleistung, Spannung, ÜNB, Kategorie, Anlagentyp), über alle gefilterten Meldungen, auch ohne Koordinate. Gemeinsame 50Hertz/TenneT-Leitungen zählen je zur Hälfte. Klick oder Lasso wählt Zeilen in der Tabelle, soweit die Darstellung einzelne Meldungen zeigt.</p>
+        <p><strong>Tabelle</strong> — Start/Ende, Dauer, Kategorie, ÜNB, Ursache, Typ, Spannung, Anlagenname, Grenze, Restleistung, Ausfallleistung, Status. Zeitpunkt einer Meldung ist der <strong>Beginn</strong> der Unverfügbarkeit.</p>
+      </div>
+      <div class="info-panel" role="tabpanel" id="info-panel-daten" aria-labelledby="info-tab-daten" hidden>
+        <p><strong>Meldungen:</strong> <span id="info-stat-count">—</span>. <strong>Zeitraum:</strong> <span id="info-stat-period">—</span>.</p>
+        <h3>Welche Daten drin sind</h3>
+        <p>Unavailability-Dokumente nach VO 543/2013:</p>
+        <table>
+          <thead><tr><th>Typ</th><th>Inhalt</th><th class="num">Meldungen</th></tr></thead>
+          <tbody>
+            <tr><td>A77</td><td>Produktionseinheit (Kraftwerk/Standort)</td><td class="num" id="info-cat-A77">—</td></tr>
+            <tr><td>A78</td><td>Übertragungsnetz</td><td class="num" id="info-cat-A78">—</td></tr>
+            <tr><td>A79</td><td>Offshore-Netz</td><td class="num" id="info-cat-A79">—</td></tr>
+            <tr><td>A80</td><td>Erzeugungseinheit (einzelner Block)</td><td class="num" id="info-cat-A80">—</td></tr>
+          </tbody>
+        </table>
+        <p><strong>Produktionseinheit (A77)</strong> ist das Kraftwerk als Ganzes: eine oder mehrere Maschinen hinter einem Netzanschluss. <strong>Erzeugungseinheit (A80)</strong> ist der einzelne Block bzw. Generator. Dieselbe Unverfügbarkeit kann auf beiden Ebenen gemeldet sein, deshalb gibt es in dieser Datei <span id="info-a80-vs-a77">—</span>.</p>
+        <p>Die Ursache ist eine Störung, eine geplante Wartung oder eine Stilllegung. Der Status in der Tabelle ist aktiv oder storniert. Eine stornierte Störung bleibt stehen: die Meldung sagt, dass die geplante Unverfügbarkeit nicht stattgefunden hat.</p>
+        <p><strong>Restleistung</strong> ist die während der Unverfügbarkeit noch verfügbare Leistung.</p>
+        <p><strong>Ausfallleistung</strong> ist Nennleistung minus Restleistung. Fürs Übertragungsnetz gibt es keine Nennleistung — diese Meldungen fließen nicht in Karte, Diagramm und Summe zur Ausfallleistung ein.</p>
+        <p>Gemeldet werden muss ab 100&nbsp;MW: bei Kraftwerken die Änderung der Erzeugungsleistung, bei Leitungen die zonenübergreifende Kapazität. Teilweise werden auch Einträge mit geringerer Leistung angelegt. Die werden hier mit angezeigt. Verteilnetz und das übrige Störungsgeschehen sind nicht enthalten.</p>
+        <h3>Wie die Meldungen aufbereitet sind</h3>
+        <p>Rohabruf: Erzeugung über die <span class="js-n-tsos">—</span> ÜNB-Regelzonen plus Gebotszone. Übertragungsnetz zusätzlich jede Regelzone gegen jeden Nachbarn (sonst fehlt das Innennetz, vor allem bei Amprion). Überlappende Zeitfenster, jeweils letzte Revision je Dokument/Anlage.</p>
+        <p>Entfernt: <strong>stornierte geplante Wartungen</strong> (finden nicht statt), <strong>zurückgezogene</strong> Dokumente (Irrtum) und Anlagen, die <strong>komplett im Ausland</strong> liegen (Inlandnetz der Nachbarn, Kuppel ohne Deutschland, Namen ohne deutsches Ende). Stornierte Störungen bleiben.</p>
+      </div>
+      <div class="info-panel" role="tabpanel" id="info-panel-zuordnung" aria-labelledby="info-tab-zuordnung" hidden>
+        <p id="info-cover"></p>
+        <p id="info-unmapped-tso"></p>
+        <p>Kategorie, Ursache und Anlagentyp kommen aus Codes im XML. Der Anzeigename in Tabelle und Diagramm steht so im Dokument. Der Netzbetreiber wird aus Regelzone, EIC und — nur wo das eindeutig ist — aus dem Namen ergänzt. Die Lage auf der Karte ist ein eigener Schritt.</p>
+        <h3>Kategorie, Ursache, Typ</h3>
+        <p>Dokumenttyp der Abfrage → Kategorie (A77 Produktionseinheit, A80 Erzeugungseinheit, A78 Übertragungsnetz, A79 Offshore-Netz). PSR-Code B01–B24 → Anlagentyp (Braunkohle, AC-Leitung, …). Reason B18/B19/B20 bzw. Business-Type A53/A54 → Ursache. Spannung zuerst aus dem XML-kV, sonst aus dem Namen (380&nbsp;kV, L-220, HGÜ).</p>
+        <h3>Anzeigename</h3>
+        <p>Bei Erzeugung: Ortsname, dann Anlagenname, dann Block-Name. Bei Netz: Name der Registered Resource. Fehlt alles, stehen EIC oder Dokument-ID. Viele Erzeugungsmeldungen heißen deshalb <strong>unlocated</strong> — in dieser Datei <span id="info-intra">—</span>.</p>
+        <h3>Netzbetreiber</h3>
+        <p>Der erste Treffer gilt:</p>
+        <ol>
+          <li>Absender-EIC der <span class="js-n-tsos">—</span> ÜNB</li>
+          <li>Name: enthält er sowohl 50Hertz als auch TenneT (<span class="mono">50H-TTG</span>), ist die Leitung gemeinsam. Auf der Karte erscheint sie, sobald 50Hertz oder TenneT gewählt ist. Im Diagramm und unter ENTSO-E Intransparency zählt sie je zur Hälfte zu beiden</li>
+          <li>Regelzone in der Bidding-Domain. Die überschreibt die EIC</li>
+          <li>EIC-Stelle D2/D4/D7/D8 → TenneT, TransnetBW, Amprion, 50Hertz. Gilt für Erzeugung (<span class="mono">11W</span>) und Leitungen (<span class="mono">11T</span>). <span class="mono">11W0-0000</span> bleibt anonym</li>
+          <li>Kuppel mit Deutschland in der EIC (<span class="mono">10T-DE-FR</span>, <span class="mono">10T-CH-DE</span>, …): an der Grenze zählen die Umspannwerke Eichstetten und Tiengen/Kühmoos → TransnetBW, Ensdorf → Amprion. Reine Auslandsleitungen entfallen vorher</li>
+          <li>Nur Grenzen mit einem deutschen ÜNB (Dänemark, Norwegen, Polen, Schweden, Belgien, Tschechien)</li>
+          <li>Kraftwerksliste: steht dort der ÜNB, gilt der. Steht ein Verteilnetzbetreiber, zählt das Bundesland der Anlage, wenn das Bundesland nur eine Regelzone hat. Hessen und Betreiber wie Avacon oder Westnetz, die mehrere ÜNB berühren, werden nicht pauschal einem ÜNB zugeordnet</li>
+          <li>sonst <strong>unbekannt</strong></li>
+        </ol>
+        <p><strong>Unbekannt</strong> bleibt bei anonymem <span class="mono">11W0-0000</span> (bewusst anonymisierte DE-Erzeugung) und wenn weder Regelzone noch EIC noch ein eindeutiger Standort vorliegt. In dieser Datei: <span id="info-unknown-live">—</span>. Leitungen komplett im Nachbarland — ausländische EIC, Kuppel ohne DE, Namen nur mit ausländischem Ende — werden nicht übernommen. Die Karte schneidet das Netz auf Deutschland und Luxemburg; Stummel in Tschechien oder Österreich entfallen.</p>
+      </div>
+      <div class="info-panel" role="tabpanel" id="info-panel-karte" aria-labelledby="info-tab-karte" hidden>
+        <p><strong>Nicht verortet:</strong> <span id="info-stat-unmapped">—</span>. Transparency liefert praktisch keine Koordinaten. Die Karte zeichnet nur Leitungen, Kraftwerke und Schaltanlagen, die sich OSM oder der Kraftwerksliste zuordnen lassen. Alles andere bleibt im Diagramm und in der Tabelle.</p>
+        <h3>Reihenfolge</h3>
+        <ol>
+          <li><strong>Namens-Token gegen OSM</strong> (Leitungen ≥110&nbsp;kV, Umspannwerke, Kraftwerke). Namen werden vereinheitlicht und in Tokens zerlegt; Stoppwörter (kraftwerk, umspannwerk, Städte, ÜNB-Kürzel) fallen raus. Treffer bei mindestens zwei Tokens oder einem Token ≥6 Zeichen. <strong>unlocated</strong> geht nicht über OSM-Namen.</li>
+          <li><strong>Anlagen-EIC gegen die OPSD-/BNetzA-Kraftwerksliste</strong> (Name, lat/lon, EIC-Präfix).</li>
+          <li><strong>Restliche EICs</strong> über Kürzel im Code (NEUR → Neurath) auf genau ein OSM-Kraftwerk.</li>
+        </ol>
+        <p>Deutsche Erzeugungs-EICs kodieren das Kraftwerk oft in vier Buchstaben. <strong>11W0-0000-…</strong> ist bewusst anonym — nicht kartierbar (<span id="info-anon">—</span>). Stilllegungen liegen nicht auf der Karte.</p>
+        <p>Auf der Karte nur zuordenbare ≥110-kV-Leitungen, Kraftwerke und Schaltanlagen. Was dort fehlt, ist im Diagramm weiter enthalten. Der Rest ohne Lage ist vor allem Verteilnetz und anonymisierte Erzeugung <strong>unlocated</strong> / 11W0-0000; die Anteile stehen unter Zuordnung und werden aus der aktuellen Datei berechnet.</p>
+        <p><strong>Ausfallleistung</strong> (Nennleistung − Restleistung) gibt es nicht fürs Übertragungsnetz. Bleibt diese Kategorie im Filter, fließt sie nicht in Größe und Summe ein — an Karte und Diagramm steht dann derselbe Hinweis.</p>
+      </div>
+      <div class="info-panel" role="tabpanel" id="info-panel-aufbau" aria-labelledby="info-tab-aufbau" hidden>
+        <p>Die Auswertung ist ein Python-Paket plus eine HTML-Datei. Es gibt keinen Server und keinen Build-Schritt. Karte (MapLibre) und Diagramm (Plotly) kommen beim Öffnen der html aus dem Internet, die Meldungen stecken in der Datei.</p>
+        <h3>Sprachen und Module</h3>
+        <p>Start: <span class="mono">python -m src</span>. Danach, in dieser Reihenfolge:</p>
+        <ol>
+          <li><span class="mono">fetch_outages</span> — Transparenzplattform abfragen, ZIP-Antworten ablegen</li>
+          <li><span class="mono">parse_outages</span> — aus jedem XML eine Zeile (Zeit, Anlage, Ursache, Restleistung)</li>
+          <li><span class="mono">countries</span> — Gebotszone, Regelzonen und den Übertragungsnetzbetreiber bestimmen</li>
+          <li><span class="mono">osm_network</span> — Leitung oder Kraftwerk in OpenStreetMap und der Kraftwerksliste suchen</li>
+          <li><span class="mono">write_html</span> — dasselbe JSON in <span class="mono">data/outages.json</span> und in diese Seite schreiben</li>
+        </ol>
+        <p>Die Seite steht in <span class="mono">web/ausfaelle.template.html</span> (CSS und ein JavaScript). <span class="mono">out/ausfaelle.html</span> ist dieselbe Vorlage mit eingesetzten Daten. Referenzdaten liegen in <span class="mono">data/ref/</span>, API- und OSM-Cache in <span class="mono">data/cache/</span>. Die Regeln zu Parser, Cache und Zuordnung liegen in <span class="mono">tests/</span>.</p>
+        <h3>Datenformate</h3>
+        <p>Die API antwortet mit einem ZIP. Darin ist je Meldung ein XML-Dokument (<span class="mono">Unavailability_MarketDocument</span>) mit einer oder mehreren Zeitreihen, eine je Anlage. Klartext steht dort kaum: Dokumentart A77–A80, Ursache B18–B20, Status A05/A09/A13 und Anlagentyp B01–B24 sind Codes. Der Parser übersetzt sie in die Spalten der Tabelle.</p>
+        <p><span class="mono">outages.json</span> hat die Zeilen unter <span class="mono">events</span> und das Netz als GeoJSON unter <span class="mono">network</span>. Am Kartentreffer stehen unter <span class="mono">ev</span> die Indizes in diese Zeilen. Das Hintergrundnetz nutzt kurze Feldnamen (<span class="mono">v</span> Spannung, <span class="mono">d</span> HGÜ), weil es in jede HTML-Datei kopiert wird.</p>
+        <p>OpenStreetMap kommt als Overpass-JSON, eine Datei je Kachel. Die Kraftwerksliste ist eine CSV mit EIC, Name, Koordinate und Betreiber.</p>
+        <h3>Was wiederverwendet wird</h3>
+        <ul>
+          <li>Jede API-Seite liegt als ZIP. Eine leere fachliche Antwort ist eine <span class="mono">.empty</span>-Datei und wird nicht noch einmal geholt. Ist eine Seite voll und der Offset am Limit, war das Zeitfenster zu groß und wird halbiert.</li>
+          <li>Kraftwerke und Leitungen werden kachelweise abgefragt. Eine Abfrage fürs ganze Land läuft regelmäßig in den Timeout.</li>
+          <li><span class="mono">osm_prepared.json</span> merkt sich nur den Zuschnitt auf die Landesmaske. Der Zeitraum der Meldungen steht da nicht drin. <span class="mono">--rebuild-network</span> ordnet die vorhandenen Zeilen neu zu, ohne Overpass noch einmal zu fragen.</li>
+          <li>Im Browser sind Hover und Klick zwei getrennte Popups. Sonst würde das Schließen des Hover die Auswahl in der Tabelle löschen.</li>
+        </ul>
+      </div>
+      <div class="info-panel" role="tabpanel" id="info-panel-stahl" aria-labelledby="info-tab-stahl" hidden>
+        <p>Die Meldepflicht steht in der Verordnung (EU) Nr. 543/2013. Diese Datei prüft <strong>Artikel 15</strong> für die Erzeugung und <strong>Artikel 10</strong> für das Netz. Verbrauch nach Artikel 7 liegt nur als Summe je Gebotszone vor und ist hier nicht enthalten.</p>
+        <h3>Wann eine Meldung fällig ist</h3>
+        <p><strong>Erzeugung</strong></p>
+        <ul>
+          <li>Änderung der verfügbaren Leistung ab 100&nbsp;MW, Dauer mindestens ein Marktzeitraum. Der Marktzeitraum beträgt jetzt 15&nbsp;Minuten.</li>
+          <li>Geplante Nichtverfügbarkeit einer Erzeugungseinheit, auch spätere Änderungen ab 100&nbsp;MW, bis zu drei Jahre im Voraus</li>
+          <li>Tatsächliche Änderung derselben Größe</li>
+          <li>Kraftwerk als Ganzes ab 200&nbsp;MW installierter Leistung, solange derselbe Vorgang nicht schon als Erzeugungseinheit veröffentlicht ist</li>
+          <li>Geplant: so schnell wie möglich, spätestens eine Stunde nach der Entscheidung</li>
+          <li>Ungeplant: spätestens eine Stunde nach der Änderung</li>
+        </ul>
+        <p>Die Stunde steht in dieser Datei nicht. Gespeichert ist der Zeitstempel der letzten Fassung.</p>
+        <p><strong>Übertragungsnetz und Offshore-Netz</strong></p>
+        <ul>
+          <li>Leitung, die die Kapazität zwischen Gebotszonen um mindestens 100&nbsp;MW senkt</li>
+          <li>Offshore-Anbindung, die die Wind-Einspeisung um mindestens 100&nbsp;MW senkt</li>
+          <li>Dieselbe Stundenfrist</li>
+          <li>Eine interne Leitung ohne diese Wirkung muss nicht erscheinen</li>
+          <li>Name und Ort dürfen nach Artikel 10 Absatz 4 entfallen, wenn die Leitung als sensible kritische Infrastruktur gilt. Die übrigen Angaben bleiben Pflicht</li>
+          <li>Die Ausnahme gilt für das Übertragungsnetz. Offshore-Netz und Erzeugung fallen nicht darunter</li>
+        </ul>
+        <h3>Was in der Meldung stehen muss</h3>
+        <p><strong>Erzeugung:</strong> Name, Ort, Gebotszone, installierte Leistung, Art der Erzeugung, noch verfügbare Leistung, Ursache, Beginn und voraussichtliches Ende.</p>
+        <p><strong>Netz:</strong> Name der Anlage, Ort, Art der Anlage, Wirkung auf die Grenzkapazität, verfügbare Kapazität in beide Richtungen, Ursache, Beginn und Ende.</p>
+        <p><strong>Offshore-Netz.</strong> Artikel 10 verlangt zusätzlich die angeschlossene Windleistung und die zum Änderungszeitpunkt eingespeiste Windleistung. Beides liegt hier nicht als eigenes Feld. Die A79-Meldungen sind Leitungen und Umrichter. Die Nennleistung einer Leitung ist nicht die installierte Windleistung und wird in der Tabelle nicht so gewertet.</p>
+        <h3>Wie voll die Pflichtfelder sind</h3>
+        <p>Gezählt wird jede Meldung dieser Art, auch unterhalb der Schwelle. Als nicht enthalten gelten leere Felder, <span class="mono">unlocated</span>, <span class="mono">cross_zonal</span>, <span class="mono">not known</span>, anonyme Kennungen <span class="mono">11W0…</span>, Bundesländer, <span class="mono">Nordsee AWZ</span> und reine Grenzkürzel wie <span class="mono">DE-PL</span>. 0&nbsp;MW Restleistung ist eine Angabe. 0&nbsp;MW Nennleistung gilt als leer.</p>
+        <p>Liegt der Füllstand über 95&nbsp;%, bleibt die Zelle grün, auch wenn eine Ausnahme das Weglassen erlauben würde. Darunter wird eine Lücke blau, wenn eine Ausnahme sie deckt. Artikel 15 kennt für Name und Ort keine solche Ausnahme. Nach Artikel 15 Absatz 3 muss die Einheit die Angaben aus Absatz 1 dem ÜNB geben. Die Tabelle zeigt, was veröffentlicht wurde. Gemeinsame 50Hertz/TenneT-Leitungen zählen je zur Hälfte zu beiden.</p>
+        <ul class="duty-legend" aria-label="Farbskala der Füllstände">
+          <li><span class="duty-swatch is-good"></span>über 95&nbsp;%</li>
+          <li><span class="duty-swatch is-mid"></span>50–95&nbsp;%</li>
+          <li><span class="duty-swatch is-bad"></span>unter 50&nbsp;%</li>
+          <li><span class="duty-swatch is-excused"></span>nicht vorhanden, durch Ausnahme nicht notwendig</li>
+        </ul>
+        <div class="duty-span" id="duty-span" role="radiogroup" aria-label="Zeitraum der Tabellen">
+          <button type="button" class="duty-span-btn" role="radio" data-duty-years="5" aria-checked="true">Letzte 5 Jahre</button>
+          <button type="button" class="duty-span-btn" role="radio" data-duty-years="1" aria-checked="false" tabindex="-1">Letztes Jahr</button>
+          <span class="duty-span-label" id="duty-span-label"></span>
+        </div>
+        <div id="info-duty"></div>
+      </div>
     </div>
   </dialog>
-  <section class="filters">
-    <div class="filter-clusters">
-      <div class="filter-group">
-        <span class="filter-name">Netzbetreiber</span>
-      <div class="chip-row" id="flt-tso"></div>
-      </div>
-      <div class="filter-group">
-        <span class="filter-name">Ursache</span>
-      <div class="chip-row" id="flt-reason"></div>
-      </div>
-      <div class="filter-group">
-        <span class="filter-name">Kategorie</span>
-      <div class="chip-row" id="flt-category"></div>
-      </div>
-      <div class="filter-group">
-        <span class="filter-name">Spannung</span>
-      <div class="chip-row" id="flt-voltage"></div>
-      </div>
-    </div>
-    <div class="filter-group filter-dates">
-      <span class="filter-name">Zeitraum</span>
-      <label class="date-field">Von<input type="date" id="flt-from" /></label>
-      <label class="date-field">Bis<input type="date" id="flt-to" /></label>
-    </div>
-  </section>
   <section class="grid">
     <div class="panel">
       <h2>
@@ -325,10 +605,11 @@
             <option value="count">Anzahl Meldungen</option>
             <option value="hours">Summe Dauer</option>
             <option value="mean">Mittlere Dauer</option>
-            <option value="mw">Summe Restleistung</option>
-            <option value="mw_mean">Mittlere Restleistung</option>
+            <option value="outage">Summe Ausfallleistung</option>
+            <option value="outage_mean">Mittlere Ausfallleistung</option>
           </select>
         </label>
+        <span class="metric-note" id="map-outage-hint" hidden title="Ausfallleistung ist Nennleistung minus Restleistung. Fürs Übertragungsnetz gibt es keine Nennleistung — diese Meldungen fließen nicht in Größe und Summe ein.">ohne Übertragungsnetz</span>
         <span class="legend" id="map-width-legend"></span>
         <span id="map-match"></span>
       </div>
@@ -339,12 +620,22 @@
       <div class="plot-tools">
         <label id="axis-x-wrap">X <select id="axis-x"></select></label>
         <label>Y <select id="axis-y"></select></label>
+        <label id="plot-metric-wrap" hidden>Größe
+          <select id="plot-metric">
+            <option value="count" selected>Häufigkeit</option>
+            <option value="hours">Summe Ausfalldauer</option>
+            <option value="mean">Mittlere Ausfalldauer</option>
+            <option value="outage">Summe Ausfallleistung</option>
+            <option value="outage_mean">Mittlere Ausfallleistung</option>
+          </select>
+        </label>
         <label id="stat-wrap" hidden>Kennzahl
           <select id="stat-duration">
             <option value="median" selected>Median</option>
             <option value="mean">Durchschnitt</option>
           </select>
         </label>
+        <span class="metric-note" id="plot-outage-hint" hidden title="Ausfallleistung ist Nennleistung minus Restleistung. Fürs Übertragungsnetz gibt es keine Nennleistung — diese Meldungen fehlen in der Darstellung.">ohne Übertragungsnetz</span>
       </div>
       <div class="plot-stage"><div id="plot"></div></div>
     </div>
@@ -362,6 +653,7 @@
           <th>Start</th><th>Ende</th><th>Dauer h</th><th>Kategorie</th><th>ÜNB</th><th>Ursache</th>
           <th>Typ</th><th>Spannung</th><th>Anlage</th><th>Grenze</th>
           <th title="Verbleibende verfügbare Leistung während der Nichtverfügbarkeit (Available_Period), nicht die ausgefallene MW">Restleistung</th>
+          <th title="Nennleistung minus Restleistung. Leer beim Übertragungsnetz (keine Nennleistung).">Ausfallleistung</th>
           <th>Status</th>
         </tr>
       </thead>
@@ -371,13 +663,28 @@
   </section>
   <script id="outages-data" type="application/json">__OUTAGES_JSON__</script>
   <script>
+    // Eine Datei, kein Build. DATA ist das eingebettete JSON (events + network).
+    // filtered() schneidet die Meldungen mit den Filtern oben.
+    // Klick auf der Karte merkt sich Indizes in EVENTS (pinnedEv), Klick im
+    // Diagramm die Dokumentkennung mrid (selectedMrids). Die Tabelle ist die
+    // Schnittmenge. Hover und das Schließen eines Popups ändern diese Auswahl
+    // nicht — dafür gibt es getrennte Popups (hoverPopup, pinPopup).
     const DATA = JSON.parse(document.getElementById("outages-data").textContent);
     const EVENTS = Array.isArray(DATA.events) ? DATA.events : [];
+    const INTRA_ZONAL_RE = /^intra[-_ ]?zonal$/i;
+    function labelUnlocated(value) {
+      const text = value == null ? "" : String(value);
+      return INTRA_ZONAL_RE.test(text.trim()) ? "unlocated" : value;
+    }
+    for (const e of EVENTS) {
+      e.asset_name = labelUnlocated(e.asset_name);
+      e.location = labelUnlocated(e.location);
+    }
     const AXES = [
       { id: "time", label: "Zeit", kind: "time" },
       { id: "reason", label: "Ausfallursache", kind: "cat" },
       { id: "duration", label: "Ausfalldauer", kind: "num", unit: "h" },
-      { id: "avail_mw", label: "Restleistung", kind: "num", unit: "MW" },
+      { id: "outage_mw", label: "Ausfallleistung", kind: "num", unit: "MW" },
       { id: "voltage", label: "Spannungsebene", kind: "cat" },
       { id: "tso", label: "Netzbetreiber", kind: "cat" },
       { id: "category", label: "Kategorie", kind: "cat" },
@@ -385,13 +692,27 @@
       { id: "monthly_count", label: "Menge Ausfälle/Wartungen", kind: "count", yOnly: true },
     ];
     const VOLT_ORDER = ["HGÜ", "380 kV", "220 kV", "110 kV", "unbekannt"];
+    const CATEGORY_ORDER = ["Übertragungsnetz", "Offshore-Netz", "Produktionseinheit", "Erzeugungseinheit"];
+    const CATEGORY_COLOR = {
+      "Übertragungsnetz": "#1d4ed8",
+      "Offshore-Netz": "#0f766e",
+      "Produktionseinheit": "#7c3aed",
+      "Erzeugungseinheit": "#c2410c",
+    };
     const MONTHS_DE = ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"];
+    const JOINT_TSO = "50Hertz/TenneT";
+    const JOINT_OWNERS = ["50Hertz", "TenneT"];
+    const TSO_ORDER = (DATA.tsos && DATA.tsos.length) ? DATA.tsos.concat(["unbekannt"]) : ["50Hertz", "Amprion", "TenneT", "TransnetBW", "unbekannt"];
 
     function unique(key) {
       const s = new Set(EVENTS.map((e) => e[key] || "unbekannt"));
       return [...s].sort((a, b) => {
         const ia = VOLT_ORDER.indexOf(a), ib = VOLT_ORDER.indexOf(b);
         if (key === "voltage" && ia !== -1 && ib !== -1) return ia - ib;
+        if (key === "tso") {
+          const ta = TSO_ORDER.indexOf(a), tb = TSO_ORDER.indexOf(b);
+          if (ta !== -1 || tb !== -1) return (ta === -1 ? 999 : ta) - (tb === -1 ? 999 : tb);
+        }
         return String(a).localeCompare(String(b), "de");
       });
     }
@@ -404,19 +725,140 @@
     }
 
     function chips(el, values) {
-      el.innerHTML = values.map((v) =>
+      const bulk = `<div class="filter-bulk"><button type="button" data-bulk="all">Alle</button><button type="button" data-bulk="none">Keine</button></div>`;
+      el.innerHTML = bulk + values.map((v) =>
         `<label class="chip"><input type="checkbox" value="${esc(v)}" checked /><span class="chip-face">${esc(v)}</span></label>`
       ).join("");
+    }
+
+    function closeFilterDrops(except) {
+      document.querySelectorAll(".filter-drop.is-open").forEach((drop) => {
+        if (drop === except) return;
+        drop.classList.remove("is-open");
+        const btn = drop.querySelector(".filter-toggle");
+        const panel = drop.querySelector(".filter-panel");
+        if (btn) btn.setAttribute("aria-expanded", "false");
+        if (panel) panel.hidden = true;
+      });
+    }
+
+    function updateFilterSummaries() {
+      const live = document.getElementById("filter-live");
+      const groups = [];
+      document.querySelectorAll(".filter-drop").forEach((drop) => {
+        const panel = drop.querySelector(".filter-panel");
+        const countEl = drop.querySelector(".filter-count");
+        const btn = drop.querySelector(".filter-toggle");
+        const labelEl = drop.querySelector(".filter-toggle .filter-name");
+        if (!panel || !btn) return;
+        const inputs = [...panel.querySelectorAll("input[type=checkbox]")];
+        const on = inputs.filter((i) => i.checked);
+        const off = inputs.length - on.length;
+        if (countEl) countEl.textContent = inputs.length ? `${on.length}/${inputs.length}` : "";
+        btn.classList.toggle("is-narrowed", off > 0);
+        btn.title = on.length ? on.map((i) => i.value).join(", ") : "keine ausgewählt";
+        const name = labelEl ? labelEl.textContent.trim() : "";
+        const chips = on.length
+          ? on.map((i) =>
+              `<button type="button" class="live-chip" data-panel="${panel.id}" data-value="${esc(i.value)}" title="${esc(name)}: ${esc(i.value)} abwählen">${esc(i.value)}<span class="live-x" aria-hidden="true">×</span></button>`
+            ).join("")
+          : `<span class="live-empty">keine</span>`;
+        groups.push(`<div class="live-group"><span class="live-label">${esc(name)}</span><div class="live-chips">${chips}</div></div>`);
+      });
+      if (live) live.innerHTML = groups.join("");
+    }
+
+    function initFilterDrops() {
+      document.querySelectorAll(".filter-drop").forEach((drop) => {
+        const btn = drop.querySelector(".filter-toggle");
+        const panel = drop.querySelector(".filter-panel");
+        btn.addEventListener("click", () => {
+          const open = drop.classList.contains("is-open");
+          closeFilterDrops();
+          if (!open) {
+            drop.classList.add("is-open");
+            btn.setAttribute("aria-expanded", "true");
+            panel.hidden = false;
+          }
+        });
+        panel.querySelectorAll("[data-bulk]").forEach((bulk) => {
+          bulk.addEventListener("click", (ev) => {
+            ev.stopPropagation();
+            const on = bulk.dataset.bulk === "all";
+            panel.querySelectorAll("input[type=checkbox]").forEach((input) => { input.checked = on; });
+            panel.dispatchEvent(new Event("change", { bubbles: true }));
+          });
+        });
+      });
+      document.addEventListener("click", (ev) => {
+        if (!ev.target.closest(".filter-drop")) closeFilterDrops();
+      });
+      document.addEventListener("keydown", (ev) => {
+        if (ev.key === "Escape") closeFilterDrops();
+      });
+      const live = document.getElementById("filter-live");
+      if (live) {
+        live.addEventListener("click", (ev) => {
+          const chip = ev.target.closest(".live-chip");
+          if (!chip) return;
+          const panel = document.getElementById(chip.dataset.panel);
+          if (!panel) return;
+          const value = chip.dataset.value;
+          const input = [...panel.querySelectorAll("input[type=checkbox]")].find((i) => i.value === value);
+          if (!input) return;
+          input.checked = false;
+          panel.dispatchEvent(new Event("change", { bubbles: true }));
+        });
+      }
     }
 
     function selected(id) {
       return [...document.querySelectorAll("#" + id + " input:checked")].map((i) => i.value);
     }
 
+    function tsoOwners(e) {
+      const raw = e.tso || "unbekannt";
+      return raw === JOINT_TSO ? JOINT_OWNERS.slice() : [raw];
+    }
+
+    function tsoMatches(e, selectedTso) {
+      if (!selectedTso.size) return false;
+      if (selectedTso.has(e.tso || "unbekannt")) return true;
+      return tsoOwners(e).some((t) => selectedTso.has(t));
+    }
+
+    function tsoShares(e, selectedTso) {
+      const owners = tsoOwners(e);
+      if (owners.length === 1) return [[owners[0], 1]];
+      const keep = owners.filter((t) => !selectedTso.size || selectedTso.has(t) || selectedTso.has(JOINT_TSO));
+      const shown = keep.length ? keep : owners;
+      return shown.map((t) => [t, 1 / owners.length]);
+    }
+
+    function axisSlots(e, id, selectedTso) {
+      if (id !== "tso") return [{ value: axisValue(e, id), weight: 1 }];
+      return tsoShares(e, selectedTso || new Set(selected("flt-tso"))).map(([value, weight]) => ({ value, weight }));
+    }
+
+    function eachSlot(rows, id, fn) {
+      const selectedTso = new Set(selected("flt-tso"));
+      for (const e of rows) {
+        for (const slot of axisSlots(e, id, selectedTso)) fn(e, slot.value, slot.weight);
+      }
+    }
+
+    function outageMw(ev) {
+      const nom = ev && ev.nominal_mw;
+      const avail = ev && ev.avail_mw;
+      if (typeof nom !== "number" || typeof avail !== "number") return null;
+      if (Number.isNaN(nom) || Number.isNaN(avail)) return null;
+      return Math.max(0, nom - avail);
+    }
+
     function axisValue(ev, id) {
       if (id === "time") return ev.start || null;
       if (id === "duration") return (typeof ev.duration_h === "number" && ev.duration_h > 0) ? ev.duration_h : null;
-      if (id === "avail_mw") return (typeof ev.avail_mw === "number" && !Number.isNaN(ev.avail_mw)) ? ev.avail_mw : null;
+      if (id === "outage_mw") return outageMw(ev);
       if (id === "reason") return ev.reason || "unbekannt";
       if (id === "voltage") return ev.voltage || "unbekannt";
       if (id === "tso") return ev.tso || "unbekannt";
@@ -431,7 +873,45 @@
     }
 
     function overlayY(id) {
-      return id === "duration" || id === "avail_mw";
+      return id === "duration" || id === "outage_mw";
+    }
+
+    const BOX_MAX_CATS = 16;
+
+    function discreteBoxSpec(xId, yId, rows) {
+      const xDef = AXES.find((a) => a.id === xId);
+      const yDef = AXES.find((a) => a.id === yId);
+      if (!xDef || !yDef) return null;
+      if (overlayY(yId) && xDef.kind === "cat") {
+        const cats = seriesNames(rows, xId);
+        if (cats.length && cats.length <= BOX_MAX_CATS) {
+          return { catId: xId, numId: yId, cats, horizontal: false };
+        }
+      }
+      if (overlayY(xId) && yDef.kind === "cat") {
+        const cats = seriesNames(rows, yId);
+        if (cats.length && cats.length <= BOX_MAX_CATS) {
+          return { catId: yId, numId: xId, cats, horizontal: true };
+        }
+      }
+      return null;
+    }
+
+    function seriesSplit(xId, yId) {
+      if (yId === "monthly_count") return null;
+      const xDef = AXES.find((a) => a.id === xId);
+      const yDef = AXES.find((a) => a.id === yId);
+      if (!xDef || !yDef) return null;
+      if (overlayY(xId) || overlayY(yId)) return null;
+      if (xDef.kind === "num" || yDef.kind === "num") return null;
+      if (yDef.kind === "cat") return { seriesId: yId, alongId: xId, alongDef: xDef };
+      if (xDef.kind === "cat") return { seriesId: xId, alongId: yId, alongDef: yDef };
+      return null;
+    }
+
+    function plotMetric() {
+      const el = document.getElementById("plot-metric");
+      return (el && el.value) || "count";
     }
 
     function filtered() {
@@ -442,7 +922,7 @@
       const from = document.getElementById("flt-from").value;
       const to = document.getElementById("flt-to").value;
       return EVENTS.filter((e) => {
-        if (!tso.size || !tso.has(e.tso || "unbekannt")) return false;
+        if (!tso.size || !tsoMatches(e, tso)) return false;
         if (!reason.size || !reason.has(e.reason || "unbekannt")) return false;
         if (!voltage.size || !voltage.has(e.voltage || "unbekannt")) return false;
         if (!category.size || !category.has(e.category || e.doc_type || "unbekannt")) return false;
@@ -459,16 +939,31 @@
 
     let selectedMrids = new Set();
     let ignorePlotSelect = false;
+    let pinnedEv = null;
+    let pinnedName = "";
+    let pinnedFid = null;
+    let closeMapPopup = () => {};
+    let updatePinnedPopup = () => {};
+
+    function clearMapPin() {
+      pinnedEv = null;
+      pinnedName = "";
+      pinnedFid = null;
+      closeMapPopup();
+    }
 
     function renderTable(rows) {
       const body = document.getElementById("rows");
-      const show = rows.slice(0, 800);
+      const show = pinnedEv ? rows : rows.slice(0, 800);
       if (!show.length) {
-        body.innerHTML = `<tr><td class="empty" colspan="12">Keine Meldungen für die Filter.</td></tr>`;
+        const msg = pinnedEv
+          ? "Keine Meldungen zu dieser Anlage für die aktuellen Filter."
+          : "Keine Meldungen für die Filter.";
+        body.innerHTML = `<tr><td class="empty" colspan="13">${msg}</td></tr>`;
         return;
       }
       body.innerHTML = show.map((e) => {
-        const sel = selectedMrids.has(e.mrid) ? "sel" : "";
+        const sel = !pinnedEv && selectedMrids.has(e.mrid) ? "sel" : "";
         return `<tr class="${sel}" data-mrid="${e.mrid}">
           <td>${fmtTs(e.start)}</td><td>${fmtTs(e.end)}</td>
           <td>${e.duration_h ?? "–"}</td><td>${e.category || e.doc_type || "–"}</td>
@@ -476,32 +971,10 @@
           <td>${e.reason || "–"}</td><td>${e.asset_type || "–"}</td><td>${e.voltage || "–"}</td>
           <td title="${e.asset_eic || ""}">${e.asset_name || "–"}</td>
           <td>${e.border || "–"}</td><td>${e.avail_mw ?? "–"}</td>
+          <td>${outageMw(e) ?? "–"}</td>
           <td>${e.status || "–"}</td>
         </tr>`;
       }).join("");
-    }
-
-    function counts(rows, key) {
-      const m = new Map();
-      for (const e of rows) {
-        const k = axisValue(e, key) || "unbekannt";
-        m.set(k, (m.get(k) || 0) + 1);
-      }
-      return [...m.entries()].sort((a, b) => String(a[0]).localeCompare(String(b[0]), "de"));
-    }
-
-    function heatmap(rows, xId, yId) {
-      const xs = [...new Set(rows.map((e) => axisValue(e, xId) || "unbekannt"))].sort();
-      const ys = [...new Set(rows.map((e) => axisValue(e, yId) || "unbekannt"))].sort();
-      const idx = new Map(xs.map((x, i) => [x, i]));
-      const idy = new Map(ys.map((y, i) => [y, i]));
-      const z = ys.map(() => xs.map(() => 0));
-      for (const e of rows) {
-        const xi = idx.get(axisValue(e, xId) || "unbekannt");
-        const yi = idy.get(axisValue(e, yId) || "unbekannt");
-        if (xi != null && yi != null) z[yi][xi] += 1;
-      }
-      return { type: "heatmap", x: xs, y: ys, z, colorscale: "Blues", hoverongaps: false };
     }
 
     function extent(nums) {
@@ -526,6 +999,10 @@
         if (axisId === "voltage") {
           const ia = VOLT_ORDER.indexOf(a), ib = VOLT_ORDER.indexOf(b);
           if (ia !== -1 && ib !== -1) return ia - ib;
+        }
+        if (axisId === "tso") {
+          const ta = TSO_ORDER.indexOf(a), tb = TSO_ORDER.indexOf(b);
+          if (ta !== -1 || tb !== -1) return (ta === -1 ? 999 : ta) - (tb === -1 ? 999 : tb);
         }
         return String(a).localeCompare(String(b), "de");
       });
@@ -553,11 +1030,11 @@
 
       if (xDef.kind === "cat") {
         const groups = new Map();
-        for (const e of withVal) {
-          const k = String(axisValue(e, xId) || "unbekannt");
+        eachSlot(withVal, xId, (e, raw) => {
+          const k = String(raw || "unbekannt");
           if (!groups.has(k)) groups.set(k, []);
           groups.get(k).push(axisValue(e, yId));
-        }
+        });
         const keys = sortCats([...groups.keys()], xId);
         return Object.assign(style, {
           x: keys,
@@ -753,6 +1230,322 @@
       return kindCountSeries(labels, keys.map((k) => fault[k]), keys.map((k) => maint[k]), "scatter");
     }
 
+    const SERIES_PALETTE = ["#1d4ed8", "#0f766e", "#7c3aed", "#c2410c", "#eab308", "#0369a1", "#a21caf", "#db2777", "#475569", "#64748b"];
+
+    function seriesColor(id, name, index) {
+      if (id === "category" && CATEGORY_COLOR[name]) return CATEGORY_COLOR[name];
+      if (id === "reason") {
+        if (name === "Störung") return "#b91c1c";
+        if (name === "Geplante Wartung") return "#ea580c";
+        if (name === "Stilllegung") return "#475569";
+      }
+      if (id === "voltage") {
+        if (name === "HGÜ") return "#7c3aed";
+        if (name === "380 kV") return "#1e293b";
+        if (name === "220 kV") return "#b45309";
+        if (name === "110 kV") return "#64748b";
+      }
+      if (id === "tso") {
+        const known = {
+          "50Hertz": "#e11d48",
+          "TenneT": "#1d4ed8",
+          "Amprion": "#0f766e",
+          "TransnetBW": "#eab308",
+          "50Hertz/TenneT": "#7c3aed",
+          "unbekannt": "#64748b",
+        };
+        if (known[name]) return known[name];
+      }
+      return SERIES_PALETTE[index % SERIES_PALETTE.length];
+    }
+
+    function catNumericBoxes(rows, spec) {
+      const { catId, numId, cats, horizontal } = spec;
+      const groups = Object.fromEntries(cats.map((name) => [name, []]));
+      const selectedTso = new Set(selected("flt-tso"));
+      for (const e of rows) {
+        const v = axisValue(e, numId);
+        if (typeof v !== "number" || Number.isNaN(v)) continue;
+        if (numId === "duration" && !(v > 0)) continue;
+        for (const slot of axisSlots(e, catId, selectedTso)) {
+          const key = String(slot.value || "unbekannt");
+          if (groups[key]) groups[key].push(v);
+        }
+      }
+      return cats.filter((name) => groups[name].length).map((name, index) => {
+        const tone = seriesColor(catId, name, index);
+        const values = groups[name];
+        const labels = values.map(() => name);
+        return {
+          type: "box",
+          name,
+          x: horizontal ? values : labels,
+          y: horizontal ? labels : values,
+          width: 0.72,
+          boxpoints: false,
+          marker: { color: tone },
+          line: { color: tone },
+        };
+      });
+    }
+
+    function seriesNames(rows, id) {
+      const present = new Set();
+      eachSlot(rows, id, (_e, raw) => present.add(String(raw || "unbekannt")));
+      let ordered = [];
+      if (id === "category") ordered = CATEGORY_ORDER.filter((name) => present.has(name));
+      else if (id === "voltage") ordered = VOLT_ORDER.filter((name) => present.has(name));
+      else if (id === "tso") ordered = TSO_ORDER.filter((name) => present.has(name));
+      else if (id === "reason") ordered = ["Störung", "Geplante Wartung", "Stilllegung"].filter((name) => present.has(name));
+      const extra = [...present].filter((name) => !ordered.includes(name));
+      extra.sort((a, b) => String(a).localeCompare(String(b), "de"));
+      return ordered.concat(extra);
+    }
+
+    function metricTitle(metric) {
+      if (metric === "hours") return "Summe Ausfalldauer (h)";
+      if (metric === "mean") return "Mittlere Ausfalldauer (h)";
+      if (metric === "outage") return "Summe Ausfallleistung (MW)";
+      if (metric === "outage_mean") return "Mittlere Ausfallleistung (MW)";
+      return "Häufigkeit";
+    }
+
+    function formatMeasure(v, metric) {
+      if (v == null || !isFinite(v)) return "–";
+      if (metric === "count") return Math.round(v).toLocaleString("de-DE");
+      if (metric === "hours" || metric === "mean") return formatHours(v);
+      return formatMw(v);
+    }
+
+    function measurePart(e, metric) {
+      if (metric === "count") return { add: 1, n: 1 };
+      if (metric === "hours" || metric === "mean") {
+        const hours = axisValue(e, "duration");
+        return hours == null ? null : { add: hours, n: 1 };
+      }
+      const mw = outageMw(e);
+      return mw == null ? null : { add: mw, n: 1 };
+    }
+
+    function foldMeasure(bucket, e, weight, metric) {
+      const part = measurePart(e, metric);
+      if (!part) return;
+      bucket.sum += part.add * weight;
+      bucket.n += part.n * weight;
+    }
+
+    function finishMeasure(bucket, metric) {
+      const mean = metric === "mean" || metric === "outage_mean";
+      if (!bucket || !bucket.n) return mean ? null : 0;
+      return mean ? bucket.sum / bucket.n : bucket.sum;
+    }
+
+    function weightedPairs(e, seriesId, alongId) {
+      const selectedTso = new Set(selected("flt-tso"));
+      if (seriesId === alongId) {
+        return axisSlots(e, seriesId, selectedTso).map((slot) => ({
+          series: String(slot.value || "unbekannt"),
+          along: slot.value,
+          weight: slot.weight,
+        }));
+      }
+      const out = [];
+      for (const seriesSlot of axisSlots(e, seriesId, selectedTso)) {
+        for (const alongSlot of axisSlots(e, alongId, selectedTso)) {
+          out.push({
+            series: String(seriesSlot.value || "unbekannt"),
+            along: alongSlot.value,
+            weight: seriesSlot.weight * alongSlot.weight,
+          });
+        }
+      }
+      return out;
+    }
+
+    function blankBucket() {
+      return { sum: 0, n: 0 };
+    }
+
+    function seriesMeasurePlot(rows, seriesId, alongId, alongDef, metric) {
+      const names = seriesNames(rows, seriesId);
+      const yTitle = metricTitle(metric);
+      const colorOf = (name, index) => seriesColor(seriesId, name, index);
+      const hover = (name, where, value) => `${where}<br>${name}: ${formatMeasure(value, metric)}`;
+
+      if (!alongDef || alongDef.kind === "time") {
+        const keys = monthRange(rows);
+        const labels = keys.map(monthLabel);
+        const buckets = Object.fromEntries(names.map((name) => [name, Object.fromEntries(keys.map((key) => [key, blankBucket()]))]));
+        for (const e of rows) {
+          if (!e.start || e.start.length < 7) continue;
+          const key = e.start.slice(0, 7);
+          for (const pair of weightedPairs(e, seriesId, alongId)) {
+            const bucket = buckets[pair.series] && buckets[pair.series][key];
+            if (bucket) foldMeasure(bucket, e, pair.weight, metric);
+          }
+        }
+        return {
+          traces: names.map((name, index) => {
+            const y = keys.map((key) => finishMeasure(buckets[name][key], metric));
+            const tone = colorOf(name, index);
+            return {
+              type: "scatter",
+              mode: "lines+markers",
+              name,
+              x: labels,
+              y,
+              line: { color: tone, width: 2.5 },
+              marker: { size: 7, color: tone },
+              hovertext: labels.map((label, i) => hover(name, label, y[i])),
+              hoverinfo: "text",
+            };
+          }),
+          xTitle: "Monat",
+          yTitle,
+          tickangle: -45,
+        };
+      }
+
+      if (alongDef.kind === "num") {
+        if (metric === "count") {
+          const xs = Object.fromEntries(names.map((name) => [name, []]));
+          const ws = Object.fromEntries(names.map((name) => [name, []]));
+          for (const e of rows) {
+            for (const pair of weightedPairs(e, seriesId, alongId)) {
+              if (!xs[pair.series] || typeof pair.along !== "number" || Number.isNaN(pair.along)) continue;
+              xs[pair.series].push(pair.along);
+              ws[pair.series].push(pair.weight);
+            }
+          }
+          return {
+            traces: names.map((name, index) => ({
+              type: "histogram",
+              name,
+              histfunc: "sum",
+              x: xs[name],
+              y: ws[name],
+              marker: { color: colorOf(name, index), opacity: 0.75 },
+              hovertemplate: name + ": %{y}<extra></extra>",
+            })),
+            xTitle: axisTitle(alongDef),
+            yTitle,
+            barmode: "overlay",
+          };
+        }
+        const loStart = { lo: Infinity, hi: -Infinity };
+        for (const e of rows) {
+          for (const pair of weightedPairs(e, seriesId, alongId)) {
+            if (typeof pair.along !== "number" || Number.isNaN(pair.along)) continue;
+            if (pair.along < loStart.lo) loStart.lo = pair.along;
+            if (pair.along > loStart.hi) loStart.hi = pair.along;
+          }
+        }
+        const lo = loStart.lo;
+        const hi = loStart.hi;
+        if (!isFinite(lo) || !isFinite(hi)) {
+          return { traces: [], xTitle: axisTitle(alongDef), yTitle };
+        }
+        const bins = 12;
+        const log = alongId === "duration" && lo > 0;
+        const edges = [];
+        for (let i = 0; i <= bins; i++) {
+          const t = i / bins;
+          edges.push(log ? Math.exp(Math.log(lo) + (Math.log(hi) - Math.log(lo)) * t) : lo + (hi - lo) * t);
+        }
+        const labels = edges.slice(0, -1).map((edge) => formatMeasure(edge, alongId === "outage_mw" ? "outage" : "hours"));
+        const buckets = Object.fromEntries(names.map((name) => [name, edges.slice(0, -1).map(() => blankBucket())]));
+        for (const e of rows) {
+          for (const pair of weightedPairs(e, seriesId, alongId)) {
+            if (typeof pair.along !== "number" || Number.isNaN(pair.along) || !buckets[pair.series]) continue;
+            let index = bins - 1;
+            if (hi > lo) {
+              const t = log && pair.along > 0
+                ? (Math.log(pair.along) - Math.log(lo)) / (Math.log(hi) - Math.log(lo))
+                : (pair.along - lo) / (hi - lo);
+              index = Math.min(bins - 1, Math.max(0, Math.floor(t * bins)));
+            }
+            foldMeasure(buckets[pair.series][index], e, pair.weight, metric);
+          }
+        }
+        return {
+          traces: names.map((name, index) => {
+            const y = buckets[name].map((bucket) => finishMeasure(bucket, metric));
+            const tone = colorOf(name, index);
+            return {
+              type: "scatter",
+              mode: "lines+markers",
+              name,
+              x: labels,
+              y,
+              line: { color: tone, width: 2.5 },
+              marker: { size: 7, color: tone },
+              hovertext: labels.map((label, i) => hover(name, label, y[i])),
+              hoverinfo: "text",
+            };
+          }),
+          xTitle: axisTitle(alongDef),
+          yTitle,
+          tickangle: -45,
+        };
+      }
+
+      if (seriesId === alongId) {
+        const totals = Object.fromEntries(names.map((name) => [name, blankBucket()]));
+        for (const e of rows) {
+          for (const pair of weightedPairs(e, seriesId, alongId)) {
+            if (totals[pair.series]) foldMeasure(totals[pair.series], e, pair.weight, metric);
+          }
+        }
+        return {
+          traces: names.map((name, index) => ({
+            type: "bar",
+            name,
+            x: names,
+            y: names.map((key) => (key === name ? finishMeasure(totals[name], metric) : null)),
+            marker: { color: colorOf(name, index) },
+            hovertext: names.map((key) => (key === name ? hover(name, key, finishMeasure(totals[name], metric)) : "")),
+            hoverinfo: "text",
+          })),
+          xTitle: alongDef.label,
+          yTitle,
+          barmode: "overlay",
+        };
+      }
+
+      const keys = [];
+      const seen = new Set();
+      eachSlot(rows, alongId, (_e, raw) => {
+        const key = String(raw || "unbekannt");
+        if (!seen.has(key)) { seen.add(key); keys.push(key); }
+      });
+      sortCats(keys, alongId);
+      const buckets = Object.fromEntries(names.map((name) => [name, Object.fromEntries(keys.map((key) => [key, blankBucket()]))]));
+      for (const e of rows) {
+        for (const pair of weightedPairs(e, seriesId, alongId)) {
+          const key = String(pair.along || "unbekannt");
+          const bucket = buckets[pair.series] && buckets[pair.series][key];
+          if (bucket) foldMeasure(bucket, e, pair.weight, metric);
+        }
+      }
+      return {
+        traces: names.map((name, index) => {
+          const y = keys.map((key) => finishMeasure(buckets[name][key], metric));
+          return {
+            type: "bar",
+            name,
+            x: keys,
+            y,
+            marker: { color: colorOf(name, index) },
+            hovertext: keys.map((key, i) => hover(name, key, y[i])),
+            hoverinfo: "text",
+          };
+        }),
+        xTitle: alongDef.label,
+        yTitle,
+        barmode: "group",
+      };
+    }
+
     function countKindPlot(rows, xId, xDef) {
       if (!xDef || xDef.kind === "time") {
         return { traces: monthlyCountTraces(rows), xTitle: "Monat", tickangle: -45, yTitle: "Anzahl je Monat" };
@@ -789,18 +1582,21 @@
           barmode: "overlay",
         };
       }
-      const keys = sortCats(
-        [...new Set(rows.map((e) => String(axisValue(e, xId) || "unbekannt")))],
-        xId,
-      );
+      const keys = [];
+      const seen = new Set();
+      eachSlot(rows, xId, (_e, raw) => {
+        const key = String(raw || "unbekannt");
+        if (!seen.has(key)) { seen.add(key); keys.push(key); }
+      });
+      sortCats(keys, xId);
       const fault = Object.fromEntries(keys.map((k) => [k, 0]));
       const maint = Object.fromEntries(keys.map((k) => [k, 0]));
-      for (const e of rows) {
-        const key = String(axisValue(e, xId) || "unbekannt");
+      eachSlot(rows, xId, (e, raw, w) => {
+        const key = String(raw || "unbekannt");
         const kind = eventKind(e);
-        if (kind === "fault" && key in fault) fault[key] += 1;
-        if (kind === "maint" && key in maint) maint[key] += 1;
-      }
+        if (kind === "fault" && key in fault) fault[key] += w;
+        if (kind === "maint" && key in maint) maint[key] += w;
+      });
       return {
         traces: kindCountSeries(keys, keys.map((k) => fault[k]), keys.map((k) => maint[k]), "bar"),
         xTitle: xDef.label,
@@ -812,12 +1608,21 @@
     function syncStatControl() {
       const wrap = document.getElementById("stat-wrap");
       if (!wrap) return;
-      wrap.hidden = !overlayY(document.getElementById("axis-y").value);
+      const xId = document.getElementById("axis-x").value;
+      const yId = document.getElementById("axis-y").value;
+      const xDef = AXES.find((a) => a.id === xId);
+      const yDef = AXES.find((a) => a.id === yId);
+      const boxed = !!discreteBoxSpec(xId, yId, EVENTS);
+      wrap.hidden = !!seriesSplit(xId, yId) || !overlayY(yId) || boxed;
     }
 
     function syncAxisControls() {
       const xWrap = document.getElementById("axis-x-wrap");
       if (xWrap) xWrap.hidden = false;
+      const metricWrap = document.getElementById("plot-metric-wrap");
+      const xId = document.getElementById("axis-x").value;
+      const yId = document.getElementById("axis-y").value;
+      if (metricWrap) metricWrap.hidden = !seriesSplit(xId, yId);
       syncStatControl();
     }
 
@@ -838,6 +1643,9 @@
         yaxis: { title: yDef.label },
       };
 
+      const split = seriesSplit(xId, yId);
+      const boxSpec = !split ? discreteBoxSpec(xId, yId, rows) : null;
+      const boxed = !!boxSpec;
       if (yId === "monthly_count") {
         const plotted = countKindPlot(rows, xId, xDef);
         traces = plotted.traces;
@@ -849,51 +1657,32 @@
         layout.margin.b = 70;
         if (plotted.tickangle) layout.xaxis.tickangle = plotted.tickangle;
         if (plotted.barmode) layout.barmode = plotted.barmode;
-      } else if (xDef.kind === "cat" && yDef.kind === "cat") {
-        traces = [heatmap(rows, xId, yId)];
-        layout.yaxis.autorange = "reversed";
-      } else if (xDef.kind === "cat" && yDef.kind === "num") {
-        const groups = {};
-        for (const e of rows) {
-          const k = axisValue(e, xId) || "unbekannt";
-          (groups[k] ||= []).push(axisValue(e, yId));
-        }
-        traces = sortCats(Object.keys(groups), xId).map((k) => ({
-          type: "box", name: k, y: groups[k].filter((v) => v != null), boxpoints: "outliers",
-        }));
-        layout.yaxis.title = axisTitle(yDef);
-      } else if (yDef.kind === "cat" && xDef.kind === "num") {
-        const groups = {};
-        for (const e of rows) {
-          const k = axisValue(e, yId) || "unbekannt";
-          (groups[k] ||= []).push(axisValue(e, xId));
-        }
-        traces = Object.keys(groups).sort().map((k) => ({
-          type: "box", name: k, x: groups[k].filter((v) => v != null), boxpoints: "outliers",
-        }));
-        layout.xaxis.title = axisTitle(xDef);
-      } else if (xDef.kind === "time" && yDef.kind === "cat") {
-        traces = [{
-          type: "scattergl", mode: "markers",
-          x: rows.map((e) => axisValue(e, "time")),
-          y: rows.map((e) => axisValue(e, yId)),
-          customdata: rows.map((e) => e.mrid),
-          text: rows.map((e) => e.asset_name),
-          hovertemplate: "%{x}<br>%{y}<br>%{text}<extra></extra>",
-          marker: { size: 8, opacity: 0.65, color: "#1d4ed8" },
-        }];
-      } else if (yDef.kind === "time" && xDef.kind === "cat") {
-        traces = [{
-          type: "scattergl", mode: "markers",
-          y: rows.map((e) => axisValue(e, "time")),
-          x: rows.map((e) => axisValue(e, xId)),
-          customdata: rows.map((e) => e.mrid),
-          text: rows.map((e) => e.asset_name),
-          hovertemplate: "%{y}<br>%{x}<br>%{text}<extra></extra>",
-          marker: { size: 8, opacity: 0.65, color: "#1d4ed8" },
-        }];
-      } else if (xDef.kind === "cat" && yDef.kind === "cat") {
-        traces = [heatmap(rows, xId, yId)];
+      } else if (split) {
+        const plotted = seriesMeasurePlot(rows, split.seriesId, split.alongId, split.alongDef, plotMetric());
+        traces = plotted.traces;
+        layout.xaxis.title = plotted.xTitle;
+        layout.yaxis.title = plotted.yTitle;
+        layout.yaxis.rangemode = "tozero";
+        const many = plotted.traces.length > 8;
+        layout.legend = many
+          ? { orientation: "v", x: 1.02, y: 1, yanchor: "top", font: { size: 11 } }
+          : { orientation: "h", x: 0, y: 1.14, yanchor: "bottom", font: { size: 11 } };
+        layout.margin.t = many ? 16 : 56;
+        layout.margin.r = many ? 160 : 16;
+        layout.margin.b = 70;
+        if (plotted.tickangle) layout.xaxis.tickangle = plotted.tickangle;
+        if (plotted.barmode) layout.barmode = plotted.barmode;
+      } else if (boxed) {
+        traces = catNumericBoxes(rows, boxSpec);
+        layout.boxmode = "overlay";
+        layout.boxgap = 0.08;
+        const catAxis = boxSpec.horizontal ? layout.yaxis : layout.xaxis;
+        catAxis.categoryorder = "array";
+        catAxis.categoryarray = boxSpec.cats;
+        layout.legend = { orientation: "h", x: 0, y: 1.12, yanchor: "bottom", font: { size: 11 } };
+        layout.margin.t = 40;
+        if (boxSpec.horizontal && xDef.unit) layout.xaxis.title = axisTitle(xDef);
+        if (!boxSpec.horizontal && yDef.unit) layout.yaxis.title = axisTitle(yDef);
       } else if ((xDef.kind === "num" || xDef.kind === "time") && (yDef.kind === "num" || yDef.kind === "time")) {
         traces = [{
           type: "scattergl",
@@ -907,17 +1696,9 @@
         }];
         if (yDef.unit) layout.yaxis.title = axisTitle(yDef);
         if (xDef.unit) layout.xaxis.title = axisTitle(xDef);
-      } else if (xDef.kind === "cat" && xId === yId) {
-        const c = counts(rows, xId);
-        traces = [{ type: "bar", x: c.map((d) => d[0]), y: c.map((d) => d[1]) }];
-        layout.yaxis.title = "Anzahl";
-      } else {
-        const c = counts(rows, xDef.kind === "cat" ? xId : yId);
-        traces = [{ type: "bar", x: c.map((d) => d[0]), y: c.map((d) => d[1]) }];
-        layout.yaxis.title = "Anzahl";
       }
 
-      if (overlayY(yId) && rows.length) {
+      if (!split && !boxed && overlayY(yId) && rows.length) {
         const overlay = numericOverlay(rows, xId, xDef, durationStat(), yId);
         if (overlay) {
           overlay.showlegend = true;
@@ -955,32 +1736,57 @@
         traces = [];
         layout.annotations = [{ text: "Keine Daten", showarrow: false, xref: "paper", yref: "paper", x: 0.5, y: 0.5 }];
       }
-      if (yId === "duration") {
+      if (!split && yId === "duration") {
         layout.yaxis.type = "log";
         layout.yaxis.exponentformat = "none";
       }
-      if (xId === "duration") {
+      if (!split && xId === "duration") {
         layout.xaxis.type = "log";
         layout.xaxis.exponentformat = "none";
       }
+      if (split && split.alongId === "duration" && split.alongDef.kind === "num" && plotMetric() === "count") {
+        layout.xaxis.type = "log";
+        layout.xaxis.exponentformat = "none";
+      }
+      const picked = singleListedEvent(rows);
+      const pointCloud = traces.some((t) => (t.type === "scatter" || t.type === "scattergl") && Array.isArray(t.customdata));
+      if (picked && pointCloud) {
+        const x = axisValue(picked, xId);
+        const y = axisValue(picked, yId);
+        if (x != null && y != null) {
+          for (const t of traces) {
+            if (!Array.isArray(t.customdata)) continue;
+            const keep = [];
+            for (let i = 0; i < t.customdata.length; i++) {
+              if (t.customdata[i] !== picked.mrid) keep.push(i);
+            }
+            if (keep.length === t.customdata.length) continue;
+            for (const key of ["x", "y", "customdata", "text"]) {
+              if (Array.isArray(t[key])) t[key] = keep.map((i) => t[key][i]);
+            }
+          }
+          traces.push({
+            type: "scattergl",
+            mode: "markers",
+            x: [x],
+            y: [y],
+            customdata: [picked.mrid],
+            text: [`${picked.asset_name}<br>${picked.reason}<br>${picked.tso}`],
+            hovertemplate: "%{text}<extra></extra>",
+            showlegend: false,
+            marker: { size: 16, color: "#15803d", symbol: "circle", line: { color: "#ffffff", width: 2 } },
+          });
+        }
+      }
       ignorePlotSelect = true;
-      Plotly.react("plot", withSelection(traces), layout, { responsive: true, displaylogo: false });
+      Plotly.react("plot", traces, layout, { responsive: true, displaylogo: false });
       requestAnimationFrame(() => { ignorePlotSelect = false; });
     }
 
-    function withSelection(traces) {
-      if (!selectedMrids.size) return traces;
-      return traces.map((t) => {
-        if (!Array.isArray(t.customdata) || !t.marker) return t;
-        const on = t.customdata.map((id) => selectedMrids.has(id));
-        const baseSize = typeof t.marker.size === "number" ? t.marker.size : 8;
-        return Object.assign({}, t, {
-          marker: Object.assign({}, t.marker, {
-            opacity: on.map((s) => s ? 1 : 0.12),
-            size: on.map((s) => s ? baseSize + 3 : baseSize),
-          }),
-        });
-      });
+    function singleListedEvent(rows) {
+      if (pinnedEv || selectedMrids.size !== 1) return null;
+      const shown = rows.filter((e) => selectedMrids.has(e.mrid));
+      return shown.length === 1 ? shown[0] : null;
     }
 
     function formatUnmappedPct(miss, n) {
@@ -990,9 +1796,30 @@
       return `${rounded.toLocaleString("de-DE")}\u00a0%`;
     }
 
-    function fillScopeCoverage() {
-      const el = document.getElementById("scope");
-      if (!el) return;
+    function formatPctWhole(part, n) {
+      if (!n) return "—";
+      return `${Math.round((100 * part) / n).toLocaleString("de-DE")}\u00a0%`;
+    }
+
+    function joinDe(parts) {
+      if (parts.length <= 1) return parts[0] || "";
+      return `${parts.slice(0, -1).join(", ")} und ${parts[parts.length - 1]}`;
+    }
+
+    function formatDeDay(isoDay) {
+      if (!isoDay || isoDay.length < 10) return "—";
+      return `${isoDay.slice(8, 10)}.${isoDay.slice(5, 7)}.${isoDay.slice(0, 4)}`;
+    }
+
+    function addTsoCount(map, tso, amount) {
+      if (tso === JOINT_TSO) {
+        for (const owner of JOINT_OWNERS) map.set(owner, (map.get(owner) || 0) + amount / 2);
+        return;
+      }
+      map.set(tso, (map.get(tso) || 0) + amount);
+    }
+
+    function coverageFromData() {
       const mapped = new Uint8Array(EVENTS.length);
       const feats = (DATA.network && DATA.network.matched && DATA.network.matched.features) || [];
       for (const f of feats) {
@@ -1003,11 +1830,23 @@
         }
       }
       let all = 0, allMiss = 0, gen = 0, genMiss = 0, grid = 0, gridMiss = 0;
+      let from = null, to = null;
+      const tsoAll = new Map();
+      const tsoMiss = new Map();
+      const txAll = new Map();
+      const txMiss = new Map();
+      const byDoc = { A77: 0, A78: 0, A79: 0, A80: 0 };
+      let tx = 0, txMissN = 0, anon = 0, anonUnknown = 0, intra = 0;
       for (let i = 0; i < EVENTS.length; i++) {
-        const doc = EVENTS[i].doc_type;
+        const e = EVENTS[i];
         const miss = !mapped[i];
         all += 1;
         if (miss) allMiss += 1;
+        const tso = (e.tso && String(e.tso).trim()) || "unbekannt";
+        tsoAll.set(tso, (tsoAll.get(tso) || 0) + 1);
+        if (miss) addTsoCount(tsoMiss, tso, 1);
+        const doc = e.doc_type;
+        if (Object.prototype.hasOwnProperty.call(byDoc, doc)) byDoc[doc] += 1;
         if (doc === "A77" || doc === "A80") {
           gen += 1;
           if (miss) genMiss += 1;
@@ -1015,30 +1854,415 @@
           grid += 1;
           if (miss) gridMiss += 1;
         }
+        if (doc === "A78") {
+          tx += 1;
+          txAll.set(tso, (txAll.get(tso) || 0) + 1);
+          if (miss) {
+            txMissN += 1;
+            addTsoCount(txMiss, tso, 1);
+          }
+        }
+        const eic = String(e.asset_eic || "").replace(/[^A-Za-z0-9]/g, "").toUpperCase();
+        if (eic.startsWith("11W0")) {
+          anon += 1;
+          if (tso === "unbekannt") anonUnknown += 1;
+        }
+        const name = String(e.asset_name || "").toLowerCase();
+        if (name === "unlocated" || name.includes("intra_zonal") || name.includes("intra-zonal")) intra += 1;
+        const start = e.start && e.start.length >= 10 ? e.start.slice(0, 10) : null;
+        if (start && (from === null || start < from)) from = start;
+        if (start && (to === null || start > to)) to = start;
       }
-      const years = DATA.years || 5;
-      el.textContent =
-        `ENTSO-E Transparency DE, letzte ${years} Jahre: gemeldete Unverfügbarkeiten (i. d. R. ab ca. 100 MW). ` +
-        `Ohne stornierte geplante Wartungen und ohne zurückgezogene Meldungen. ` +
-        `Karte: zuordenbare ≥110-kV-Leitungen, Kraftwerke und Schaltanlagen. ` +
-        `Nicht verortet: ${formatUnmappedPct(allMiss, all)} aller Meldungen · ` +
-        `Erzeugung ${formatUnmappedPct(genMiss, gen)} · ` +
-        `Netz/Offshore ${formatUnmappedPct(gridMiss, grid)} ` +
-        `(Verteilnetz und anonymisierte Erzeugung intra_zonal / 11W0-0000).`;
+      return {
+        count: all,
+        country: DATA.country_label || DATA.country || "",
+        years: Number(DATA.years) || 0,
+        nTsos: (DATA.tsos && DATA.tsos.length) || 0,
+        from,
+        to,
+        generated: DATA.generated_at ? String(DATA.generated_at).slice(0, 10) : "",
+        all, allMiss, gen, genMiss, grid, gridMiss,
+        byDoc, anon, anonUnknown, intra,
+        unknown: tsoAll.get("unbekannt") || 0,
+        missByTso: [...tsoMiss.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], "de")),
+        tx, txMiss: txMissN,
+        txUnknown: txAll.get("unbekannt") || 0,
+        txMissByTso: [...txMiss.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], "de")),
+      };
+    }
+
+    function unmappedTsoSentence(group, rows, missN, unknownN, baseN, unknownScope) {
+      if (!missN) return "";
+      const shares = rows.map(([name, n]) => `${formatPctWhole(n, missN)} auf ${name}`);
+      const unknown = unknownN
+        ? ` Ohne Netzbetreiber bleiben ${formatPctWhole(unknownN, baseN)} ${unknownScope}.`
+        : "";
+      return `Von den ${missN.toLocaleString("de-DE")} ${group} entfallen ${joinDe(shares)}.${unknown}`;
+    }
+
+    function fillScopeCoverage() {
+      const s = coverageFromData();
+      const allPct = formatUnmappedPct(s.allMiss, s.all);
+      const genPct = formatUnmappedPct(s.genMiss, s.gen);
+      const gridPct = formatUnmappedPct(s.gridMiss, s.grid);
+      const period = (s.from && s.to) ? `${formatDeDay(s.from)}–${formatDeDay(s.to)}` : "—";
+      const count = s.count.toLocaleString("de-DE");
+      const scope = document.getElementById("info-scope");
+      if (scope) scope.textContent = s.country || "—";
+      const cover = document.getElementById("info-cover");
+      if (cover) {
+        const place = s.country ? ` für ${s.country}` : "";
+        cover.textContent =
+          `${count} Meldungen${place}. Der Beginn liegt zwischen ${formatDeDay(s.from)} und ${formatDeDay(s.to)}. ` +
+          `Diagramm und Tabelle zeigen jede Meldung. ` +
+          `Auf der Karte fehlt die Lage bei ${allPct} (Erzeugung ${genPct}, Netz und Offshore ${gridPct}).`;
+      }
+      const unmappedTso = document.getElementById("info-unmapped-tso");
+      if (unmappedTso) {
+        const allSentence = unmappedTsoSentence(
+          "Meldungen ohne Lage auf der Karte",
+          s.missByTso, s.allMiss, s.unknown, s.all, "aller Meldungen",
+        );
+        const txSentence = unmappedTsoSentence(
+          "Übertragungsnetz-Meldungen ohne Lage auf der Karte",
+          s.txMissByTso, s.txMiss, s.txUnknown, s.tx, "der Übertragungsnetz-Meldungen",
+        );
+        unmappedTso.textContent = [allSentence, txSentence].filter(Boolean).join(" ");
+      }
+      const countEl = document.getElementById("info-stat-count");
+      const periodEl = document.getElementById("info-stat-period");
+      const unmappedEl = document.getElementById("info-stat-unmapped");
+      if (countEl) {
+        countEl.textContent = s.generated ? `${count} (Stand ${formatDeDay(s.generated)})` : count;
+      }
+      if (periodEl) {
+        periodEl.textContent = (s.from && s.to)
+          ? `${period} (Beginn der Unverfügbarkeit)`
+          : "—";
+      }
+      if (unmappedEl) {
+        unmappedEl.textContent =
+          `${allPct} aller Meldungen (Erzeugung ${genPct}, Netz und Offshore ${gridPct})`;
+      }
+      const yearsEl = document.getElementById("info-years");
+      if (yearsEl) yearsEl.textContent = s.years ? ` (${s.years}\u00a0Jahre)` : "";
+      const tsoWord = ({ 1: "eine", 2: "zwei", 3: "drei", 4: "vier", 5: "fünf" })[s.nTsos] || String(s.nTsos || "—");
+      document.querySelectorAll(".js-n-tsos").forEach((el) => { el.textContent = tsoWord; });
+      for (const code of ["A77", "A78", "A79", "A80"]) {
+        const el = document.getElementById(`info-cat-${code}`);
+        if (el) el.textContent = (s.byDoc[code] || 0).toLocaleString("de-DE");
+      }
+      const a80a77 = document.getElementById("info-a80-vs-a77");
+      if (a80a77) {
+        a80a77.textContent =
+          `${(s.byDoc.A80 || 0).toLocaleString("de-DE")} A80- gegenüber ${(s.byDoc.A77 || 0).toLocaleString("de-DE")} A77-Zeilen`;
+      }
+      const intraEl = document.getElementById("info-intra");
+      if (intraEl) {
+        intraEl.textContent = s.intra
+          ? `${s.intra.toLocaleString("de-DE")} Meldungen (${formatPctWhole(s.intra, s.all)})`
+          : "keine";
+      }
+      const unknownLive = document.getElementById("info-unknown-live");
+      if (unknownLive) {
+        unknownLive.textContent = s.unknown
+          ? `${s.unknown.toLocaleString("de-DE")} Meldungen ohne ÜNB (${formatPctWhole(s.unknown, s.all)}), darunter ${s.anonUnknown.toLocaleString("de-DE")} mit anonymem 11W0-0000`
+          : "keine Meldung ohne ÜNB";
+      }
+      const anonEl = document.getElementById("info-anon");
+      if (anonEl) {
+        anonEl.textContent = s.anon
+          ? `${s.anon.toLocaleString("de-DE")} Meldungen`
+          : "in dieser Datei keine";
+      }
+      initDutySpan();
+      fillDutyTables();
+    }
+
+    const DUTY_PLACEHOLDERS = new Set([
+      "unlocated", "intra_zonal", "intra-zonal", "cross_zonal", "cross-zonal", "not known", "unknown", "unbekannt",
+      "n/a", "-", "na", "none", "nordsee", "nordsee awz",
+      "north rhine-westphalia", "north-rhine-wesphalia", "saarland", "hesse", "hessen",
+    ]);
+    const DUTY_TSOS = ["50Hertz", "TenneT", "Amprion", "TransnetBW", "unbekannt"];
+    const DUTY_OWNERS = ["50Hertz", "TenneT", "Amprion", "TransnetBW"];
+    let dutyYears = 5;
+
+    function shiftIsoDay(iso, days) {
+      const dt = new Date(Date.UTC(Number(iso.slice(0, 4)), Number(iso.slice(5, 7)) - 1, Number(iso.slice(8, 10))));
+      dt.setUTCDate(dt.getUTCDate() + days);
+      const mm = String(dt.getUTCMonth() + 1).padStart(2, "0");
+      const dd = String(dt.getUTCDate()).padStart(2, "0");
+      return `${dt.getUTCFullYear()}-${mm}-${dd}`;
+    }
+
+    function dutyAnchorDay() {
+      const gen = DATA.generated_at ? String(DATA.generated_at).slice(0, 10) : "";
+      if (/^\d{4}-\d{2}-\d{2}$/.test(gen)) return gen;
+      let max = "";
+      for (const e of EVENTS) {
+        const d = e.start && e.start.length >= 10 ? e.start.slice(0, 10) : "";
+        if (d > max) max = d;
+      }
+      return max;
+    }
+
+    function dutyRange(years) {
+      const anchor = dutyAnchorDay();
+      if (!anchor) return { from: "", to: "" };
+      const endExclusive = shiftIsoDay(anchor, 1);
+      return { from: shiftIsoDay(endExclusive, -365 * years), to: anchor };
+    }
+
+    function eventInDutyRange(event, range) {
+      const day = event.start && event.start.length >= 10 ? event.start.slice(0, 10) : "";
+      return Boolean(day && range.from && day >= range.from && day <= range.to);
+    }
+
+    function initDutySpan() {
+      const box = document.getElementById("duty-span");
+      if (!box || box.dataset.ready) return;
+      box.dataset.ready = "1";
+      const buttons = [...box.querySelectorAll("[data-duty-years]")];
+      function select(btn) {
+        dutyYears = Number(btn.dataset.dutyYears) || 5;
+        for (const b of buttons) {
+          const on = b === btn;
+          b.setAttribute("aria-checked", on ? "true" : "false");
+          b.tabIndex = on ? 0 : -1;
+        }
+        fillDutyTables();
+      }
+      box.addEventListener("click", (ev) => {
+        const btn = ev.target.closest("[data-duty-years]");
+        if (btn) select(btn);
+      });
+      box.addEventListener("keydown", (ev) => {
+        const dir = ev.key === "ArrowRight" ? 1 : ev.key === "ArrowLeft" ? -1 : 0;
+        if (!dir) return;
+        ev.preventDefault();
+        const i = buttons.findIndex((b) => b.getAttribute("aria-checked") === "true");
+        const next = buttons[(i + dir + buttons.length) % buttons.length];
+        next.focus();
+        select(next);
+      });
+    }
+
+    function dutyTextOk(value) {
+      const s = String(value == null ? "" : value).trim();
+      if (!s) return false;
+      const low = s.toLowerCase();
+      if (DUTY_PLACEHOLDERS.has(low) || low.startsWith("11w0")) return false;
+      if (/^(de-pl|cz-de|se4-de-lu|denmark\/germany|de\/lu|pl-de|dk1-de|dk2-de|no2-de)$/i.test(s)) return false;
+      return true;
+    }
+
+    function dutyNumOk(value, zeroOk) {
+      if (value == null || value === "") return false;
+      const x = Number(value);
+      if (!Number.isFinite(x)) return false;
+      return zeroOk || x > 0;
+    }
+
+    const DUTY_GRID_ID_EXCUSE = "Artikel 10 Absatz 4: Name und Ort einer Leitung dürfen entfallen, wenn sie als sensible kritische Infrastruktur gilt. Die übrigen Angaben bleiben Pflicht. Für das Offshore-Netz gilt das nicht.";
+
+    function dutyTone(pct, excused) {
+      if (pct > 95) return "is-good";
+      if (excused) return "is-excused";
+      if (pct >= 50) return "is-mid";
+      return "is-bad";
+    }
+
+    function dutyPctText(pct) {
+      return `${pct.toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}\u00a0%`;
+    }
+
+    const DUTY_GROUPS = [
+      {
+        doc: "A80",
+        title: "Erzeugungseinheit (A80)",
+        lead: "Artikel 15 verlangt Name und Ort der Einheit, dazu Leistung, Art, Ursache und Zeit.",
+        namesMatter: true,
+        fields: [
+          ["Name der Einheit", (e) => dutyTextOk(e.asset_name)],
+          ["Ort", (e) => dutyTextOk(e.location)],
+          ["Gebotszone", (e) => Boolean(e.bidding_domain)],
+          ["Installierte Leistung", (e) => dutyNumOk(e.nominal_mw, false)],
+          ["Art der Erzeugung", (e) => dutyTextOk(e.asset_type)],
+          ["Noch verfügbare Leistung", (e) => dutyNumOk(e.avail_mw, true)],
+          ["Ursache", (e) => dutyTextOk(e.reason)],
+          ["Beginn und voraussichtliches Ende", (e) => Boolean(e.start && e.end)],
+        ],
+      },
+      {
+        doc: "A77",
+        title: "Kraftwerk (A77)",
+        lead: "Artikel 15 Absatz 1 Buchstaben c und d verlangt Name und Ort des Kraftwerks. Der Name des einzelnen Blocks ist bei dieser Meldung nicht verlangt.",
+        namesMatter: true,
+        fields: [
+          ["Name des Kraftwerks", (e) => dutyTextOk(e.asset_name)],
+          ["Ort", (e) => dutyTextOk(e.location)],
+          ["Gebotszone", (e) => Boolean(e.bidding_domain)],
+          ["Installierte Leistung", (e) => dutyNumOk(e.nominal_mw, false)],
+          ["Art der Erzeugung", (e) => dutyTextOk(e.asset_type)],
+          ["Noch verfügbare Leistung", (e) => dutyNumOk(e.avail_mw, true)],
+          ["Ursache", (e) => dutyTextOk(e.reason)],
+          ["Beginn und voraussichtliches Ende", (e) => Boolean(e.start && e.end)],
+        ],
+      },
+      {
+        doc: "A78",
+        title: "Übertragungsnetz (A78)",
+        lead: "Artikel 10. Die Wirkung auf die Grenzkapazität steht als Leistungsangabe im Dokument. Name und Ort dürfen nach Absatz 4 entfallen.",
+        namesMatter: false,
+        fields: [
+          ["Name der Anlage", (e) => dutyTextOk(e.asset_name), DUTY_GRID_ID_EXCUSE],
+          ["Ort", (e) => dutyTextOk(e.location), DUTY_GRID_ID_EXCUSE],
+          ["Art der Anlage", (e) => dutyTextOk(e.asset_type)],
+          ["Betrag der Grenzkapazität-Änderung", (e) => dutyNumOk(e.avail_mw, true)],
+          ["Vorzeichen der Grenzkapazität-Änderung", (e) => Boolean(e.in_domain && e.out_domain)],
+          ["Ursache", (e) => dutyTextOk(e.reason)],
+          ["Beginn und voraussichtliches Ende", (e) => Boolean(e.start && e.end)],
+        ],
+      },
+      {
+        doc: "A79",
+        title: "Offshore-Netz (A79)",
+        lead: "Artikel 10 Buchstabe c. Die Meldungen sind Leitungen und Umrichter. Die angeschlossene Windleistung steht hier nicht als eigenes Feld. Die Nennleistung der Leitung gilt nicht als Windleistung. Die Ausnahme für Name und Ort gilt beim Offshore-Netz nicht.",
+        namesMatter: false,
+        fields: [
+          ["Name der Anlage", (e) => dutyTextOk(e.asset_name)],
+          ["Ort", (e) => dutyTextOk(e.location)],
+          ["Art der Anlage", (e) => dutyTextOk(e.asset_type)],
+          ["Leistungsangabe", (e) => dutyNumOk(e.avail_mw, true)],
+          ["Gebotszone", (e) => Boolean(e.bidding_domain)],
+          ["Ursache", (e) => dutyTextOk(e.reason)],
+          ["Beginn und voraussichtliches Ende", (e) => Boolean(e.start && e.end)],
+        ],
+      },
+    ];
+
+    function dutyNote(group, names, counts) {
+      const bits = [];
+      const absent = DUTY_OWNERS.filter((t) => !counts.get(t));
+      if (absent.length === 1) bits.push(`${absent[0]} hat in diesem Zeitraum keine Meldungen dieser Art.`);
+      else if (absent.length) bits.push(`${joinDe(absent)} haben in diesem Zeitraum keine Meldungen dieser Art.`);
+      if (!group.namesMatter) return bits.join(" ");
+      const ranked = [...names.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], "de"));
+      const real = ranked.filter(([name]) => dutyTextOk(name));
+      if (real.length && real.length <= 3) {
+        bits.push(`Als konkreter Name erkannt: ${joinDe(real.map(([name, n]) => `${name} (${n.toLocaleString("de-DE")})`))}.`);
+      }
+      const top = ranked[0];
+      const total = [...counts.values()].reduce((sum, n) => sum + n, 0);
+      if (top && !dutyTextOk(top[0]) && total) {
+        bits.push(`Häufigster Anzeigename ist „${top[0]}“ (${top[1].toLocaleString("de-DE")} von ${total.toLocaleString("de-DE")}).`);
+      }
+      return bits.join(" ");
+    }
+
+    function fillDutyTables() {
+      const host = document.getElementById("info-duty");
+      if (!host) return;
+      const range = dutyRange(dutyYears);
+      const spanLabel = document.getElementById("duty-span-label");
+      if (spanLabel) {
+        spanLabel.textContent = (range.from && range.to)
+          ? `Beginn ${formatDeDay(range.from)}–${formatDeDay(range.to)}`
+          : "";
+      }
+      host.replaceChildren();
+      for (const group of DUTY_GROUPS) {
+        const counts = new Map();
+        const hits = group.fields.map(() => new Map());
+        const names = new Map();
+        for (const e of EVENTS) {
+          if (e.doc_type !== group.doc || !eventInDutyRange(e, range)) continue;
+          const tso = (e.tso && String(e.tso).trim()) || "unbekannt";
+          addTsoCount(counts, tso, 1);
+          group.fields.forEach((field, i) => {
+            if (field[1](e)) addTsoCount(hits[i], tso, 1);
+          });
+          const name = String(e.asset_name || "").trim();
+          if (name) names.set(name, (names.get(name) || 0) + 1);
+        }
+        const tsos = DUTY_TSOS.filter((t) => counts.get(t));
+        const heading = document.createElement("h3");
+        heading.textContent = group.title;
+        host.appendChild(heading);
+        if (group.lead) {
+          const lead = document.createElement("p");
+          lead.textContent = group.lead;
+          host.appendChild(lead);
+        }
+        if (!tsos.length) {
+          const empty = document.createElement("p");
+          empty.textContent = "In diesem Zeitraum keine Meldungen.";
+          host.appendChild(empty);
+          continue;
+        }
+        const scroll = document.createElement("div");
+        scroll.className = "duty-scroll";
+        const table = document.createElement("table");
+        table.className = "duty-table";
+        const thead = document.createElement("thead");
+        const headRow = document.createElement("tr");
+        const corner = document.createElement("th");
+        corner.textContent = "Pflichtangabe";
+        headRow.appendChild(corner);
+        for (const tso of tsos) {
+          const th = document.createElement("th");
+          th.className = "num";
+          th.textContent = `${tso} (${counts.get(tso).toLocaleString("de-DE")})`;
+          headRow.appendChild(th);
+        }
+        thead.appendChild(headRow);
+        table.appendChild(thead);
+        const tbody = document.createElement("tbody");
+        group.fields.forEach((field, i) => {
+          const tr = document.createElement("tr");
+          const label = document.createElement("td");
+          label.textContent = field[0];
+          tr.appendChild(label);
+          for (const tso of tsos) {
+            const n = counts.get(tso);
+            const hit = hits[i].get(tso) || 0;
+            const pct = (100 * hit) / n;
+            const excuse = field[2] || "";
+            const tone = dutyTone(pct, Boolean(excuse));
+            const td = document.createElement("td");
+            td.className = `num duty-pct ${tone}`;
+            td.textContent = dutyPctText(pct);
+            const countTitle = `${hit.toLocaleString("de-DE")} von ${n.toLocaleString("de-DE")}`;
+            td.title = tone === "is-excused" ? `${countTitle}. ${excuse}` : countTitle;
+            tr.appendChild(td);
+          }
+          tbody.appendChild(tr);
+        });
+        table.appendChild(tbody);
+        scroll.appendChild(table);
+        host.appendChild(scroll);
+        const note = dutyNote(group, names, counts);
+        if (note) {
+          const p = document.createElement("p");
+          p.textContent = note;
+          host.appendChild(p);
+        }
+      }
     }
 
     function refresh() {
       const rows = filtered();
-      const shown = selectedMrids.size ? rows.filter((e) => selectedMrids.has(e.mrid)) : rows;
+      const shown = pinnedEv
+        ? rows.filter((e) => pinnedEv.has(EVENT_INDEX.get(e)))
+        : (selectedMrids.size ? rows.filter((e) => selectedMrids.has(e.mrid)) : rows);
       renderPlot(rows);
       renderTable(shown);
-      const stand = DATA.generated_at ? String(DATA.generated_at).slice(0, 10) : "";
-      document.getElementById("meta").textContent =
-        `${DATA.country_label || "—"} · ${rows.length} von ${EVENTS.length} Meldungen` +
-        (stand ? ` · Stand ${stand}` : "");
-      document.getElementById("outages-count").textContent = selectedMrids.size
-        ? formatKindSummary(shown)
-        : shown.length.toLocaleString("de-DE");
+      const countEl = document.getElementById("outages-count");
+      if (pinnedEv) countEl.textContent = `${pinnedName ? pinnedName + " · " : ""}${formatKindSummary(shown)}`;
+      else if (selectedMrids.size) countEl.textContent = formatKindSummary(shown);
+      else countEl.textContent = shown.length.toLocaleString("de-DE");
+      updateOutageHints(rows);
       scheduleOutageOverlay(rows);
     }
 
@@ -1066,11 +2290,19 @@
     }
 
     function initFilters() {
-      const tsoVals = (DATA.tsos && DATA.tsos.length) ? DATA.tsos.concat(["unbekannt"]).filter((v, i, a) => a.indexOf(v) === i) : unique("tso");
+      const tsoPresent = unique("tso").filter((v) => v !== JOINT_TSO);
+      const tsoHead = (DATA.tsos || []).concat(["unbekannt"]);
+      const tsoVals = [];
+      for (const v of tsoHead.concat(tsoPresent)) {
+        if (v === JOINT_TSO) continue;
+        if (!tsoVals.includes(v) && (tsoPresent.includes(v) || v === "unbekannt" || (DATA.tsos || []).includes(v))) tsoVals.push(v);
+      }
       chips(document.getElementById("flt-tso"), tsoVals);
       chips(document.getElementById("flt-reason"), unique("reason"));
       chips(document.getElementById("flt-voltage"), unique("voltage"));
       chips(document.getElementById("flt-category"), unique("category"));
+      updateFilterSummaries();
+      initFilterDrops();
       initDateRange();
       const xSel = document.getElementById("axis-x");
       const ySel = document.getElementById("axis-y");
@@ -1078,15 +2310,22 @@
       ySel.innerHTML = AXES.map((a) => `<option value="${a.id}">${a.label}</option>`).join("");
       xSel.value = "time";
       ySel.value = "duration";
-      document.querySelector(".filters").addEventListener("change", () => { selectedMrids = new Set(); refresh(); });
+      document.querySelector(".filters").addEventListener("change", () => {
+        updateFilterSummaries();
+        refresh();
+      });
       xSel.addEventListener("change", refresh);
       ySel.addEventListener("change", () => { syncAxisControls(); refresh(); });
       const statEl = document.getElementById("stat-duration");
       if (statEl) statEl.addEventListener("change", refresh);
+      const plotMetricEl = document.getElementById("plot-metric");
+      if (plotMetricEl) plotMetricEl.addEventListener("change", refresh);
       const mapMetricEl = document.getElementById("map-metric");
       if (mapMetricEl) {
         mapMetricEl.addEventListener("change", () => {
-          scheduleOutageOverlay(overlayRows.length ? overlayRows : filtered());
+          const rows = overlayRows.length ? overlayRows : filtered();
+          updateOutageHints(rows);
+          scheduleOutageOverlay(rows);
         });
       }
       syncAxisControls();
@@ -1099,6 +2338,7 @@
       ? DATA.network
       : { background: EMPTY_FC, matched: EMPTY_FC };
     const MRID_IDX = new Map(EVENTS.map((e, i) => [e.mrid, i]));
+    const EVENT_INDEX = new Map(EVENTS.map((e, i) => [e, i]));
     const MAG_STEPS = 5;
     const WIDTH_PX = [2.2, 3.3, 4.6, 6.2, 8.2];
     const RADIUS_PX = [4, 5.5, 7, 8.8, 11];
@@ -1106,6 +2346,33 @@
     function mapMetric() {
       const el = document.getElementById("map-metric");
       return (el && el.value) || "count";
+    }
+
+    function filterIncludesTransmission(rows) {
+      return rows.some((e) => e.doc_type === "A78");
+    }
+
+    function plotUsesOutage() {
+      const xId = document.getElementById("axis-x").value;
+      const yId = document.getElementById("axis-y").value;
+      if (seriesSplit(xId, yId)) {
+        const metric = plotMetric();
+        return metric === "outage" || metric === "outage_mean";
+      }
+      return xId === "outage_mw" || yId === "outage_mw";
+    }
+
+    function mapUsesOutage() {
+      const m = mapMetric();
+      return m === "outage" || m === "outage_mean";
+    }
+
+    function updateOutageHints(rows) {
+      const hasTx = filterIncludesTransmission(rows);
+      const plotHint = document.getElementById("plot-outage-hint");
+      const mapHint = document.getElementById("map-outage-hint");
+      if (plotHint) plotHint.hidden = !(plotUsesOutage() && hasTx);
+      if (mapHint) mapHint.hidden = !(mapUsesOutage() && hasTx);
     }
 
     function formatHours(h) {
@@ -1122,10 +2389,10 @@
     }
 
     function formatMetricValue(v, metric) {
-      if (metric === "mw" || metric === "mw_mean") {
+      if (metric === "outage" || metric === "outage_mean") {
         if (!(v >= 0) || !isFinite(v)) return "–";
         const label = formatMw(v);
-        return metric === "mw_mean" ? label.replace(" MW", " MW Ø") : label;
+        return metric === "outage_mean" ? label.replace(" MW", " MW Ø") : label;
       }
       if (!(v > 0)) return "–";
       if (metric === "count") return Math.round(v).toLocaleString("de-DE");
@@ -1134,15 +2401,16 @@
     }
 
     function blankSide() {
-      return { n: 0, hours: 0, mw: 0, mwN: 0, mrids: [] };
+      return { n: 0, hours: 0, outage: 0, outageN: 0, mrids: [] };
     }
 
     function addSide(s, e) {
       s.n += 1;
       s.hours += Number(e.duration_h) || 0;
-      if (typeof e.avail_mw === "number" && !Number.isNaN(e.avail_mw)) {
-        s.mw += e.avail_mw;
-        s.mwN += 1;
+      const lost = outageMw(e);
+      if (lost != null) {
+        s.outage += lost;
+        s.outageN += 1;
       }
       s.mrids.push(e.mrid);
     }
@@ -1150,17 +2418,18 @@
     function sideOut(s) {
       return {
         n: s.n, hours: s.hours, mean: s.n ? s.hours / s.n : 0,
-        mw: s.mw, mwN: s.mwN, mwMean: s.mwN ? s.mw / s.mwN : 0, mrids: s.mrids,
+        outage: s.outage, outageN: s.outageN, outageMean: s.outageN ? s.outage / s.outageN : 0,
+        mrids: s.mrids,
       };
     }
 
     function combineSides(a, b) {
       const n = a.n + b.n;
       const hours = a.hours + b.hours;
-      const mwN = a.mwN + b.mwN;
+      const outageN = a.outageN + b.outageN;
       return {
         n, hours, mean: n ? hours / n : 0,
-        mw: a.mw + b.mw, mwMean: mwN ? (a.mw + b.mw) / mwN : 0,
+        outage: a.outage + b.outage, outageMean: outageN ? (a.outage + b.outage) / outageN : 0,
         mrids: a.mrids.concat(b.mrids),
       };
     }
@@ -1170,8 +2439,8 @@
     function metricValue(stats, metric) {
       if (metric === "hours") return stats.hours;
       if (metric === "mean") return stats.mean;
-      if (metric === "mw") return stats.mw;
-      if (metric === "mw_mean") return stats.mwMean;
+      if (metric === "outage") return stats.outage;
+      if (metric === "outage_mean") return stats.outageMean;
       return stats.n;
     }
 
@@ -1201,13 +2470,7 @@
           });
         }
       }
-      const unit = metric === "count" ? "Meldungen"
-        : metric === "mean" ? "mittlere Dauer"
-        : metric === "hours" ? "Summe Dauer"
-        : metric === "mw_mean" ? "mittlere Restleistung"
-        : metric === "mw" ? "Summe Restleistung"
-        : "Summe Dauer";
-      el.innerHTML = `<span>${unit}</span>` + ticks.map((t) =>
+      el.innerHTML = ticks.map((t) =>
         `<span class="wleg"><i style="height:${Math.max(2, t.w)}px"></i>${formatMetricValue(t.v, metric)}</span>`
       ).join("");
     }
@@ -1226,9 +2489,11 @@
         if (i != null) inFilter[i] = 1;
       }
       const statsList = [];
+      const drawnEvents = new Set();
       let vmin = Infinity;
       let vmax = 0;
-      for (const f of NETWORK.matched.features) {
+      for (let fi = 0; fi < NETWORK.matched.features.length; fi++) {
+        const f = NETWORK.matched.features[fi];
         const ev = f.properties && f.properties.ev;
         if (!ev || !ev.length) continue;
         const sides = { fault: blankSide(), maint: blankSide() };
@@ -1237,21 +2502,24 @@
           const e = EVENTS[i];
           if (!e) continue;
           const k = eventKind(e);
-          if (k) addSide(sides[k], e);
+          if (k) {
+            addSide(sides[k], e);
+            drawnEvents.add(i);
+          }
         }
         const fault = sideOut(sides.fault);
         const maint = sideOut(sides.maint);
         const combined = combineSides(fault, maint);
         if (!combined.n) continue;
         const value = metricValue(combined, metric);
-        statsList.push({ f, fault, maint, combined, value });
+        statsList.push({ f, fi, fault, maint, combined, value });
         if (value > 0) {
           if (value < vmin) vmin = value;
           if (value > vmax) vmax = value;
         }
       }
       if (!(vmin < Infinity)) vmin = vmax;
-      if (metric === "count" || metric === "mw" || metric === "mw_mean") vmin = Math.max(1, vmin);
+      if (metric === "count" || metric === "outage" || metric === "outage_mean") vmin = Math.max(1, vmin);
       else vmin = Math.max(0.25, vmin);
       const active = [];
       for (const st of statsList) {
@@ -1265,21 +2533,27 @@
             w: WIDTH_PX[bin],
             r: RADIUS_PX[bin],
             fn: st.fault.n, fh: round1(st.fault.hours), fmean: round1(st.fault.mean),
-            fmw: st.fault.mw, fmwm: round1(st.fault.mwMean),
+            fout: st.fault.outage, foutm: round1(st.fault.outageMean),
             mn: st.maint.n, mh: round1(st.maint.hours), mmean: round1(st.maint.mean),
-            mmw: st.maint.mw, mmwm: round1(st.maint.mwMean),
+            mout: st.maint.outage, moutm: round1(st.maint.outageMean),
             mrids: st.combined.mrids.join(","),
+            fid: st.fi,
           },
         });
       }
       const hint = document.getElementById("map-match");
       if (hint) {
+        const nMsg = drawnEvents.size;
         hint.textContent = active.length
-          ? `${active.length} Leitungen/Anlagen`
+          ? `${active.length.toLocaleString("de-DE")} Leitungen/Anlagen · ${nMsg.toLocaleString("de-DE")} ${nMsg === 1 ? "Meldung" : "Meldungen"}`
           : (NETWORK.matched.features.length ? "keine Meldung im Filter" : "keine Netzdaten");
       }
       renderWidthLegend(vmin, vmax, metric);
       mapView.getSource("out").setData({ type: "FeatureCollection", features: active });
+      if (pinnedFid != null) {
+        const hit = active.find((f) => f.properties.fid === pinnedFid);
+        updatePinnedPopup(hit ? hit.properties : null);
+      }
     }
 
 
@@ -1315,7 +2589,21 @@
         6, ["case", [">=", ["get", "v"], 380], 1.35, [">=", ["get", "v"], 220], 1.1, 0.9],
         12, ["case", [">=", ["get", "v"], 380], 1.9, [">=", ["get", "v"], 220], 1.5, 1.2],
       ];
+      function hideBasemapExtras() {
+        const style = map.getStyle();
+        if (!style || !style.layers) return;
+        for (const layer of style.layers) {
+          const id = layer.id || "";
+          const hide = id.startsWith("road") || id.startsWith("roadname")
+            || id.startsWith("bridge") || id.startsWith("tunnel")
+            || id.startsWith("rail") || id.startsWith("aeroway")
+            || id.startsWith("park") || id.startsWith("poi_")
+            || id === "landcover" || id === "landuse";
+          if (hide && map.getLayer(id)) map.setLayoutProperty(id, "visibility", "none");
+        }
+      }
       map.on("load", () => {
+        hideBasemapExtras();
         if (bounds) map.fitBounds(bounds, { padding: 28, duration: 0, maxZoom: 6.2 });
         map.addSource("net", {
           type: "geojson",
@@ -1376,50 +2664,99 @@
             "circle-stroke-color": "#fff",
           },
         });
-        const popup = new maplibregl.Popup({ closeButton: true, closeOnClick: false });
-        let pinned = false;
+        const hoverPopup = new maplibregl.Popup({
+          closeButton: false, closeOnClick: false, closeOnMove: false, focusAfterOpen: false,
+        });
+        const pinPopup = new maplibregl.Popup({
+          closeButton: true, closeOnClick: false, closeOnMove: false, focusAfterOpen: false,
+        });
+        function placePopup(popup, lngLat, html) {
+          popup.setLngLat(lngLat).setHTML(html);
+          if (!popup.isOpen()) popup.addTo(map);
+        }
         function overlayPopupHtml(p) {
           const metric = mapMetric();
-          const useMw = metric === "mw" || metric === "mw_mean";
+          const useOut = metric === "outage" || metric === "outage_mean";
           const row = (label, n, tot, mean) => {
             if (!n) return `0 ${label}`;
-            const extra = useMw
+            const extra = useOut
               ? `${formatMw(tot)} \u00b7 \u00d8 ${formatMw(mean)}`
               : `${formatHours(tot)} \u00b7 \u00d8 ${formatHours(mean)}`;
             return `${n.toLocaleString("de-DE")} ${label} \u00b7 ${extra}`;
           };
+          const fTot = useOut ? p.fout : p.fh;
+          const fMean = useOut ? p.foutm : p.fmean;
+          const mTot = useOut ? p.mout : p.mh;
+          const mMean = useOut ? p.moutm : p.mmean;
           return `<strong>${p.name || "Anlage"}</strong><br>` +
-            `${row("Ausf\u00e4lle", p.fn, useMw ? p.fmw : p.fh, useMw ? p.fmwm : p.fmean)}<br>` +
-            `${row("Wartungen", p.mn, useMw ? p.mmw : p.mh, useMw ? p.mmwm : p.mmean)}`;
+            `${row("Ausf\u00e4lle", p.fn, fTot, fMean)}<br>` +
+            `${row("Wartungen", p.mn, mTot, mMean)}`;
         }
+        function featureProps(e) {
+          return e.features && e.features[0] && e.features[0].properties;
+        }
+        let hoverFid = null;
         function onEnter(e) {
           map.getCanvas().style.cursor = "pointer";
-          if (pinned) return;
-          const p = e.features && e.features[0] && e.features[0].properties;
-          if (!p || !p.mrids) return;
-          popup.setLngLat(e.lngLat).setHTML(overlayPopupHtml(p)).addTo(map);
+          onMove(e);
         }
-        function onLeave() {
+        function onMove(e) {
+          const p = featureProps(e);
+          if (!p || p.fid == null || p.fid === "") return;
+          const fid = Number(p.fid);
+          if (pinnedFid != null && fid === pinnedFid) {
+            hoverFid = null;
+            if (hoverPopup.isOpen()) hoverPopup.remove();
+            return;
+          }
+          if (hoverFid === fid && hoverPopup.isOpen()) {
+            hoverPopup.setLngLat(e.lngLat);
+            return;
+          }
+          if (!p.mrids) return;
+          hoverFid = fid;
+          placePopup(hoverPopup, e.lngLat, overlayPopupHtml(p));
+        }
+        function onLeave(e) {
+          if (e && e.point) {
+            const still = map.queryRenderedFeatures(e.point, { layers: ["out-lines", "out-pts"] });
+            if (still.length) return;
+          }
           map.getCanvas().style.cursor = "";
-          if (!pinned) popup.remove();
+          hoverFid = null;
+          if (hoverPopup.isOpen()) hoverPopup.remove();
         }
+        updatePinnedPopup = (props) => {
+          if (pinnedFid == null || !pinPopup.isOpen()) return;
+          if (!props) {
+            pinPopup.setHTML(`<strong>${esc(pinnedName || "Anlage")}</strong><br>keine Meldung im Filter`);
+            return;
+          }
+          pinPopup.setHTML(overlayPopupHtml(props));
+        };
+        closeMapPopup = () => {
+          if (hoverPopup.isOpen()) hoverPopup.remove();
+          if (pinPopup.isOpen()) pinPopup.remove();
+        };
         function onClick(e) {
-          const p = e.features && e.features[0] && e.features[0].properties;
-          if (!p || !p.mrids) return;
-          pinned = true;
-          selectedMrids = new Set(String(p.mrids).split(","));
-          popup.setLngLat(e.lngLat).setHTML(overlayPopupHtml(p)).addTo(map);
+          const p = featureProps(e);
+          if (!p || p.fid == null || p.fid === "") return;
+          const feat = NETWORK.matched.features[Number(p.fid)];
+          const ev = feat && feat.properties && feat.properties.ev;
+          if (!ev || !ev.length) return;
+          if (hoverPopup.isOpen()) hoverPopup.remove();
+          pinnedFid = Number(p.fid);
+          pinnedEv = new Set(ev);
+          pinnedName = String((feat.properties && feat.properties.name) || p.name || "");
+          selectedMrids = new Set();
+          placePopup(pinPopup, e.lngLat, overlayPopupHtml(p));
+          const list = document.getElementById("outages-body");
+          if (list) list.scrollTop = 0;
           refresh();
         }
-        popup.on("close", () => {
-          pinned = false;
-          if (selectedMrids.size) {
-            selectedMrids = new Set();
-            refresh();
-          }
-        });
         for (const id of ["out-lines", "out-pts"]) {
           map.on("mouseenter", id, onEnter);
+          map.on("mousemove", id, onMove);
           map.on("mouseleave", id, onLeave);
           map.on("click", id, onClick);
         }
@@ -1441,6 +2778,32 @@
       const openBtn = document.getElementById("info-open");
       const closeBtn = document.getElementById("info-close");
       if (!dlg || !openBtn) return;
+      const tabs = [...dlg.querySelectorAll(".info-tab")];
+
+      function showTab(tab) {
+        tabs.forEach((btn) => {
+          const on = btn === tab;
+          btn.setAttribute("aria-selected", on ? "true" : "false");
+          btn.tabIndex = on ? 0 : -1;
+          const panel = document.getElementById(btn.getAttribute("aria-controls"));
+          if (panel) panel.hidden = !on;
+        });
+        dlg.classList.toggle("is-wide", tab.id === "info-tab-stahl");
+      }
+
+      tabs.forEach((btn, i) => {
+        btn.tabIndex = i === 0 ? 0 : -1;
+        btn.addEventListener("click", () => showTab(btn));
+        btn.addEventListener("keydown", (ev) => {
+          const dir = ev.key === "ArrowRight" ? 1 : ev.key === "ArrowLeft" ? -1 : 0;
+          if (!dir) return;
+          ev.preventDefault();
+          const next = tabs[(i + dir + tabs.length) % tabs.length];
+          showTab(next);
+          next.focus();
+        });
+      });
+
       openBtn.addEventListener("click", () => dlg.showModal());
       closeBtn.addEventListener("click", () => dlg.close());
       dlg.addEventListener("click", (ev) => {
@@ -1483,19 +2846,21 @@
       if (ignorePlotSelect) return;
       const pt = ev.points && ev.points[0];
       if (!pt || pt.customdata == null) return;
+      clearMapPin();
       selectedMrids = new Set([pt.customdata]);
       refresh();
     });
     document.getElementById("plot").on("plotly_selected", (ev) => {
       if (ignorePlotSelect) return;
       if (!ev || !ev.points || !ev.points.length) return;
-      selectedMrids = new Set(ev.points.map((p) => p.customdata).filter(Boolean));
+      const ids = ev.points.map((p) => p.customdata).filter((id) => id != null && id !== "");
+      if (!ids.length) return;
+      clearMapPin();
+      selectedMrids = new Set(ids);
       refresh();
     });
     document.getElementById("plot").on("plotly_deselect", () => {
-      if (ignorePlotSelect || !selectedMrids.size) return;
-      selectedMrids = new Set();
-      refresh();
+      // Klick neben einen Punkt, Hover und erneutes Zeichnen lassen die Auswahl stehen.
     });
   </script>
 </body>
