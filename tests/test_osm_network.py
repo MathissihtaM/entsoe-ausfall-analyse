@@ -1,22 +1,33 @@
 from src.countries import get_country
 from src.osm_network import (
     _a79_ok,
+    _attach_grid_elements,
     _eic_tokens,
     _event_index,
     _filter_hits,
+    _grid_name_match,
     _in_country_mask,
     _keep_plant,
     _keep_substation,
     _lookup_plant,
     _build_eic_lookup,
     _match,
+    _merge_plants,
     _osm_jobs,
     _plant_query,
     _region_tso,
     _sub_query,
     _tokens,
+    backfill_from_grid,
+    grid_name_index,
+    line_between_stations,
     load_eic_plants,
+    match_line_ends,
+    match_station,
+    route_between,
+    build_line_graph,
 )
+from src.static_grid import compact_eic
 
 
 def test_eic_tokens_expand_plant_names():
@@ -235,6 +246,251 @@ def test_dedupe_merges_nearby_chain_not_distant_names():
     assert points[0]["properties"]["ev"] == [1, 2]
     assert points[1]["properties"]["name"] == "Neurath"
     assert points[1]["geometry"]["coordinates"][0] == 8.00
+
+
+def test_mastr_overrides_opsd_on_same_eic(tmp_path):
+    opsd = tmp_path / "opsd.csv"
+    mastr = tmp_path / "mastr.csv"
+    opsd.write_text(
+        "name_bnetza,name_uba,city,lat,lon,eic_code_plant,eic_code_block\n"
+        "Neurath alt,Neurath,Grevenbroich,51.0,6.5,11WD7NEUR-B-KW-B,\n",
+        encoding="utf-8",
+    )
+    mastr.write_text(
+        "name_bnetza,name_uba,city,lat,lon,eic_code_plant,eic_code_block\n"
+        "Neurath MaStR,Neurath,Grevenbroich,51.039,6.6,11WD7NEUR-B-KW-B,\n",
+        encoding="utf-8",
+    )
+    plants = load_eic_plants(opsd, extra=mastr)
+    lookup = _build_eic_lookup(plants)
+    hit = _lookup_plant("11WD7NEUR-B-KW-B", lookup)
+    assert hit is not None
+    assert abs(hit["lat"] - 51.039) < 1e-6
+    assert "mastr" in hit["name"].lower()
+
+
+def test_manual_assets_win_and_add_cluster(tmp_path):
+    opsd = tmp_path / "opsd.csv"
+    mastr = tmp_path / "mastr.csv"
+    manual = tmp_path / "manual.csv"
+    header = "name_bnetza,name_uba,city,lat,lon,eic_code_plant,eic_code_block\n"
+    opsd.write_text(header + "Neurath,Neurath,Grevenbroich,51.039,6.6,11WD7NEUR-B-KW-B,\n", encoding="utf-8")
+    mastr.write_text(header + "Neurath MaStR,,Grevenbroich,51.03765,6.61229,11WD7NEUR-B-KW-B,\n", encoding="utf-8")
+    manual.write_text(
+        header
+        + "Neurath kuratiert,,Grevenbroich,51.0365,6.61332,11WD7NEUR-B-KW-B,\n"
+        + "Nordsee AWZ (Offshore-Cluster),,Nordsee,54.4,7.0,11WD2OGTI000264J,\n",
+        encoding="utf-8",
+    )
+    plants = load_eic_plants(opsd, extra=mastr, manual=manual)
+    lookup = _build_eic_lookup(plants)
+    neur = _lookup_plant("11WD7NEUR-B-KW-B", lookup)
+    assert neur is not None and "kuratiert" in neur["name"]
+    awz = _lookup_plant("11WD2OGTI000264J", lookup)
+    assert awz is not None
+    assert abs(awz["lat"] - 54.4) < 1e-6 and abs(awz["lon"] - 7.0) < 1e-6
+
+
+def test_merge_plants_overlay_wins():
+    base = [{"key": "11WD7NEURBKB", "name": "alt", "lat": 1, "lon": 1, "tokens": []}]
+    overlay = [{"key": "11WD7NEURBKB", "name": "neu", "lat": 2, "lon": 2, "tokens": ["neurath"]}]
+    merged = _merge_plants(base, overlay)
+    assert len(merged) == 1
+    assert merged[0]["name"] == "neu"
+
+
+def test_merge_plants_keeps_base_coords_if_mastr_locked():
+    base = [{"key": "11WD7NEUR1BF", "name": "Neurath OPSD", "lat": 51.0365, "lon": 6.61332, "tokens": ["neurath"]}]
+    overlay = [{"key": "11WD7NEUR1BF", "name": "Neurath F", "lat": None, "lon": None, "tokens": ["neurath"]}]
+    merged = _merge_plants(base, overlay)
+    assert merged[0]["name"] == "Neurath F"
+    assert abs(merged[0]["lat"] - 51.0365) < 1e-6
+    assert abs(merged[0]["lon"] - 6.61332) < 1e-6
+
+
+def test_match_station_normalized_unique():
+    points = [
+        {"name": "Umspannwerk Röhrsdorf", "lon": 12.88, "lat": 50.86, "kind": "substation"},
+        {"name": "Umspannwerk Dresden-Süd", "lon": 13.73, "lat": 51.0, "kind": "substation"},
+        {"name": "Kraftwerk Röhrsdorf", "lon": 12.87, "lat": 50.85, "kind": "plant"},
+    ]
+    hit = match_station("Röhrsdorf", points)
+    assert hit is not None
+    assert hit["name"] == "Umspannwerk Röhrsdorf"
+    assert match_station("xyz", points) is None
+
+
+def test_st_peter_follows_the_other_end():
+    points = [
+        {"name": "Umspannwerk St. Peter", "lon": 8.651, "lat": 54.306, "kind": "substation"},
+        {"name": "Station Sankt Peter", "lon": 6.802, "lat": 51.125, "kind": "substation"},
+        {"name": "Station Sankt Peter", "lon": 6.801, "lat": 51.123, "kind": "substation"},
+        {"name": "Station Norf", "lon": 6.773, "lat": 51.147, "kind": "substation"},
+        {"name": "Umspannwerk Pirach", "lon": 12.748, "lat": 48.148, "kind": "substation"},
+    ]
+    assert match_station("St. Peter", points) is None
+    nrw_a, nrw_b = match_line_ends("Norf", "St. Peter", points)
+    assert nrw_a is not None and nrw_b is not None
+    assert abs(nrw_b["lat"] - 51.125) < 0.02
+    at_a, at_b = match_line_ends("Pirach", "St. Peter", points)
+    assert at_b is not None
+    assert abs(at_b["lat"] - 48.263) < 0.01 and abs(at_b["lon"] - 13.089) < 0.01
+
+
+def test_line_between_stations_picks_connecting_line():
+    a = {"lon": 12.88, "lat": 50.86, "name": "Röhrsdorf"}
+    b = {"lon": 13.33, "lat": 50.35, "name": "Hradec"}
+    lines = [
+        {"name": "other", "coords": [[8.0, 50.0], [8.1, 50.1]]},
+        {"name": "Röhrsdorf-Hradec", "coords": [[12.88, 50.86], [13.10, 50.60], [13.33, 50.35]]},
+    ]
+    hit = line_between_stations(lines, a, b)
+    assert hit is not None
+    assert hit["name"] == "Röhrsdorf-Hradec"
+
+
+def test_attach_grid_uses_osm_line_or_straight():
+    key = compact_eic("11TD8L551------X")
+    table = {
+        key: {
+            "key": key,
+            "eic": "11TD8L551------X",
+            "name": "Röhrsdorf - Hradec",
+            "tso": "50Hertz",
+            "type": "Line",
+            "sub_from": "Röhrsdorf",
+            "sub_to": "Hradec",
+            "kv": 380,
+            "nominal_mw": 1600,
+        }
+    }
+    events = [{
+        "doc_type": "A78",
+        "reason": "Störung",
+        "asset_eic": "11TD8L551------X",
+        "asset_name": "Röhrsdorf-Hradec",
+    }]
+    points = [
+        {"name": "Umspannwerk Röhrsdorf", "lon": 12.88, "lat": 50.86, "kind": "substation"},
+        {"name": "Umspannwerk Hradec", "lon": 13.33, "lat": 50.35, "kind": "substation"},
+    ]
+    lines = [{
+        "name": "Röhrsdorf-Hradec 380",
+        "kv": 380,
+        "coords": [[12.88, 50.86], [13.10, 50.60], [13.33, 50.35]],
+        "op_tso": "50Hertz",
+    }]
+    matched = []
+    matched_events = set()
+    added = _attach_grid_elements(events, lines, points, matched, matched_events, table)
+    assert added == 1
+    assert matched_events == {0}
+    assert matched[0]["geometry"]["type"] == "LineString"
+    assert len(matched[0]["geometry"]["coordinates"]) >= 3
+    assert matched[0]["properties"]["ev"] == [0]
+
+    matched2 = []
+    seen2 = set()
+    added2 = _attach_grid_elements(events, [], points, matched2, seen2, table)
+    assert added2 == 0
+    assert matched2 == []
+
+
+def test_route_stitches_segments_between_stations():
+    lines = [
+        {"name": "a", "kv": 380, "coords": [[6.77, 51.15], [6.78, 51.14], [6.800, 51.130]]},
+        {"name": "b", "kv": 380, "coords": [[6.800, 51.130], [6.81, 51.125], [6.802, 51.125]]},
+        {"name": "shortcut", "kv": 110, "coords": [[6.77, 51.15], [8.6, 54.3], [6.802, 51.125]]},
+    ]
+    graph = build_line_graph(lines)
+    route = route_between(graph, {"lon": 6.773, "lat": 51.147}, {"lon": 6.802, "lat": 51.125})
+    assert route is not None
+    assert len(route) >= 4
+    assert abs(route[0][0] - 6.77) < 0.01
+    assert abs(route[-1][1] - 51.125) < 0.01
+    assert all(pt[1] < 52 for pt in route)
+
+
+def test_backfill_only_when_nominal_missing():
+    key = compact_eic("11TD8L551------X")
+    table = {
+        key: {
+            "key": key,
+            "nominal_mw": 1645.4,
+            "kv": 380,
+            "type": "Line",
+        }
+    }
+    events = [
+        {"doc_type": "A78", "asset_eic": "11TD8L551------X", "nominal_mw": None, "voltage": "unbekannt"},
+        {"doc_type": "A78", "asset_eic": "11TD8L551------X", "nominal_mw": 900, "voltage": "380 kV"},
+        {"doc_type": "A77", "asset_eic": "11TD8L551------X", "nominal_mw": None, "voltage": "unbekannt"},
+    ]
+    n_nom, n_v, n_name = backfill_from_grid(events, table)
+    assert n_nom == 1
+    assert n_v == 1
+    assert n_name == 0
+    assert events[0]["nominal_mw"] == 1645.4
+    assert events[0]["voltage"] == "380 kV"
+    assert events[1]["nominal_mw"] == 900
+    assert events[2]["nominal_mw"] is None
+
+
+def _sgm_row(name, mw, kv=380, sub_from="", sub_to="", eic=""):
+    return {
+        "eic": eic, "key": compact_eic(eic) or name, "name": name,
+        "tso": "TenneT", "type": "Line", "sub_from": sub_from, "sub_to": sub_to,
+        "kv": kv, "nominal_mw": mw,
+    }
+
+
+def test_grid_name_match_by_circuit_number():
+    index = grid_name_index([
+        _sgm_row("Hamburg/Nord - Brunsbüttel 951", 2369.45, sub_from="Hamburg/Nord", sub_to="Brunsbüttel"),
+        _sgm_row("Hamburg/Nord - Brunsbüttel 952", 2369.45),
+    ])
+    hit = _grid_name_match("Brunsbüttel - Hamburg/Nord - Brunsbüttel 951", "unbekannt", index)
+    assert hit is not None and hit["name"].endswith(" 951")
+    hit2 = _grid_name_match("50H-TTG/380/BRUNSBUETTEL 50H-BRUNSBUETTEL TTG-HAMBURG N 50H/952", "380 kV", index)
+    assert hit2 is not None and hit2["name"].endswith(" 952")
+
+
+def test_grid_name_match_prefix_tokens_single_digit():
+    index = grid_name_index([
+        _sgm_row("Y-Borken (-Waldeck - Twistetal) 2", 2550.45),
+        _sgm_row("Y-Borken (-Waldeck - Twistetal) 3", 2550.45),
+    ])
+    hit = _grid_name_match("L-380-BORK-WALD-TWIS-3", "380 kV", index)
+    assert hit is not None and hit["name"].endswith(") 3")
+    assert _grid_name_match("L-D8-D8-577", "unbekannt", index) is None
+
+
+def test_grid_name_match_y_line_prefers_first_token():
+    index = grid_name_index([
+        _sgm_row("Y-Kruen (-Oberbrunn - Silz) 251", 475.171, kv=220),
+        _sgm_row("Y-Oberbrunn (-Kruen - Silz) 251", 809.353, kv=220),
+    ])
+    hit = _grid_name_match("Oberbrunn-Kruen - Silz 251/416", "unbekannt", index)
+    assert hit is not None
+    assert hit["name"].startswith("Y-Oberbrunn")
+    assert hit["nominal_mw"] == 809.353
+
+
+def test_backfill_via_name_when_eic_unknown():
+    row = _sgm_row("Hamburg/Nord - Brunsbüttel 951", 2369.45, eic="11TD8L951------O")
+    table = {row["key"]: row}
+    index = grid_name_index([row])
+    events = [{
+        "doc_type": "A78",
+        "asset_eic": "10T-AT-DE-00019T",
+        "asset_name": "Brunsbüttel - Hamburg/Nord - Brunsbüttel 951",
+        "nominal_mw": None,
+        "voltage": "unbekannt",
+    }]
+    n_nom, n_v, n_name = backfill_from_grid(events, table, index)
+    assert (n_nom, n_name) == (1, 1)
+    assert events[0]["nominal_mw"] == 2369.45
+    assert events[0]["voltage"] == "380 kV"
 
 
 def test_map_mask_keeps_germany_drops_neighbor_interior():

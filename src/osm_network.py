@@ -21,14 +21,16 @@ Zwei Caches, beide unter ``data/cache/<Land>/``:
   stehen hier nicht drin. ``--rebuild-network`` ordnet deshalb neu zu,
   ohne Overpass noch einmal zu fragen.
 
-Zuordnung einer Meldung, in dieser Reihenfolge: Namensteile gegen OSM
-(nicht bei ``unlocated``), Anlagen-EIC gegen die Kraftwerks-CSV,
+Zuordnung einer Meldung, in dieser Reihenfolge: Anlagen-EIC gegen das
+JAO Static Grid Model (A78/A79, inkl. Nennleistung), Namensteile gegen
+OSM (nicht bei ``unlocated``), Anlagen-EIC gegen OPSD- und MaStR-CSV,
 Kürzel in der EIC (``NEUR`` → Neurath) auf genau ein OSM-Kraftwerk.
 """
 
 from __future__ import annotations
 
 import csv
+import heapq
 import json
 import re
 import time
@@ -40,10 +42,15 @@ from typing import Any, Dict, List, Optional, Sequence, Tuple
 import requests
 
 from src.countries import MAP_BOUNDS, MAP_MASKS, Country, foreign_grid_eic, tso_from_operator_name
+from src.parse_outages import classify_voltage
+from src.static_grid import grid_table, load_grid_elements, lookup_grid
 
 ROOT = Path(__file__).resolve().parent.parent
 RAW_DIR = ROOT / "data" / "cache"
 EIC_PLANTS_PATH = ROOT / "data" / "ref" / "conventional_power_plants_DE.csv"
+MASTR_PLANTS_PATH = ROOT / "data" / "ref" / "mastr_plants.csv"
+# Kuratierte Pseudo-Assets ohne echte Anlage (z. B. TenneT-Cluster "Nordsee AWZ")
+MANUAL_PLANTS_PATH = ROOT / "data" / "ref" / "manual_assets.csv"
 
 OVERPASS_URLS = [
     "https://overpass-api.de/api/interpreter",
@@ -227,9 +234,8 @@ def _plant_label(row: Dict[str, str]) -> str:
     return label or "Kraftwerk"
 
 
-def load_eic_plants(path: Optional[Path] = None) -> List[Dict[str, Any]]:
-    """OPSD-Kraftwerksliste: EIC -> Name/Koordinaten, auch AT/LU mit DE-EIC."""
-    src = path or EIC_PLANTS_PATH
+def _plants_from_csv(src: Path) -> List[Dict[str, Any]]:
+    """Eine Kraftwerks-CSV im OPSD-Schema: EIC → Name/Koordinaten."""
     if not src.is_file():
         return []
     groups: Dict[Tuple[float, float], Dict[str, Any]] = {}
@@ -240,7 +246,7 @@ def load_eic_plants(path: Optional[Path] = None) -> List[Dict[str, Any]]:
                 lat = float(row.get("lat") or "")
                 lon = float(row.get("lon") or "")
             except ValueError:
-                continue
+                lat = lon = None
             label = _plant_label(row)
             city = (row.get("city") or "").strip()
             bnetza = (row.get("name_bnetza") or "").strip()
@@ -255,7 +261,7 @@ def load_eic_plants(path: Optional[Path] = None) -> List[Dict[str, Any]]:
                 key = _eic_compact(eic)
                 if len(key) < 10 or key.startswith("11W00000") or _ANON_EIC.match(key):
                     continue
-                gkey = (round(lat, 3), round(lon, 3))
+                gkey = (round(lat, 3), round(lon, 3)) if lat is not None and lon is not None else ("eic", key)
                 rec = groups.get(gkey)
                 if rec is None:
                     rec = {
@@ -279,6 +285,42 @@ def load_eic_plants(path: Optional[Path] = None) -> List[Dict[str, Any]]:
                 "key": key,
                 "tokens": rec["tokens"],
             })
+    return plants
+
+
+def _merge_plants(base: Sequence[Dict[str, Any]], overlay: Sequence[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    """Gleiche EIC: Overlay (MaStR) gewinnt; fehlende Koordinaten bleiben aus der Basis."""
+    by_key = {plant["key"]: plant for plant in base}
+    for plant in overlay:
+        prev = by_key.get(plant["key"])
+        if prev is None:
+            by_key[plant["key"]] = plant
+            continue
+        merged = dict(plant)
+        if merged.get("lat") is None or merged.get("lon") is None:
+            merged["lat"] = prev.get("lat")
+            merged["lon"] = prev.get("lon")
+        by_key[plant["key"]] = merged
+    return list(by_key.values())
+
+
+def load_eic_plants(
+    path: Optional[Path] = None,
+    extra: Optional[Path] = None,
+    manual: Optional[Path] = None,
+) -> List[Dict[str, Any]]:
+    """OPSD- plus MaStR-Kraftwerksliste: EIC -> Name/Koordinaten.
+
+    Bei gleichem EIC gewinnt MaStR, danach die kuratierte Pflegeliste
+    (``manual_assets.csv``). ``11W0-0000`` bleibt ausgeschlossen.
+    """
+    plants = _plants_from_csv(path or EIC_PLANTS_PATH)
+    extra_path = extra if extra is not None else MASTR_PLANTS_PATH
+    if extra_path.is_file():
+        plants = _merge_plants(plants, _plants_from_csv(extra_path))
+    manual_path = manual if manual is not None else MANUAL_PLANTS_PATH
+    if manual_path.is_file():
+        plants = _merge_plants(plants, _plants_from_csv(manual_path))
     return plants
 
 
@@ -338,6 +380,569 @@ def _in_country_mask(lon: float, lat: float, country: Country) -> bool:
     return _point_in_ring(lon, lat, ring)
 
 
+_STATION_STOP = {
+    "uw", "usw", "ss", "hs", "ns", "ms",
+    "umspannwerk", "umspannstation", "schaltanlage", "unterwerk",
+    "konverter", "konverterstation", "station", "substation",
+}
+
+
+def _station_key(name: str) -> str:
+    folded = _fold(name or "")
+    parts = []
+    for p in _SPLIT_RE.split(folded):
+        if not p or p in _STATION_STOP or _DIGITS_RE.match(p):
+            continue
+        if p == "sankt":
+            p = "st"
+        parts.append(p)
+    return "".join(parts)
+
+
+# Grenzstationen, die im DE-OSM-Auszug fehlen. St. Peter am Hart (APG) liegt
+# in Österreich; ohne den Punkt landet jede TenneT-Leitung „nach St. Peter“
+# auf dem gleichnamigen Umspannwerk in Sankt Peter-Ording.
+_BORDER_STATIONS = (
+    {"name": "St. Peter", "lon": 13.089, "lat": 48.263, "kind": "substation"},
+)
+_STATION_CLUSTER_DEG = 0.03
+# Nur bei mehreren Kandidaten: das andere Leitungsende muss in der Nähe liegen.
+_STATION_ANCHOR_DEG = 1.6
+
+
+def _station_pool(points: Sequence[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    cands = [pt for pt in points if pt.get("kind") != "plant"]
+    if not cands:
+        cands = list(points)
+    return [*cands, *_BORDER_STATIONS]
+
+
+def _cluster_sites(hits: Sequence[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    sites: List[Dict[str, Any]] = []
+    for hit in hits:
+        lon, lat = float(hit["lon"]), float(hit["lat"])
+        if any(
+            abs(lon - float(s["lon"])) < _STATION_CLUSTER_DEG and abs(lat - float(s["lat"])) < _STATION_CLUSTER_DEG
+            for s in sites
+        ):
+            continue
+        sites.append(hit)
+    return sites
+
+
+def _station_keys_match(query: str, candidate: str) -> bool:
+    """Präfix oder längerer Teilstring. Kurze Schlüssel (``bach``) zählen nicht."""
+    if not query or not candidate or query == candidate:
+        return query == candidate and bool(query)
+    shorter, longer = (query, candidate) if len(query) <= len(candidate) else (candidate, query)
+    if len(shorter) < 6:
+        return False
+    return longer.startswith(shorter) or shorter in longer
+
+
+def station_sites(name: str, points: Sequence[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    """Gleichnamige Umspannwerke, nah beieinander zu einem Ort zusammengezogen."""
+    key = _station_key(name)
+    if len(key) < 4:
+        return []
+    pool = _station_pool(points)
+    exact = [pt for pt in pool if _station_key(pt.get("name") or "") == key]
+    hits = exact or [pt for pt in pool if _station_keys_match(key, _station_key(pt.get("name") or ""))]
+    return _cluster_sites(hits)
+
+
+def _anchor_dist(pt: Dict[str, Any], anchor: Dict[str, Any]) -> float:
+    return abs(float(pt["lon"]) - float(anchor["lon"])) + abs(float(pt["lat"]) - float(anchor["lat"]))
+
+
+def match_station(
+    name: str,
+    points: Sequence[Dict[str, Any]],
+    anchor: Optional[Dict[str, Any]] = None,
+) -> Optional[Dict[str, Any]]:
+    """Eine SGM-Station auf ein OSM-Umspannwerk.
+
+    Mehrere Orte desselben Namens (St. Peter an der Nordsee, bei Langenfeld,
+    an der österreichischen Grenze) werden über das andere Leitungsende
+    getrennt. Ein eindeutiger Name gilt auch ohne Anker.
+    """
+    sites = station_sites(name, points)
+    if not sites:
+        return None
+    if len(sites) == 1:
+        return sites[0]
+    if anchor is None:
+        return None
+    ranked = sorted(sites, key=lambda s: _anchor_dist(s, anchor))
+    best = _anchor_dist(ranked[0], anchor)
+    if best > _STATION_ANCHOR_DEG:
+        return None
+    if len(ranked) > 1 and _anchor_dist(ranked[1], anchor) < best + 0.2:
+        return None
+    return ranked[0]
+
+
+def match_line_ends(
+    name_a: str,
+    name_b: str,
+    points: Sequence[Dict[str, Any]],
+) -> Tuple[Optional[Dict[str, Any]], Optional[Dict[str, Any]]]:
+    """Beide Enden einer SGM-Leitung. Ein eindeutiges Ende löst das andere auf."""
+    sites_a = station_sites(name_a, points)
+    sites_b = station_sites(name_b, points)
+    a = sites_a[0] if len(sites_a) == 1 else None
+    b = sites_b[0] if len(sites_b) == 1 else None
+    if a is None and b is not None:
+        a = match_station(name_a, points, anchor=b)
+    elif b is None and a is not None:
+        b = match_station(name_b, points, anchor=a)
+    elif a is None and b is None and sites_a and sites_b:
+        best: Optional[Tuple[Dict[str, Any], Dict[str, Any]]] = None
+        best_d = _STATION_ANCHOR_DEG
+        for left in sites_a:
+            for right in sites_b:
+                dist = _anchor_dist(left, right)
+                if dist < best_d:
+                    best = (left, right)
+                    best_d = dist
+        if best:
+            a, b = best
+    return a, b
+
+
+def _pt_dist(a: Sequence[float], b: Sequence[float]) -> float:
+    return abs(float(a[0]) - float(b[0])) + abs(float(a[1]) - float(b[1]))
+
+
+def line_between_stations(
+    lines: Sequence[Dict[str, Any]],
+    a: Dict[str, Any],
+    b: Dict[str, Any],
+    tol: float = 0.18,
+) -> Optional[Dict[str, Any]]:
+    """OSM-Leitung, deren Enden nahe den beiden Stationen liegen."""
+    pa = (a["lon"], a["lat"])
+    pb = (b["lon"], b["lat"])
+    best: Optional[Dict[str, Any]] = None
+    best_score = tol * 2
+    for line in lines:
+        coords = line.get("coords") or []
+        if len(coords) < 2:
+            continue
+        start, end = coords[0], coords[-1]
+        score = min(_pt_dist(start, pa) + _pt_dist(end, pb), _pt_dist(start, pb) + _pt_dist(end, pa))
+        if score < best_score:
+            best = line
+            best_score = score
+    return best
+
+
+_GRAPH_MIN_KV = 200
+_GRAPH_SNAP = 3
+_ROUTE_ATTACH_DEG = 0.06
+_ROUTE_DETOUR = 1.9
+# Ohne OSM-Korridor nur kurze Verbindungen als Gerade. Längere Sehnen
+# schneiden das Land und sehen aus wie Leitungen, die es so nicht gibt.
+_STRAIGHT_MAX_DEG = 0.22
+
+
+def _graph_node(lon: float, lat: float) -> Tuple[float, float]:
+    return (round(float(lon), _GRAPH_SNAP), round(float(lat), _GRAPH_SNAP))
+
+
+def _path_length(coords: Sequence[Sequence[float]]) -> float:
+    return sum(_pt_dist(coords[i], coords[i + 1]) for i in range(len(coords) - 1))
+
+
+def build_line_graph(lines: Sequence[Dict[str, Any]]) -> Dict[Tuple[float, float], List[Tuple]]:
+    """OSM-Teilstücke ab 220 kV als Kanten. Knoten sind die gerundeten Enden."""
+    adj: Dict[Tuple[float, float], List[Tuple]] = {}
+    for line in lines:
+        kv = line.get("kv") or 0
+        if kv < _GRAPH_MIN_KV and not line.get("hvdc"):
+            continue
+        coords = line.get("coords") or []
+        if len(coords) < 2:
+            continue
+        start = _graph_node(coords[0][0], coords[0][1])
+        end = _graph_node(coords[-1][0], coords[-1][1])
+        if start == end:
+            continue
+        path = [list(start), *[[float(p[0]), float(p[1])] for p in coords[1:-1]], list(end)]
+        length = _path_length(path)
+        adj.setdefault(start, []).append((end, path, length))
+        adj.setdefault(end, []).append((start, list(reversed(path)), length))
+    return adj
+
+
+def _nodes_near(
+    adj: Dict[Tuple[float, float], List[Tuple]],
+    lon: float,
+    lat: float,
+    tol: float = _ROUTE_ATTACH_DEG,
+) -> List[Tuple[float, float]]:
+    found = [node for node in adj if abs(node[0] - lon) <= tol and abs(node[1] - lat) <= tol]
+    found.sort(key=lambda node: abs(node[0] - lon) + abs(node[1] - lat))
+    return found[:8]
+
+
+def route_between(
+    adj: Dict[Tuple[float, float], List[Tuple]],
+    a: Dict[str, Any],
+    b: Dict[str, Any],
+) -> Optional[List[List[float]]]:
+    """Kürzester OSM-Korridor zwischen zwei Stationen, sonst None.
+
+    Gesucht wird nur in der Umgebung der Luftlinie, und ein Umweg,
+    der deutlich länger ist als die Stationen auseinanderliegen, entfällt.
+    """
+    if not adj:
+        return None
+    starts = _nodes_near(adj, float(a["lon"]), float(a["lat"]))[:3]
+    goal_nodes = _nodes_near(adj, float(b["lon"]), float(b["lat"]))[:1]
+    goals = set(goal_nodes)
+    if not starts or not goals:
+        return None
+    straight = _pt_dist((a["lon"], a["lat"]), (b["lon"], b["lat"]))
+    margin = max(0.25, straight * 0.45)
+    west = min(float(a["lon"]), float(b["lon"])) - margin
+    east = max(float(a["lon"]), float(b["lon"])) + margin
+    south = min(float(a["lat"]), float(b["lat"])) - margin
+    north = max(float(a["lat"]), float(b["lat"])) + margin
+    limit = max(straight * _ROUTE_DETOUR, straight + 0.12)
+
+    best_path: Optional[List[List[float]]] = None
+    best_len = limit
+    for start in starts:
+        heap: List[Tuple[float, Tuple[float, float]]] = [(0.0, start)]
+        dist: Dict[Tuple[float, float], float] = {start: 0.0}
+        prev: Dict[Tuple[float, float], Tuple[Tuple[float, float], List[List[float]]]] = {}
+        while heap:
+            cost, node = heapq.heappop(heap)
+            if cost > dist.get(node, limit):
+                continue
+            if node in goals and node != start and cost < best_len:
+                piece: List[List[float]] = []
+                cursor: Optional[Tuple[float, float]] = node
+                while cursor is not None and cursor in prev:
+                    parent, coords = prev[cursor]
+                    if piece and coords and _pt_dist(coords[-1], piece[0]) < 1e-4:
+                        piece = coords[:-1] + piece
+                    else:
+                        piece = coords + piece
+                    cursor = parent
+                best_path = piece
+                best_len = cost
+                break
+            if cost >= best_len:
+                continue
+            for other, coords, length in adj.get(node, ()):
+                if not (west <= other[0] <= east and south <= other[1] <= north):
+                    continue
+                nxt = cost + length
+                if nxt >= best_len or nxt >= dist.get(other, limit):
+                    continue
+                dist[other] = nxt
+                prev[other] = (node, coords)
+                heapq.heappush(heap, (nxt, other))
+        if best_path:
+            break
+    return best_path
+
+
+def _empty_nominal(value: Any) -> bool:
+    if value is None or value == "":
+        return True
+    try:
+        return float(value) == 0.0
+    except (TypeError, ValueError):
+        return True
+
+
+# --- SGM-Namensmatching: Schaltfeld-Nummer + Endpunkt-Token ---
+# ENTSO-E-Meldungen tragen oft den ÜNB-internen EIC, der nicht im Core-SGM
+# steht. Name und Schaltfeld-Nummer ("... Brunsbüttel 951") wiederholen sich
+# aber im SGM-Namen, dazu Farben bei Doppelsystemen (".../SW" vs. "schwarz").
+_TSO_NAME_RE = re.compile(r"50\s*hertz|50h|tennet|ttg|amprion|ampron|transnet\s*bw|transnet|tbw", re.I)
+_GRID_STOP_EXTRA = {"gelb", "gruen", "grau", "trafo", "trafos", "pst", "hgu", "hgue", "tr", "hvdc"}
+_COLOR_ABBR = {
+    "sw": "schwarz", "rt": "rot", "bl": "blau", "ge": "gelb",
+    "ws": "weiss", "gr": "gruen", "gn": "gruen",
+}
+_GRID_COLORS = {"schwarz", "rot", "blau", "gelb", "weiss", "gruen", "grau"}
+_VOLTAGE_NUMS = {"30", "60", "110", "132", "150", "220", "225", "380", "400", "420", "500", "750"}
+_GRID_KV_RE = re.compile(r"(?<!\d)(110|132|150|220|225|380|400|420|500|750)(?!\d)")
+
+
+def _grid_sig(text: str) -> Dict[str, Any]:
+    """Signatur eines Elementnamens: Endpunkt-Token, Schaltfeld-Nummern, Farbe, kV."""
+    cleaned = _TSO_NAME_RE.sub(" ", text or "")
+    volts = {int(m) for m in _GRID_KV_RE.findall(cleaned)}
+    circuits = {int(n) for n in _KV_RE.findall(cleaned) if n not in _VOLTAGE_NUMS}
+    color = ""
+    tokens: List[str] = []
+    seen = set()
+    for raw in _SPLIT_RE.split(_fold(cleaned)):
+        if _DIGITS_RE.match(raw):
+            continue
+        if not color:
+            color = _COLOR_ABBR.get(raw) or (raw if raw in _GRID_COLORS else "")
+        if len(raw) < 4 or raw in NAME_STOP or raw in _GRID_STOP_EXTRA or raw in seen:
+            continue
+        seen.add(raw)
+        tokens.append(raw)
+    return {"tokens": tokens, "circuits": circuits, "color": color, "volts": volts}
+
+
+def _shared_tokens(a: Sequence[str], b: Sequence[str]) -> int:
+    """Gemeinsame Token, Präfix zählt (bork ~ borken, twis ~ twistetal)."""
+    n = 0
+    used: set = set()
+    for x in a:
+        for y in b:
+            if y in used:
+                continue
+            if x == y or y.startswith(x) or x.startswith(y):
+                used.add(y)
+                n += 1
+                break
+    return n
+
+
+def grid_name_index(elements: Optional[Sequence[Dict[str, Any]]] = None) -> List[Tuple[Dict[str, Any], Dict[str, Any]]]:
+    """Index SGM-Zeilen mit Nennleistung für das Namensmatching."""
+    rows = list(elements) if elements is not None else load_grid_elements()
+    index: List[Tuple[Dict[str, Any], Dict[str, Any]]] = []
+    for row in rows:
+        if not row.get("nominal_mw"):
+            continue
+        text = " ".join(p for p in (row.get("name"), row.get("sub_from"), row.get("sub_to")) if p)
+        sig = _grid_sig(text)
+        if not sig["tokens"]:
+            continue
+        index.append((sig, row))
+    return index
+
+
+def _grid_name_match(name: str, voltage: str, index: Sequence[Tuple[Dict[str, Any], Dict[str, Any]]]) -> Optional[Dict[str, Any]]:
+    sig = _grid_sig(name)
+    if not sig["tokens"]:
+        return None
+    volts = set(sig["volts"])
+    m = re.search(r"\d{3}", voltage or "")
+    if m and (voltage or "").strip() != "unbekannt":
+        volts.add(int(m.group(0)))
+    best_score: Optional[Tuple[int, int, int, int, int]] = None
+    best: List[Dict[str, Any]] = []
+    for rsig, row in index:
+        kv = row.get("kv")
+        if volts and kv and int(round(float(kv))) not in volts:
+            continue
+        shared_t = _shared_tokens(sig["tokens"], rsig["tokens"])
+        if shared_t == 0:
+            continue
+        shared_c = sig["circuits"] & rsig["circuits"]
+        if shared_c:
+            if all(c < 100 for c in shared_c) and shared_t < 2:
+                continue
+        else:
+            if shared_t < 2:
+                continue
+            if sig["color"] and rsig["color"] and sig["color"] != rsig["color"]:
+                continue
+        color_eq = int(bool(sig["color"]) and sig["color"] == rsig["color"])
+        first_eq = int(bool(sig["tokens"] and rsig["tokens"] and sig["tokens"][0] == rsig["tokens"][0]))
+        score = (int(bool(shared_c)), len(shared_c), shared_t, color_eq, first_eq)
+        if best_score is None or score > best_score:
+            best_score = score
+            best = [row]
+        elif score == best_score:
+            best.append(row)
+    if not best:
+        return None
+    if len(best) == 1:
+        return best[0]
+    mws = {row.get("nominal_mw") for row in best}
+    if len(mws) == 1:
+        return best[0]
+    # Uneindeutig (z. B. Y-Leitung in zwei Richtungen): konservativ das Minimum.
+    mw = min(m for m in mws if m)
+    return next(row for row in best if row.get("nominal_mw") == mw)
+
+
+def _grid_name_lookup(
+    name: str,
+    voltage: str,
+    index: Sequence[Tuple[Dict[str, Any], Dict[str, Any]]],
+    cache: Dict[Tuple[str, str], Optional[Dict[str, Any]]],
+) -> Optional[Dict[str, Any]]:
+    key = (name or "", voltage or "")
+    if key not in cache:
+        cache[key] = _grid_name_match(name, voltage, index)
+    return cache[key]
+
+
+def backfill_from_grid(
+    events: List[Dict[str, Any]],
+    table: Dict[str, Dict[str, Any]],
+    name_index: Optional[Sequence[Tuple[Dict[str, Any], Dict[str, Any]]]] = None,
+) -> Tuple[int, int, int]:
+    """Nennleistung und Spannung aus dem SGM, nur wenn die Meldung sie nicht hat.
+
+    Zuerst per EIC, dann per Name (Schaltfeld-Nummer + Endpunkte). Dritter
+    Rückgabewert: Treffer über den Namen.
+    """
+    cache: Dict[Tuple[str, str], Optional[Dict[str, Any]]] = {}
+    n_nom = n_v = n_name = 0
+    for ev in events:
+        if ev.get("doc_type") not in ("A78", "A79"):
+            continue
+        hit = lookup_grid(ev.get("asset_eic") or "", table)
+        via_name = False
+        if hit is None and name_index:
+            hit = _grid_name_lookup(ev.get("asset_name") or "", ev.get("voltage") or "", name_index, cache)
+            via_name = hit is not None
+        if not hit:
+            continue
+        filled = False
+        if _empty_nominal(ev.get("nominal_mw")) and hit.get("nominal_mw"):
+            ev["nominal_mw"] = hit["nominal_mw"]
+            n_nom += 1
+            filled = True
+        volt = ev.get("voltage") or ""
+        if (not volt or volt == "unbekannt") and hit.get("kv"):
+            ev["voltage"] = classify_voltage(
+                xml_kv=float(hit["kv"]),
+                type_code="B22" if hit.get("type") == "DC-Link" else "",
+                name="",
+                location="",
+            )
+            n_v += 1
+            filled = True
+        if via_name and filled:
+            n_name += 1
+    return n_nom, n_v, n_name
+
+
+def _merge_or_add_line(
+    matched: List[Dict[str, Any]],
+    coords: List[List[float]],
+    name: str,
+    evs: Sequence[int],
+    op_tso: str = "",
+) -> None:
+    for feat in matched:
+        if feat.get("geometry", {}).get("type") != "LineString":
+            continue
+        if (feat.get("properties") or {}).get("name") == name:
+            feat["properties"]["ev"] = sorted(set(feat["properties"]["ev"]) | set(evs))
+            return
+    matched.append({
+        "type": "Feature",
+        "geometry": {
+            "type": "LineString",
+            "coordinates": _round_coords(_decimate(coords, MATCH_SIMPLIFY_DEG)),
+        },
+        "properties": {"name": name, "ev": sorted(set(evs)), "op_tso": op_tso},
+    })
+
+
+def _merge_or_add_point(
+    matched: List[Dict[str, Any]],
+    lon: float,
+    lat: float,
+    name: str,
+    evs: Sequence[int],
+    op_tso: str = "",
+) -> int:
+    existing = [
+        (feat, feat["geometry"]["coordinates"])
+        for feat in matched
+        if feat.get("geometry", {}).get("type") == "Point"
+    ]
+    for feat, coords in existing:
+        if abs(coords[0] - lon) >= 0.03 or abs(coords[1] - lat) >= 0.03:
+            continue
+        feat["properties"]["ev"] = sorted(set(feat["properties"]["ev"]) | set(evs))
+        if not (feat["properties"].get("name") or "").strip():
+            feat["properties"]["name"] = name
+        return 0
+    matched.append({
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [round(lon, COORD_DIGITS), round(lat, COORD_DIGITS)],
+        },
+        "properties": {"name": name, "ev": sorted(set(evs)), "op_tso": op_tso},
+    })
+    return 1
+
+
+def _attach_grid_elements(
+    events: List[Dict[str, Any]],
+    lines: Sequence[Dict[str, Any]],
+    points: Sequence[Dict[str, Any]],
+    matched: List[Dict[str, Any]],
+    matched_events: set,
+    table: Dict[str, Dict[str, Any]],
+    name_index: Optional[Sequence[Tuple[Dict[str, Any], Dict[str, Any]]]] = None,
+) -> int:
+    """A78/A79 per EIC (oder Name) an SGM-Elemente hängen, Geometrie über Stationen.
+
+    Der Verlauf kommt aus OSM: Teilstücke ab 220 kV werden zwischen den
+    beiden Stationen zusammengesetzt. Eine Gerade nur, wenn die Stationen
+    nah beieinanderliegen und kein Korridor gefunden wurde.
+    """
+    cache: Dict[Tuple[str, str], Optional[Dict[str, Any]]] = {}
+    graph = build_line_graph(lines)
+    buckets: Dict[str, Dict[str, Any]] = {}
+    for i, ev in enumerate(events):
+        if i in matched_events:
+            continue
+        if ev.get("reason") not in ("Störung", "Geplante Wartung"):
+            continue
+        if ev.get("doc_type") not in ("A78", "A79"):
+            continue
+        hit = lookup_grid(ev.get("asset_eic") or "", table)
+        if hit is None and name_index:
+            hit = _grid_name_lookup(ev.get("asset_name") or "", ev.get("voltage") or "", name_index, cache)
+        if not hit:
+            continue
+        rec = buckets.get(hit["key"])
+        if rec is None:
+            rec = {"el": hit, "ev": []}
+            buckets[hit["key"]] = rec
+        rec["ev"].append(i)
+
+    added = 0
+    for rec in buckets.values():
+        el = rec["el"]
+        evs = rec["ev"]
+        a, b = match_line_ends(el.get("sub_from") or "", el.get("sub_to") or "", points)
+        name = el.get("name") or f"{el.get('sub_from') or ''} – {el.get('sub_to') or ''}".strip(" –")
+        op_tso = el.get("tso") or ""
+        if a and b and (round(a["lon"], 3), round(a["lat"], 3)) != (round(b["lon"], 3), round(b["lat"], 3)):
+            route = route_between(graph, a, b)
+            if route and len(route) >= 2:
+                _merge_or_add_line(matched, route, name, evs, op_tso)
+            elif _pt_dist((a["lon"], a["lat"]), (b["lon"], b["lat"])) <= _STRAIGHT_MAX_DEG:
+                coords = [
+                    [round(a["lon"], COORD_DIGITS), round(a["lat"], COORD_DIGITS)],
+                    [round(b["lon"], COORD_DIGITS), round(b["lat"], COORD_DIGITS)],
+                ]
+                _merge_or_add_line(matched, coords, name, evs, op_tso)
+            else:
+                continue
+            matched_events.update(evs)
+            added += 1
+            continue
+        pt = a or b
+        if pt:
+            added += _merge_or_add_point(matched, pt["lon"], pt["lat"], name, evs, op_tso)
+            matched_events.update(evs)
+    return added
+
+
 def _attach_eic_plants(
     events: List[Dict[str, Any]],
     matched: List[Dict[str, Any]],
@@ -353,7 +958,9 @@ def _attach_eic_plants(
         if ev.get("doc_type") not in ("A77", "A80"):
             continue
         plant = _lookup_plant(ev.get("asset_eic") or "", lookup)
-        if not plant or not _in_country_mask(plant["lon"], plant["lat"], country):
+        if not plant or plant.get("lat") is None or plant.get("lon") is None:
+            continue
+        if not _in_country_mask(plant["lon"], plant["lat"], country):
             continue
         key = (round(plant["lat"], 3), round(plant["lon"], 3), plant["name"])
         rec = buckets.get(key)
@@ -1181,10 +1788,15 @@ def build_network(country: Country, events: List[Dict[str, Any]], allow_fetch: b
     extra_aliases = _aliases_from_plants(plants)
     items, token_index = _event_index(events, extra_aliases)
     unique_tokens = _unique_local_tokens(lines, points)
+    grid_elements = load_grid_elements()
+    grid = grid_table(grid_elements)
+    grid_names = grid_name_index(grid_elements)
+    n_nom, n_volt, n_sgm_name = backfill_from_grid(events, grid, grid_names)
 
     background = []
     matched = []
     matched_events = set()
+    sgm_pts = _attach_grid_elements(events, lines, points, matched, matched_events, grid, grid_names)
     for line in lines:
         if line["kv"] >= BG_MIN_KV or line["hvdc"]:
             background.append({
@@ -1208,6 +1820,7 @@ def build_network(country: Country, events: List[Dict[str, Any]], allow_fetch: b
         )
         max_lat = max(pt[1] for pt in coords) if coords else 0.0
         hits = _filter_hits(hits, events, lat=max_lat, name=line["name"])
+        hits = [i for i in hits if i not in matched_events]
         if not hits:
             continue
         ev_idx = sorted(set(hits))
@@ -1228,6 +1841,7 @@ def build_network(country: Country, events: List[Dict[str, Any]], allow_fetch: b
             events=events,
         )
         hits = _filter_hits(hits, events, lat=pt["lat"], name=pt["name"], plant=pt.get("kind") == "plant")
+        hits = [i for i in hits if i not in matched_events]
         if not hits:
             continue
         ev_idx = sorted(set(hits))
@@ -1247,9 +1861,12 @@ def build_network(country: Country, events: List[Dict[str, Any]], allow_fetch: b
     n_all = sum(1 for e in events if e.get("reason") in ("Störung", "Geplante Wartung"))
     n_pts = sum(1 for f in matched if f.get("geometry", {}).get("type") == "Point")
     print(
-        f"  Netz: {len(lines)} Leitungen, {len(points)} OSM-Stationen, {len(plants)} EIC-Kraftwerke | "
-        f"gematcht: {len(matched)} Objekte ({n_pts} Punkte, {eic_pts} via EIC, {osm_pts} via OSM-EIC), "
-        f"{len(matched_events)}/{n_all} Meldungen, ÜNB aus OSM-Betreiber: {n_op}",
+        f"  Netz: {len(lines)} Leitungen, {len(points)} OSM-Stationen, {len(plants)} EIC-Kraftwerke, "
+        f"{len(grid)} SGM-Elemente | "
+        f"gematcht: {len(matched)} Objekte ({n_pts} Punkte, {sgm_pts} via SGM, {eic_pts} via EIC, "
+        f"{osm_pts} via OSM-EIC), "
+        f"{len(matched_events)}/{n_all} Meldungen, Nennleistung Netz: {n_nom} (davon {n_sgm_name} per Name), Spannung: {n_volt}, "
+        f"ÜNB aus OSM-Betreiber: {n_op}",
         flush=True,
     )
     return {

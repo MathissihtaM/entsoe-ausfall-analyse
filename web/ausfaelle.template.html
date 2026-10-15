@@ -478,7 +478,7 @@
         <p><strong>Produktionseinheit (A77)</strong> ist das Kraftwerk als Ganzes: eine oder mehrere Maschinen hinter einem Netzanschluss. <strong>Erzeugungseinheit (A80)</strong> ist der einzelne Block bzw. Generator. Dieselbe Unverfügbarkeit kann auf beiden Ebenen gemeldet sein, deshalb gibt es in dieser Datei <span id="info-a80-vs-a77">—</span>.</p>
         <p>Die Ursache ist eine Störung, eine geplante Wartung oder eine Stilllegung. Der Status in der Tabelle ist aktiv oder storniert. Eine stornierte Störung bleibt stehen: die Meldung sagt, dass die geplante Unverfügbarkeit nicht stattgefunden hat.</p>
         <p><strong>Restleistung</strong> ist die während der Unverfügbarkeit noch verfügbare Leistung.</p>
-        <p><strong>Ausfallleistung</strong> ist Nennleistung minus Restleistung. Fürs Übertragungsnetz gibt es keine Nennleistung — diese Meldungen fließen nicht in Karte, Diagramm und Summe zur Ausfallleistung ein.</p>
+        <p><strong>Ausfallleistung</strong> ist Nennleistung minus Restleistung. Fürs Netz nur, wo die Nennleistung aus dem JAO Static Grid Model bekannt ist (380/220&nbsp;kV, Trafos, PST, HGÜ — per EIC oder Schaltfeld-Nummer im Namen zugeordnet). Übrige A78/A79-Meldungen fließen nicht in Karte, Diagramm und Summe zur Ausfallleistung ein.</p>
         <p>Gemeldet werden muss ab 100&nbsp;MW: bei Kraftwerken die Änderung der Erzeugungsleistung, bei Leitungen die zonenübergreifende Kapazität. Teilweise werden auch Einträge mit geringerer Leistung angelegt. Die werden hier mit angezeigt. Verteilnetz und das übrige Störungsgeschehen sind nicht enthalten.</p>
         <h3>Wie die Meldungen aufbereitet sind</h3>
         <p>Rohabruf: Erzeugung über die <span class="js-n-tsos">—</span> ÜNB-Regelzonen plus Gebotszone. Übertragungsnetz zusätzlich jede Regelzone gegen jeden Nachbarn (sonst fehlt das Innennetz, vor allem bei Amprion). Überlappende Zeitfenster, jeweils letzte Revision je Dokument/Anlage.</p>
@@ -510,13 +510,14 @@
         <p><strong>Nicht verortet:</strong> <span id="info-stat-unmapped">—</span>. Transparency liefert praktisch keine Koordinaten. Die Karte zeichnet nur Leitungen, Kraftwerke und Schaltanlagen, die sich OSM oder der Kraftwerksliste zuordnen lassen. Alles andere bleibt im Diagramm und in der Tabelle.</p>
         <h3>Reihenfolge</h3>
         <ol>
+          <li><strong>Anlagen-EIC gegen das JAO Static Grid Model</strong> (A78/A79: Stationen, Nennleistung √3·U·Imax). Der Verlauf ist der OSM-Korridor zwischen den beiden Stationen: die Teilstücke ab 220&nbsp;kV werden zusammengesetzt, nicht als Luftlinie verbunden. Eine Gerade nur, wenn die Stationen nah beieinanderliegen und OSM keinen Korridor hat. Der Meldungs-EIC ist oft ein ÜNB-interner, der nicht im SGM steht — dann greift der Name: Schaltfeld-Nummer plus Endpunkte (<span class="mono">Brunsbüttel … 951</span> → <span class="mono">Hamburg/Nord - Brunsbüttel 951</span>), Kürzel zählen als Präfix (<span class="mono">BORK-WALD-TWIS-3</span> → <span class="mono">Borken - Waldeck - Twistetal 3</span>).</li>
           <li><strong>Namens-Token gegen OSM</strong> (Leitungen ≥110&nbsp;kV, Umspannwerke, Kraftwerke). Namen werden vereinheitlicht und in Tokens zerlegt; Stoppwörter (kraftwerk, umspannwerk, Städte, ÜNB-Kürzel) fallen raus. Treffer bei mindestens zwei Tokens oder einem Token ≥6 Zeichen. <strong>unlocated</strong> geht nicht über OSM-Namen.</li>
-          <li><strong>Anlagen-EIC gegen die OPSD-/BNetzA-Kraftwerksliste</strong> (Name, lat/lon, EIC-Präfix).</li>
+          <li><strong>Anlagen-EIC gegen OPSD-/BNetzA-, MaStR- und kuratierte Kraftwerksliste</strong> (Name, lat/lon, EIC-Präfix). MaStR ab 10&nbsp;MW: die öffentliche Liste enthält keinen W-EIC, er steht auf den öffentlichen Detailseiten; Koordinaten großer Blöcke verschleiert das Portal inzwischen und kommen aus dem open-MaStR-Snapshot 2025-02 (Zenodo). Bei gleichem EIC gewinnt MaStR, zuletzt die kuratierte <span class="mono">manual_assets.csv</span> — dort liegt das TenneT-Aggregat <strong>Nordsee AWZ</strong> als beschrifteter Clusterpunkt in der deutschen AWZ.</li>
           <li><strong>Restliche EICs</strong> über Kürzel im Code (NEUR → Neurath) auf genau ein OSM-Kraftwerk.</li>
         </ol>
-        <p>Deutsche Erzeugungs-EICs kodieren das Kraftwerk oft in vier Buchstaben. <strong>11W0-0000-…</strong> ist bewusst anonym — nicht kartierbar (<span id="info-anon">—</span>). Stilllegungen liegen nicht auf der Karte.</p>
+        <p>Deutsche Erzeugungs-EICs kodieren das Kraftwerk oft in vier Buchstaben. <strong>11W0-0000-…</strong> ist bewusst anonym — nicht kartierbar (<span id="info-anon">—</span>). Stilllegungen liegen nicht auf der Karte. Gleichnamige Stationen — St.&nbsp;Peter an der Nordsee, bei Langenfeld und St.&nbsp;Peter am Hart an der österreichischen Grenze — werden über das andere Leitungsende getrennt. St.&nbsp;Peter am Hart fehlt im deutschen OSM-Auszug und ist als Grenzpunkt hinterlegt.</p>
         <p>Auf der Karte nur zuordenbare ≥110-kV-Leitungen, Kraftwerke und Schaltanlagen. Was dort fehlt, ist im Diagramm weiter enthalten. Der Rest ohne Lage ist vor allem Verteilnetz und anonymisierte Erzeugung <strong>unlocated</strong> / 11W0-0000; die Anteile stehen unter Zuordnung und werden aus der aktuellen Datei berechnet.</p>
-        <p><strong>Ausfallleistung</strong> (Nennleistung − Restleistung) gibt es nicht fürs Übertragungsnetz. Bleibt diese Kategorie im Filter, fließt sie nicht in Größe und Summe ein — an Karte und Diagramm steht dann derselbe Hinweis.</p>
+        <p><strong>Ausfallleistung</strong> (Nennleistung − Restleistung) fürs Netz nur, wo das Static Grid Model eine Nennleistung kennt — per EIC oder per Schaltfeld-Nummer im Namen zugeordnet. Bleibt eine Netz-Meldung ohne diesen Wert im Filter, fließt sie nicht in Größe und Summe ein — an Karte und Diagramm steht dann derselbe Hinweis.</p>
       </div>
       <div class="info-panel" role="tabpanel" id="info-panel-aufbau" aria-labelledby="info-tab-aufbau" hidden>
         <p>Die Auswertung ist ein Python-Paket plus eine HTML-Datei. Es gibt keinen Server und keinen Build-Schritt. Karte (MapLibre) und Diagramm (Plotly) kommen beim Öffnen der html aus dem Internet, die Meldungen stecken in der Datei.</p>
@@ -526,14 +527,14 @@
           <li><span class="mono">fetch_outages</span> — Transparenzplattform abfragen, ZIP-Antworten ablegen</li>
           <li><span class="mono">parse_outages</span> — aus jedem XML eine Zeile (Zeit, Anlage, Ursache, Restleistung)</li>
           <li><span class="mono">countries</span> — Gebotszone, Regelzonen und den Übertragungsnetzbetreiber bestimmen</li>
-          <li><span class="mono">osm_network</span> — Leitung oder Kraftwerk in OpenStreetMap und der Kraftwerksliste suchen</li>
+          <li><span class="mono">osm_network</span> — Leitung oder Kraftwerk in OpenStreetMap, dem Static Grid Model und der Kraftwerksliste suchen</li>
           <li><span class="mono">write_html</span> — dasselbe JSON in <span class="mono">data/outages.json</span> und in diese Seite schreiben</li>
         </ol>
         <p>Die Seite steht in <span class="mono">web/ausfaelle.template.html</span> (CSS und ein JavaScript). <span class="mono">out/ausfaelle.html</span> ist dieselbe Vorlage mit eingesetzten Daten. Referenzdaten liegen in <span class="mono">data/ref/</span>, API- und OSM-Cache in <span class="mono">data/cache/</span>. Die Regeln zu Parser, Cache und Zuordnung liegen in <span class="mono">tests/</span>.</p>
         <h3>Datenformate</h3>
         <p>Die API antwortet mit einem ZIP. Darin ist je Meldung ein XML-Dokument (<span class="mono">Unavailability_MarketDocument</span>) mit einer oder mehreren Zeitreihen, eine je Anlage. Klartext steht dort kaum: Dokumentart A77–A80, Ursache B18–B20, Status A05/A09/A13 und Anlagentyp B01–B24 sind Codes. Der Parser übersetzt sie in die Spalten der Tabelle.</p>
         <p><span class="mono">outages.json</span> hat die Zeilen unter <span class="mono">events</span> und das Netz als GeoJSON unter <span class="mono">network</span>. Am Kartentreffer stehen unter <span class="mono">ev</span> die Indizes in diese Zeilen. Das Hintergrundnetz nutzt kurze Feldnamen (<span class="mono">v</span> Spannung, <span class="mono">d</span> HGÜ), weil es in jede HTML-Datei kopiert wird.</p>
-        <p>OpenStreetMap kommt als Overpass-JSON, eine Datei je Kachel. Die Kraftwerksliste ist eine CSV mit EIC, Name, Koordinate und Betreiber.</p>
+        <p>OpenStreetMap kommt als Overpass-JSON, eine Datei je Kachel. Die Kraftwerkslisten (OPSD/BNetzA und MaStR) sind CSVs mit EIC, Name, Koordinate und Betreiber; die kuratierte <span class="mono">manual_assets.csv</span> ergänzt Pseudo-Assets (Nordsee AWZ). Der MaStR-W-EIC stammt von den öffentlichen Detailseiten, die Koordinaten aus dem open-MaStR-Snapshot 2025-02 auf Zenodo (Portal verschleiert sie inzwischen; Lizenz dl-de/by-2-0, Bundesnetzagentur / OpenEnergyPlatform). Das Static Grid Model steht als verdichtete CSV mit EIC, Stationen, Spannung und Nennleistung in <span class="mono">data/ref/</span>; Roh-ZIP unter <span class="mono">data/cache/DE/sgm/</span>. Neu laden: <span class="mono">python -m src --refresh-refs</span>.</p>
         <h3>Was wiederverwendet wird</h3>
         <ul>
           <li>Jede API-Seite liegt als ZIP. Eine leere fachliche Antwort ist eine <span class="mono">.empty</span>-Datei und wird nicht noch einmal geholt. Ist eine Seite voll und der Offset am Limit, war das Zeitfenster zu groß und wird halbiert.</li>
@@ -609,7 +610,7 @@
             <option value="outage_mean">Mittlere Ausfallleistung</option>
           </select>
         </label>
-        <span class="metric-note" id="map-outage-hint" hidden title="Ausfallleistung ist Nennleistung minus Restleistung. Fürs Übertragungsnetz gibt es keine Nennleistung — diese Meldungen fließen nicht in Größe und Summe ein.">ohne Übertragungsnetz</span>
+        <span class="metric-note" id="map-outage-hint" hidden title="Ausfallleistung ist Nennleistung minus Restleistung. Fürs Netz nur, wo die Nennleistung aus dem JAO Static Grid Model bekannt ist (EIC oder Schaltfeld-Nummer im Namen) — übrige A78/A79 fließen nicht in Größe und Summe ein.">Netz nur mit SGM-Nennleistung</span>
         <span class="legend" id="map-width-legend"></span>
         <span id="map-match"></span>
       </div>
@@ -635,7 +636,7 @@
             <option value="mean">Durchschnitt</option>
           </select>
         </label>
-        <span class="metric-note" id="plot-outage-hint" hidden title="Ausfallleistung ist Nennleistung minus Restleistung. Fürs Übertragungsnetz gibt es keine Nennleistung — diese Meldungen fehlen in der Darstellung.">ohne Übertragungsnetz</span>
+        <span class="metric-note" id="plot-outage-hint" hidden title="Ausfallleistung ist Nennleistung minus Restleistung. Fürs Netz nur, wo die Nennleistung aus dem JAO Static Grid Model bekannt ist (EIC oder Schaltfeld-Nummer im Namen) — übrige A78/A79 fehlen in der Darstellung.">Netz nur mit SGM-Nennleistung</span>
       </div>
       <div class="plot-stage"><div id="plot"></div></div>
     </div>
@@ -653,7 +654,7 @@
           <th>Start</th><th>Ende</th><th>Dauer h</th><th>Kategorie</th><th>ÜNB</th><th>Ursache</th>
           <th>Typ</th><th>Spannung</th><th>Anlage</th><th>Grenze</th>
           <th title="Verbleibende verfügbare Leistung während der Nichtverfügbarkeit (Available_Period), nicht die ausgefallene MW">Restleistung</th>
-          <th title="Nennleistung minus Restleistung. Leer beim Übertragungsnetz (keine Nennleistung).">Ausfallleistung</th>
+          <th title="Nennleistung minus Restleistung. Beim Netz nur, wo das Static Grid Model eine Nennleistung kennt (per EIC oder Schaltfeld-Nummer im Namen).">Ausfallleistung</th>
           <th>Status</th>
         </tr>
       </thead>

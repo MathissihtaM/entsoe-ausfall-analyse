@@ -4,6 +4,8 @@ Ohne Zusatzflags werden fehlende API-Fenster nachgeladen, alle ZIP-Dateien
 neu gelesen und Karte plus HTML geschrieben. ``--cache-only`` überspringt
 die API. ``--rebuild-network`` lässt die Meldungen in ``outages.json`` stehen
 und ordnet sie nur neu dem Netz zu; ``--years`` gilt dann nicht.
+``--refresh-refs`` lädt Static Grid Model und MaStR und schreibt die
+Lookup-CSVs; der Standardlauf liest nur diese Dateien.
 """
 
 from __future__ import annotations
@@ -14,8 +16,10 @@ import sys
 
 from src.countries import get_country, relabel_event_tso
 from src.fetch_outages import FETCH_WORKERS, OUTAGES_JSON, fetch_country, load_token
+from src.mastr_plants import refresh_mastr_ref
 from src.osm_network import build_network
 from src.parse_outages import keep_event
+from src.static_grid import refresh_grid_ref
 from src.write_html import write_html
 
 
@@ -30,7 +34,20 @@ def main(argv: list[str] | None = None) -> int:
         action="store_true",
         help="Nur OSM/EIC-Karte neu matchen, vorhandenes outages.json behalten",
     )
+    parser.add_argument(
+        "--refresh-refs",
+        action="store_true",
+        help="Static Grid Model und MaStR neu laden, Lookup-CSVs schreiben",
+    )
     args = parser.parse_args(argv)
+
+    if args.refresh_refs:
+        refresh_grid_ref()
+        refresh_mastr_ref()
+        flags = set(argv or ["--refresh-refs"])
+        more = flags - {"--refresh-refs", "--country", args.country, str(args.years)}
+        if not more and not args.rebuild_network and not args.cache_only:
+            return 0
 
     country = get_country(args.country)
     if args.rebuild_network:

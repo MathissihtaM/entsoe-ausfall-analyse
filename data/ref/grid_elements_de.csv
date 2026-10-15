@@ -1,0 +1,1188 @@
+eic,name,tso,type,sub_from,sub_to,kv,nominal_mw
+11T0-0000-0949-E,Altdöbern - Streumen 563,50Hertz,Line,Altdöbern,Streumen,380,1645.45
+11T-D2-D8-001007,Altenfeld - Redwitz 459,50Hertz,Tieline,Altenfeld,Redwitz,380,4738.89
+11T-D2-D8-001015,Altenfeld - Redwitz 460,50Hertz,Tieline,Altenfeld,Redwitz,380,4738.89
+11TD8L463------C,Altenfeld - Remptendorf 463,50Hertz,Line,Altenfeld,Remptendorf,380,1559.88
+11TD8L464------4,Altenfeld - Remptendorf 464,50Hertz,Line,Altenfeld,Remptendorf,380,1559.88
+11T0-0000-0008-4,Altentreptow/Nord - Altentreptow/Süd 477,50Hertz,Line,Altentreptow/Nord,Altentreptow/Süd,380,1658.61
+11T0-0000-0009-1,Altentreptow/Süd - Gransee 479,50Hertz,Line,Altentreptow/Süd,Gransee,380,1658.61
+11T0-0000-0010-O,Altentreptow/Süd - Malchow 518,50Hertz,Line,Altentreptow/Süd,Malchow,380,1342.69
+11TD8L275------7,Bentwisch - Güstrow 275,50Hertz,Line,Bentwisch,Güstrow,220,457.261
+11TD8L543------K,Bentwisch - Güstrow 543,50Hertz,Line,Bentwisch,Güstrow,380,1790.25
+11TD8L544------C,Bentwisch - Güstrow 544,50Hertz,Line,Bentwisch,Güstrow,380,1790.25
+11T0-0000-0109-X,Bertikow - Vierraden 481,50Hertz,Line,Bertikow,Vierraden,380,1790.25
+11T0-0000-2030-4,Bertikow - Vierraden 482,50Hertz,Line,Bertikow,Vierraden,380,1790.25
+11T-D2-D8-000027,Brunsbüttel - Brunsbüttel 949,50Hertz,Tieline,Brunsbüttel,Brunsbüttel,380,1382.18
+11TD8L551------R,Bärwalde - Schmölln 551,50Hertz,Line,Bärwalde,Schmölln,380,2369.45
+11TD8L552------J,Bärwalde - Schmölln 552,50Hertz,Line,Bärwalde,Schmölln,380,2369.45
+11TD8L557------G,Bärwalde - Streumen 557,50Hertz,Line,Bärwalde,Streumen,380,1658.61
+11TD8L558------8,Bärwalde - Streumen 558,50Hertz,Line,Bärwalde,Streumen,380,1658.61
+11TD8L906------T,Charlottenburg - Mitte 906,50Hertz,Line,Charlottenburg,Mitte,380,526.543
+11TD8L592------K,Dresden/Süd - Freiberg/Nord 592,50Hertz,Line,Dresden/Süd,Freiberg/Nord,380,1658.61
+11TD8L591------S,Dresden/Süd - Röhrsdorf 591,50Hertz,Line,Dresden/Süd,Röhrsdorf,380,1658.61
+11TD8L454------D,Eisenach - Vieselbach 454,50Hertz,Line,Eisenach,Vieselbach,380,1658.61
+11TD8L547------P,Eisenhüttenstadt (Abzweig) - Eisenhüttenstadt 547-3,50Hertz,Line,Eisenhüttenstadt (Abzweig),Eisenhüttenstadt,380,3791.11
+11T0000000000023,Eisenhüttenstadt (Abzweig) - Eisenhüttenstadt 548-3,50Hertz,Line,Eisenhüttenstadt (Abzweig),Eisenhüttenstadt,380,3791.11
+11TD8L587------Q,Eula - Pulgar 587,50Hertz,Line,Eula,Pulgar,380,1790.25
+11TD8L588------I,Eula - Pulgar 588,50Hertz,Line,Eula,Pulgar,380,1790.25
+11TD8L203------C,Eula - Röhrsdorf 203,50Hertz,Line,Eula,Röhrsdorf,220,301.03
+11TD8L208------9,Eula - Weida 208,50Hertz,Line,Eula,Weida,220,407.725
+11TD8L357-----0Y,Eula - Wolkramshausen 357,50Hertz,Line,Eula,Wolkramshausen,220,407.725
+11TD8L358------S,Eula - Wolkramshausen 358,50Hertz,Line,Eula,Wolkramshausen,220,407.725
+11TD8L594------4,Freiberg/Nord - Röhrsdorf 594,50Hertz,Line,Freiberg/Nord,Röhrsdorf,380,1658.61
+11TD8L921------E,Friedrichshain - Marzahn 921,50Hertz,Line,Friedrichshain,Marzahn,380,1092.58
+11TD8L922------6,Friedrichshain - Marzahn 922,50Hertz,Line,Friedrichshain,Marzahn,380,1092.58
+11TD8L919------X,Friedrichshain - Mitte 919,50Hertz,Line,Friedrichshain,Mitte,380,1092.58
+11TD8L920------M,Friedrichshain - Mitte 920,50Hertz,Line,Friedrichshain,Mitte,380,1092.58
+11T0-0000-0042-6,Förderstedt - Jessen/Nord 533,50Hertz,Line,Förderstedt,Jessen/Nord,380,1658.61
+11TD8L517-----1B,Gransee - Neuenhagen 517,50Hertz,Line,Gransee,Neuenhagen,380,1342.69
+11TD8L565------N,Graustein - Bärwalde 565,50Hertz,Line,Graustein,Bärwalde,380,1658.61
+11TD8L566------F,Graustein - Bärwalde 566,50Hertz,Line,Graustein,Bärwalde,380,1658.61
+11TD8L541-----0Y,Graustein - Preilack 541,50Hertz,Line,Graustein,Preilack,380,1316.36
+11TD8L542------S,Graustein - Preilack 542,50Hertz,Line,Graustein,Preilack,380,1316.36
+11TD8L423------B,Görries - Güstrow 423,50Hertz,Line,Görries,Güstrow,380,1790.25
+11TD8L514-----1Z,Güstrow - Putlitz/Süd 514,50Hertz,Line,Güstrow,Putlitz/Süd,380,1658.61
+10T-DE-PL-00002B,Hagenwerder - Mikulowa 567,50Hertz,Tieline,Hagenwerder,Mikulowa,380,1658.61
+10T-DE-PL-00001D,Hagenwerder - Mikulowa 568,50Hertz,Tieline,Hagenwerder,Mikulowa,380,1658.61
+11TD8L553------B,Hagenwerder - Schmölln 553,50Hertz,Line,Hagenwerder,Schmölln,380,1645.45
+11TD8L554------3,Hagenwerder - Schmölln 554,50Hertz,Line,Hagenwerder,Schmölln,380,1645.45
+11TD8L951------O,Hamburg/Nord - Brunsbüttel 951,50Hertz,Line,Hamburg/Nord,Brunsbüttel,380,2369.45
+11TD8L952------G,Hamburg/Nord - Brunsbüttel 952,50Hertz,Line,Hamburg/Nord,Brunsbüttel,380,2369.45
+11TD8L961------F,Hamburg/Ost - Hamburg/Nord 961,50Hertz,Line,Hamburg/Ost,Hamburg/Nord,380,1698.1
+11TD8L962------7,Hamburg/Ost - Hamburg/Nord 962,50Hertz,Line,Hamburg/Ost,Hamburg/Nord,380,1698.1
+11TD8L991------P,Hamburg/Ost - Krümmel 991,50Hertz,Line,Hamburg/Ost,Krümmel,380,2369.45
+11TD8L992------H,Hamburg/Ost - Krümmel 992,50Hertz,Line,Hamburg/Ost,Krümmel,380,2369.45
+11T-D2-D8-00063O,Hamburg/Süd - Dollern 981,50Hertz,Tieline,Hamburg/Süd,Dollern,380,3198.75
+11T-D2-D8-000051,Hamburg/Süd - Dollern 982,50Hertz,Tieline,Hamburg/Süd,Dollern,380,3198.75
+11TD8L971------6,Hamburg/Süd - Hamburg/Ost 971,50Hertz,Line,Hamburg/Süd,Hamburg/Ost,380,1698.1
+11TD8L972------Z,Hamburg/Süd - Hamburg/Ost 972,50Hertz,Line,Hamburg/Süd,Hamburg/Ost,380,1698.1
+11T0000000000015,Heinersdorf - Neuenhagen 444,50Hertz,Line,Heinersdorf,Neuenhagen,380,1500.65
+11T-D2-D8-000205,Helmstedt - Wolmirstedt 491-1,50Hertz,Tieline,Helmstedt,Wolmirstedt,380,4442.71
+11T-D2-D8-000213,Helmstedt - Wolmirstedt 492-2,50Hertz,Tieline,Helmstedt,Wolmirstedt,380,2369.45
+11TD8L295------Q,Hennigsdorf - Wustermark 295,50Hertz,Line,Hennigsdorf,Wustermark,220,407.725
+11TD8L499------B,Jessen/Nord - Lauchstädt 499,50Hertz,Line,Jessen/Nord,Lauchstädt,380,1342.69
+11TD8L500------6,Jessen/Nord - Marke 500,50Hertz,Line,Jessen/Nord,Marke,380,1342.69
+11T0-0000-2052-R,Klostermansfeld - Wolmirstedt 535,50Hertz,Line,Klostermansfeld,Wolmirstedt,380,1658.61
+11TD8L536------5,Klostermansfeld - Wolmirstedt 536,50Hertz,Line,Klostermansfeld,Wolmirstedt,380,1658.61
+11T-D2-D8-00008W,Kruemmel 50H - Kruemmel 993,50Hertz,Tieline,Krümmel,Krümmel,380,5002.16
+11T-D2-D8-00009U,Kruemmel 50H - Kruemmel 994,50Hertz,Tieline,Krümmel,Krümmel,380,5002.16
+11TD8L419------9,Krümmel - Görries 419,50Hertz,Line,Krümmel,Görries,380,1777.08
+11TD8L420------Z,Krümmel - Wessin 420,50Hertz,Line,Krümmel,Wessin,380,1777.08
+11T0-0000-2053-O,Lauchstädt - Klostermansfeld 537,50Hertz,Line,Lauchstädt,Klostermansfeld,380,1658.61
+11TD8L538------Q,Lauchstädt - Klostermansfeld 538,50Hertz,Line,Lauchstädt,Klostermansfeld,380,1658.61
+11TD8L471------J,Lauchstädt - Vieselbach 471,50Hertz,Line,Lauchstädt,Vieselbach,380,2369.45
+11TD8L472------B,Lauchstädt - Vieselbach 472,50Hertz,Line,Lauchstädt,Vieselbach,380,2369.45
+11TD8L475------O,Lubmin - Altentreptow/Nord 475,50Hertz,Line,Lubmin,Altentreptow/Nord,380,1658.61
+11T0-0000-0007-7,Lubmin - Altentreptow/Süd 476,50Hertz,Line,Lubmin,Altentreptow/Süd,380,1658.61
+11TD8L313------U,Lubmin - Lüdershagen 313,50Hertz,Line,Lubmin,Lüdershagen,220,457.261
+11TD8L314------M,Lubmin - Lüdershagen 314,50Hertz,Line,Lubmin,Lüdershagen,220,457.261
+11TD8L509------8,Lubmin - Siedenbrünzow 509,50Hertz,Line,Lubmin,Siedenbrünzow,380,1658.61
+11TD8L510------Y,Lubmin - Siedenbrünzow 510,50Hertz,Line,Lubmin,Siedenbrünzow,380,1658.61
+11TD8L318------R,Lüdershagen - Bentwisch 318,50Hertz,Line,Lüdershagen,Bentwisch,220,457.261
+11TD8L317-276--N,Lüdershagen - Güstrow 317-276,50Hertz,Line,Lüdershagen,Güstrow,220,457.261
+11TD8L504------B,Marke - Lauchstädt 504,50Hertz,Line,Marke,Lauchstädt,380,1342.69
+11TD8L301------I,Marzahn - Wuhlheide 301,50Hertz,Line,Marzahn,Wuhlheide,220,407.725
+11TD8L302------A,Marzahn - Wuhlheide(Abzweig) 302/1,50Hertz,Line,Marzahn,Wuhlheide (Abzweig),220,731.618
+11T-D2-D8-000310,Mecklar - Eisenach 450-2,50Hertz,Tieline,Mecklar,Eisenach,380,3633.15
+11T-D2-D8-000302,Mecklar - Vieselbach 449-1,50Hertz,Tieline,Mecklar,Vieselbach,380,3633.15
+11TD8L293------5,Neuenhagen - Hennigsdorf 293,50Hertz,Line,Neuenhagen,Hennigsdorf,220,407.725
+11TD8L520------P,Neuenhagen - Malchow 520,50Hertz,Line,Neuenhagen,Malchow,380,1342.69
+11TD8L495------6,Neuenhagen - Marzahn 495,50Hertz,Line,Neuenhagen,Marzahn,380,1500.65
+11TD8L496------Z,Neuenhagen - Marzahn 496,50Hertz,Line,Neuenhagen,Marzahn,380,1579.63
+11TD8L294------Y,Neuenhagen - Wustermark 294,50Hertz,Line,Neuenhagen,Wustermark,220,342.946
+11T0-0000-1900-E,PST Hamburg/Ost 441,50Hertz,Transformer,,,1690,4946.91
+11T0-0000-1901-B,PST Hamburg/Ost 442,50Hertz,Transformer,,,1690,4946.91
+11T0-0000-1902-8,PST Hamburg/Ost 443,50Hertz,Transformer,,,1690,4946.91
+11T0-0000-1903-5,PST Hamburg/Ost 444,50Hertz,Transformer,,,1690,4946.91
+11T0-0000-0011-L,PST Röhrsdorf 441,50Hertz,Transformer,,,1690,4946.91
+11T0-0000-0012-I,PST Röhrsdorf 442,50Hertz,Transformer,,,1690,4946.91
+11T0-0000-0013-F,PST Vierraden 441,50Hertz,Transformer,,,1690,4946.91
+11T0-0000-2217-I,PST Vierraden 442,50Hertz,Transformer,,,1690,4946.91
+11T0-0000-0014-C,PST Vierraden 443,50Hertz,Transformer,,,1690,4946.91
+11T0-0000-2218-F,PST Vierraden 444,50Hertz,Transformer,,,1690,4946.91
+11T0-0000-2035-Q,Pasewalk - Bertikow 407,50Hertz,Line,Pasewalk,Bertikow,380,2369.45
+11T0-0000-2036-N,Pasewalk - Bertikow 408,50Hertz,Line,Pasewalk,Bertikow,380,2369.45
+11TD8L315------E,Pasewalk - Güstrow 315,50Hertz,Line,Pasewalk,Güstrow,220,342.946
+11TD8L316------6,Pasewalk - Güstrow 316,50Hertz,Line,Pasewalk,Güstrow,220,342.946
+11TD8L516------N,Perleberg - Stendal/West 516,50Hertz,Line,Perleberg,Stendal/West,380,1658.61
+11T0-0000-0948-H,Preilack - Altdöbern 559,50Hertz,Line,Preilack,Altdöbern,380,1342.69
+11TD8L560------Q,Preilack - Streumen 560,50Hertz,Line,Preilack,Streumen,380,1342.69
+11TD8L589------A,Pulgar - Vieselbach 589,50Hertz,Line,Pulgar,Vieselbach,380,2369.45
+11TD8L590-----0Y,Pulgar - Vieselbach 590,50Hertz,Line,Pulgar,Vieselbach,380,2369.45
+11TD8L596------P,Putlitz/Süd - Perleberg - Putlitz 596,50Hertz,Line,Putlitz/Süd,Perleberg - Putlitz,380,1658.61
+11TD8L515------V,Putlitz/Süd - Stendal/West 515,50Hertz,Line,Putlitz/Süd,Stendal/West,380,1658.61
+11TD8L532------0,Ragow - Förderstedt 532,50Hertz,Line,Ragow,Förderstedt,380,1658.61
+11TD8L502-----1N,Ragow - Jessen/Nord 502,50Hertz,Line,Ragow,Jessen/Nord,380,1342.69
+11T0-0000-0041-9,Ragow - Jessen/Nord 531,50Hertz,Line,Ragow,Jessen/Nord,380,1658.61
+11TD8L539------I,Ragow - Preilack 539,50Hertz,Line,Ragow,Preilack,380,1500.65
+11TD8L540------7,Ragow - Preilack 540,50Hertz,Line,Ragow,Preilack,380,1500.65
+11T0-0000-0040-C,Ragow - Schönewalde 501,50Hertz,Line,Ragow,Schönewalde,380,1342.69
+11T0-0000-0043-3,Ragow - Streumen 561,50Hertz,Line,Ragow,Streumen,380,1648.08
+11TD8L562------A,Ragow - Streumen 562,50Hertz,Line,Ragow,Streumen,380,1648.08
+11T-D2-D8-00050X,Redwitz - Remptendorf 413,50Hertz,Tieline,Redwitz,Remptendorf,380,4738.89
+11T-D2-D8-00051V,Redwitz - Remptendorf 414,50Hertz,Tieline,Redwitz,Remptendorf,380,4738.89
+11TD8L904------8,Reuter - Charlottenburg 904,50Hertz,Line,Reuter,Charlottenburg,380,526.543
+11TD8L903------G,Reuter - Mitte 903,50Hertz,Line,Reuter,Mitte,380,526.543
+10T-CZ-DE-00002U,Röhrsdorf - Hradec 445,50Hertz,Tieline,Röhrsdorf,Hradec Vychod,380,1658.61
+10T-CZ-DE-00003S,Röhrsdorf - Hradec 446,50Hertz,Tieline,Röhrsdorf,Hradec Vychod,380,1658.61
+11TD8L207------H,Röhrsdorf - Weida 207,50Hertz,Line,Röhrsdorf,Weida,220,301.03
+11TD8L573------U,Röhrsdorf - Weida 573,50Hertz,Line,Röhrsdorf,Weida,380,2369.45
+11T0-0000-2251-K,Röhrsdorf - Weida 574,50Hertz,Line,Röhrsdorf,Weida,380,2369.45
+11TD8L555------W,Schmölln - Dresden/Süd 555,50Hertz,Line,Schmölln,Dresden/Süd,380,1645.45
+11TD8L556------O,Schmölln - Dresden/Süd 556,50Hertz,Line,Schmölln,Dresden/Süd,380,1645.45
+11TD8L503-----1F,Schönewalde - Jessen/Nord 503,50Hertz,Line,Schönewalde,Jessen/Nord,380,1342.69
+11TD8L512-----1E,Siedenbrünzow - Güstrow 512,50Hertz,Line,Siedenbrünzow,Güstrow,380,1645.45
+11TD8L513-----16,Siedenbrünzow - Putlitz/Süd 513,50Hertz,Line,Siedenbrünzow,Putlitz/Süd,380,1645.45
+11T0-0000-0980-P,Stendal/West - Wolmirstedt 488,50Hertz,Line,Stendal/West,Wolmirstedt,380,2369.45
+11TD8L489------K,Stendal/West - Wolmirstedt 489,50Hertz,Line,Stendal/West,Wolmirstedt,380,1658.61
+11TD8L490------9,Stendal/West - Wolmirstedt 490,50Hertz,Line,Stendal/West,Wolmirstedt,380,1658.61
+11TD8L585------5,Streumen - Eula 585,50Hertz,Line,Streumen,Eula,380,1658.61
+11TD8L586------Y,Streumen - Eula 586,50Hertz,Line,Streumen,Eula,380,1658.61
+11TD8L571------9,Streumen - Röhrsdorf 571,50Hertz,Line,Streumen,Röhrsdorf,380,1648.08
+11TD8L572------1,Streumen - Röhrsdorf 572,50Hertz,Line,Streumen,Röhrsdorf,380,1648.08
+11TD8T401EU12--E,TR Eula 220/400 401,50Hertz,Transformer,,,866,1298.96
+11T0-0000-2256-5,TR Güstrow 220/400 405,50Hertz,Transformer,,,577,576.65
+11TD8T405NOR12-5,TR Hamburg/Nord 220/400 405,50Hertz,Transformer,,,650,731.791
+11TD8T406NOR12-Y,TR Hamburg/Nord 220/400 406,50Hertz,Transformer,,,650,731.791
+11T0-0000-0003-J,TR Lubmin 220/400 405,50Hertz,Transformer,,,650,731.791
+11TD8T401MZA12-Q,TR Marzahn 220/400 401,50Hertz,Transformer,,,577,576.65
+11TD8T402MZA12-I,TR Marzahn 220/400 402,50Hertz,Transformer,,,577,576.65
+11TD8T401NHG12-N,TR Neuenhagen 220/400 401,50Hertz,Transformer,,,1215,2556.9
+11TD8T402NHG12-F,TR Neuenhagen 220/400 402,50Hertz,Transformer,,,1215,2556.9
+11T0-0000-2086-3,TR Pasewalk 220/400 404,50Hertz,Transformer,,,577,576.65
+11T0-0000-2087-0,TR Pasewalk 220/400 405,50Hertz,Transformer,,,577,576.65
+11TD8T401RE12--J,TR Remptendorf 220/400 401,50Hertz,Transformer,,,577,576.65
+11TD8T402RE12--B,TR Remptendorf 220/400 402,50Hertz,Transformer,,,577,576.65
+11TD8T402ROE12-T,TR Röhrsdorf 220/400 402,50Hertz,Transformer,,,1215,2556.9
+11TD8T403ROE12-T,TR Röhrsdorf 220/400 403,50Hertz,Transformer,,,1215,2556.9
+11TD8T401THY12-2,TR Thyrow 220/400 401,50Hertz,Transformer,,,577,576.65
+11TD8T402VIB12-B,TR Vieselbach 220/400 402,50Hertz,Transformer,,,577,576.65
+11TD8T403VIB12-B,TR Vieselbach 220/400 403,50Hertz,Transformer,,,577,576.65
+11T0-0000-2210-2,TR Weida 220/400 402,50Hertz,Transformer,,,577,576.65
+11TD8T404WOL12-H,TR Wolmirstedt 220/400 404,50Hertz,Transformer,,,577,576.65
+11TD8T401WU12-0Y,TR Wustermark 220/400 401,50Hertz,Transformer,,,577,576.65
+11TD8T402WU12--S,TR Wustermark 220/400 402,50Hertz,Transformer,,,577,576.65
+11TD8L907------L,Teufelsbruch - Reuter 907,50Hertz,Line,Teufelsbruch,Reuter,380,1066.25
+11TD8L908------D,Teufelsbruch - Reuter 908,50Hertz,Line,Teufelsbruch,Reuter,380,1066.25
+11TD8L522------9,Thyrow - Ragow 522,50Hertz,Line,Thyrow,Ragow,380,1648.08
+10T-DE-PL-000039,Vierraden - Krajnik 507,50Hertz,Tieline,Vierraden,Krajnik,380,1658.61
+10T-DE-PL-000047,Vierraden - Krajnik 508,50Hertz,Tieline,Vierraden,Krajnik,380,1658.61
+11T0-0000-0110-J,Vierraden - Neuenhagen 483,50Hertz,Line,Vierraden,Neuenhagen,380,1790.25
+11T0-0000-2031-1,Vierraden - Neuenhagen 484,50Hertz,Line,Vierraden,Neuenhagen,380,1790.25
+11TD8L467------H,Vieselbach - Altenfeld 467,50Hertz,Line,Vieselbach,Altenfeld,380,2369.45
+11TD8L468------9,Vieselbach - Altenfeld 468,50Hertz,Line,Vieselbach,Altenfeld,380,2369.45
+11TD8L415------4,Vieselbach - Remptendorf - Großschwabhausen 415,50Hertz,Line,Vieselbach,Remptendorf - Großschwabhausen,380,1790.25
+11TD8L416------X,Vieselbach - Remptendorf 416,50Hertz,Line,Vieselbach,Remptendorf,380,1790.25
+11TD8L367------R,Vieselbach - Wolkramshausen 367,50Hertz,Line,Vieselbach,Wolkramshausen,220,609.682
+11TD8L368------J,Vieselbach - Wolkramshausen 368,50Hertz,Line,Vieselbach,Wolkramshausen,220,609.682
+11TD8L575------E,Weida - Remptendorf 575,50Hertz,Line,Weida,Remptendorf,380,2369.45
+11T0-0000-2252-H,Weida - Remptendorf 576,50Hertz,Line,Weida,Remptendorf,380,2369.45
+11TD8L424------3,Wessin - Güstrow 424,50Hertz,Line,Wessin,Güstrow,380,1790.25
+11TD8L437------7,Wolmirstedt - Förderstedt 437,50Hertz,Line,Wolmirstedt,Förderstedt,380,1658.61
+11TD8L438-----0Y,Wolmirstedt - Förderstedt 438,50Hertz,Line,Wolmirstedt,Förderstedt,380,1658.61
+11TD8L332-322--6,Wolmirstedt - Parchim/Süd 332-322,50Hertz,Line,Wolmirstedt,Parchim/Süd,220,342.946
+11TD8L493------M,Wolmirstedt - Teufelsbruch 493,50Hertz,Line,Wolmirstedt,Teufelsbruch,380,1579.63
+11TD8L494------E,Wolmirstedt - Wustermark 494,50Hertz,Line,Wolmirstedt,Wustermark,380,1645.45
+11TD8L291------L,Wuhlheide - Thyrow 291,50Hertz,Line,Wuhlheide,Thyrow,220,365.809
+11TD8L521-525--G,Wustermark - Ragow 521-525,50Hertz,Line,Wustermark,Ragow,380,1648.08
+11TD8L498------J,Wustermark - Teufelsbruch 498,50Hertz,Line,Wustermark,Teufelsbruch,380,1579.63
+11TD8L526------E,Wustermark - Thyrow 526,50Hertz,Line,Wustermark,Thyrow,220,491.556
+11T0-0000-1950-V,Altenkleusheim - Setzer Wiese EISERF,Amprion,Line,Altenkleusheim,Setzer Wiese,220,281.978
+11T0-0000-0117-Z,Altenkleusheim - Setzer Wiese SETZE N,Amprion,Line,Altenkleusheim,Setzer Wiese,220,281.978
+11T0-0000-0281-K,Amelsbueren - Gersteinwerk WERSE W,Amprion,Line,Amelsbueren,Gersteinwerk,220,586.438
+11T0-0000-0124-3,Amelsbueren - Muenster MUNSTR O,Amprion,Line,Amelsbueren,Muenster,220,382.575
+11T0-0000-0743-5,Arpe - Nehden SAUERL S,Amprion,Line,Arpe,Nehden,380,1698.1
+11T0-0000-0549-Y,Arpe - Uentrop ARPE W,Amprion,Line,Arpe,Uentrop,380,1688.23
+11T0-0000-0375-7,BASF - Mutterstadt ROXHM S,Amprion,Line,BASF,Mutterstadt,220,621.876
+11T0-0000-2493-P,Bacharach - Y-Koblenz SOONWD O,Amprion,Line,Bacharach,Y-Koblenz,380,2369.45
+11T0-0000-2260-J,Bandstahl - Weissenthurm BANDST O,Amprion,Line,Bandstahl,Weissenthurm,220,518.23
+11T0-0000-2261-G,Bandstahl - Weissenthurm BANDST W,Amprion,Line,Bandstahl,Weissenthurm,220,518.23
+10T-LU-DE-00001G,Bauler - Flebour FLE BA N,Amprion,Tieline,Bauler,Flebour,220,491.556
+10T1001C--00096F,Bauler - Flebour FLE BA S,Amprion,Tieline,Bauler,Flebour,220,491.556
+11T0-0000-0149-H,Bauler - Niederstedem ENZ N,Amprion,Line,Bauler,Niederstedem,220,731.618
+11T0-0000-0150-3,Bauler - Niederstedem ENZ S,Amprion,Line,Bauler,Niederstedem,220,731.618
+11T0-0000-0233-Y,Bayer - Duennwald FLITTA O,Amprion,Line,Bayer,Duennwald,220,237.395
+11T0-0000-0412-Z,Bayer - Opladen WIESDF,Amprion,Line,Bayer,Opladen,220,195.479
+11T0-0000-0072-V,Bechterdissen - Guetersloh SENNE N2,Amprion,Tieline,Guetersloh,Bechterdissen,380,3580.49
+11T-D2-D7-00257J,Bechterdissen - Guetersloh SENNE S1,Amprion,Tieline,Guetersloh,Bechterdissen,380,3580.49
+11T0-0000-0307-T,Benteler - Hanekenfaehr BENTLR,Amprion,Line,Benteler,Hanekenfaehr,220,488.508
+11T0-0000-2548-P,Bergmannsglueck - Buescherhof BUER N,Amprion,Line,Bergmannsglueck,Buescherhof,220,491.556
+11T0-0000-0164-O,Bergmannsglueck - Buescherhof BUER S,Amprion,Line,Bergmannsglueck,Buescherhof,220,491.556
+11T0-0000-0166-I,Bergmannsglueck - Niederrhein SHERMB N,Amprion,Line,Bergmannsglueck,Niederrhein,220,518.23
+10T-CH-DE-000034,Beznau - Tiengen AARE O,Amprion,Line,Beznau,Tiengen,220,416.489
+10T-CH-DE-000026,Beznau - Tiengen AARE W,Amprion,Line,Beznau,Tiengen,380,1439.44
+11T0-0000-0658-S,Bischofsheim - Kelsterbach KELSTB N,Amprion,Line,Bischofsheim,Kelsterbach,380,1645.45
+11T0-0000-0560-G,Bischofsheim - Urberach ERZHAU N,Amprion,Line,Bischofsheim,Urberach,380,2073.26
+11T0-0000-0272-L,Bixterheide - Garenfeld BIXTRH N,Amprion,Line,Bixterheide,Garenfeld,220,530.423
+10T1001C--00135V,Blooren - Niederstedem BLONST S,Amprion,Tieline,Niederstedem,Blooren,220,491.556
+11T0-0000-0176-E,Bochum - Eiberg BOCHUM W,Amprion,Line,Bochum,Eiberg,220,762.102
+11T0-0000-0194-C,Bocklemuend - Brauweiler BOCKLE N,Amprion,Line,Bocklemuend,Brauweiler,220,240.062
+11T0-0000-0195-9,Bocklemuend - Brauweiler BOCKLE S,Amprion,Line,Bocklemuend,Brauweiler,220,240.062
+11T0-0000-1864-K,Bollenacker - Sechtem OLEFIN W,Amprion,Line,Bollenacker,Sechtem,220,491.556
+11T0-0000-0928-P,Brauweiler - Knapsack BURBAC O,Amprion,Line,Brauweiler,Knapsack,380,2073.26
+11T0-0000-0927-S,Brauweiler - Rommerskirchen BRAUWL W,Amprion,Line,Brauweiler,Rommerskirchen,380,2073.26
+11T0-0000-0458-1,Brauweiler - Rommerskirchen ROKI O,Amprion,Line,Brauweiler,Rommerskirchen,220,781.917
+11T0-0000-2072-J,Brauweiler - Rommerskirchen VORGBG W,Amprion,Line,Brauweiler,Rommerskirchen,220,495.367
+11T0-0000-2121-0,Buerstadt - Lambsheim BUERST O,Amprion,Line,Buerstadt,Lambsheim,380,2369.45
+11T0-0000-0568-T,Buerstadt - Lambsheim BUERST W,Amprion,Line,Buerstadt,Lambsheim,380,2369.45
+11T0-0000-1421-S,Buerstadt - Rheinau KURPFA O,Amprion,Line,Buerstadt,Rheinau,380,2369.45
+11T0-0000-1422-P,Buerstadt - Rheinau KURPFA W,Amprion,Line,Buerstadt,Rheinau,380,2369.45
+11T0-0000-0885-F,Buerstadt - Waldlaubersheim WONNEG W,Amprion,Line,Buerstadt,Waldlaubersheim,380,2369.45
+11T0-0000-2322-O,Buerstadt - Y-Buerstadt NASSAU,Amprion,Line,Buerstadt,Y-Limburg,380,1790.25
+11T0-0000-0207-Y,Buescherhof - Hamborn EMSHER N,Amprion,Line,Buescherhof,Hamborn,220,442.019
+11T0-0000-0208-V,Buescherhof - Hamborn EMSHER S,Amprion,Line,Buescherhof,Hamborn,220,442.019
+11T0-0000-0763-Y,Buescherhof - Nordlicht ESSEN W,Amprion,Line,Buescherhof,Nordlicht,380,1790.25
+11T0-0000-0727-1,Datteln - Mengede DATTLN O,Amprion,Line,Datteln,Mengede,380,1579.63
+11T0-0000-0728-Z,Datteln - Mengede DATTLN W,Amprion,Line,Datteln,Mengede,380,1579.63
+11T-D2-D7-00020D,Dauersberg - Dillenburg WESTW O2,Amprion,Tieline,Dauersberg,Dillenburg,380,3438.33
+11T0-0000-0250-Z,Dauersberg - Eiserfeld SIEGRL W,Amprion,Line,Dauersberg,Eiserfeld,220,518.23
+11T0-0000-0632-H,Dauersberg - Halfeshof DAURSB W,Amprion,Line,Dauersberg,Halfeshof,380,1790.25
+11T0-0000-1515-F,Dauersberg - Limburg LIMBG W,Amprion,Line,Dauersberg,Limburg,380,1790.25
+11T0-0000-0706-C,Dauersberg - Linde DAURSB O,Amprion,Line,Dauersberg,Linde,380,1790.25
+11T0-0000-0587-O,Dauersberg - Sechtem SIEGTA S,Amprion,Line,Dauersberg,Sechtem,380,1790.25
+11T0-0000-1409-C,Dauersberg - Setzer Wiese HELLER O,Amprion,Line,Dauersberg,Setzer Wiese,220,518.23
+11T0-0000-0480-D,Dauersberg - Setzer Wiese HELLER W,Amprion,Line,Dauersberg,Setzer Wiese,220,499.177
+11T0-0000-0212-8,Dauersberg - Siegburg LEUSHD N,Amprion,Line,Dauersberg,Siegburg,220,491.556
+11T0-0000-0213-5,Dauersberg - Siegburg LEUSHD S,Amprion,Line,Dauersberg,Siegburg,220,491.556
+11T0-0000-0586-R,Dauersberg - Siegburg SIEGTA N,Amprion,Line,Dauersberg,Siegburg,380,1790.25
+11T0-0000-0481-A,Dausersberg - Eiserfeld SIEGRL O,Amprion,Line,Dauersberg,Eiserfeld,220,499.177
+11T0-0000-2263-A,Daxlanden - Maximiliansau sw (Goldgrund Ost),Amprion,Line,Maximiliansau,Daxlanden,380,6219.79
+11T0-0000-2262-D,Daxlanden - Mutterstadt BIENWD W,Amprion,Tieline,Mutterstadt,Daxlanden,220,762.102
+11T-D4-D7-00005O,Dellmensingen - Voehringen gn (Donau W),Amprion,Tieline,Voehringen,Dellmensingen,380,2073.26
+11T-D2-D7-00030A,Dettingen - Grosskrotzenburg UMAIN S1,Amprion,Tieline,Dettingen,Großkrotzenburg,380,4442.71
+11T0-0000-0871-V,Dettingen - Urberach KARLST S,Amprion,Line,Dettingen,Urberach (NEU),380,2369.45
+11T0-0000-1672-W,Diefflen - Ensdorf ENSDF N,Amprion,Line,Diefflen,Ensdorf,220,442.019
+11T0-0000-0223-1,Diefflen - Saarwellingen NALBA O,Amprion,Line,Diefflen,Saarwellingen,220,221.391
+11T0-0000-0224-Z,Diefflen - Saarwellingen NALBA W,Amprion,Line,Diefflen,Saarwellingen,220,221.391
+11T0-0000-1673-T,Diefflen - Uchtelfangen ELLBCH N,Amprion,Line,Diefflen,Uchtelfangen,220,518.23
+11T0-0000-2116-Q,Doerpen West - Meppen EMSLD WB,Amprion,Tieline,Meppen,Doerpen West,380,4270.27
+10T-DE-NL-00007J,Doetinchem - Niederrhein DOETM SW,Amprion,Tieline,Doetinchem,Niederrhein,380,2369.45
+10T1001C--000235,Doetinchem - Niederrhein DOETM WS,Amprion,Tieline,Doetinchem,Niederrhein,380,2369.45
+11T0-0000-2549-M,Duelken - Osterath FICHTH W,Amprion,Line,Duelken,Osterath,220,491.556
+11T0-0000-2528-X,Duelken - Y-Edelstahl FICHTH O,Amprion,Line,Duelken,Y-Edelstahl,220,491.556
+11T0-0000-0234-V,Duennwald - Gremberghoven MERHM O,Amprion,Line,Duennwald,Gremberghoven,220,478.219
+11T0-0000-0235-S,Duennwald - Gremberghoven MERHM W,Amprion,Line,Duennwald,Gremberghoven,220,478.219
+11T0-0000-0413-W,Duennwald - Opladen DUENNW O,Amprion,Line,Duennwald,Opladen,220,589.867
+11T0-0000-1376-Z,Duennwald - Opladen DUENNW W,Amprion,Line,Duennwald,Opladen,220,589.867
+11T0-0000-2550-8,Edelstahl - Utfort UTFORT W,Amprion,Line,Edelstahl,Utfort,220,491.556
+11T0-0000-2529-U,Edelstahl - Y-Edelstahl FICHTH O,Amprion,Line,Edelstahl,Y-Edelstahl,220,491.556
+11T0-0000-0647-Z,Eiberg - Hattingen WEITMR W,Amprion,Line,Eiberg,Hattingen,380,1871.86
+11T0-0000-0651-C,Eiberg - Huellen HUELLN W,Amprion,Line,Eiberg,Huellen,380,2073.26
+11T0-0000-0654-3,Eiberg - Karnap EIBERG N,Amprion,Line,Eiberg,Karnap,380,1698.1
+11T0-0000-1898-X,Eiberg - Mettmann RUHRTL O,Amprion,Line,Eiberg,Mettmann,380,2237.81
+11T0-0000-1846-M,Eiberg - Mettmann RUHRTL W,Amprion,Line,Eiberg,Mettmann,380,2237.81
+11T0-0000-2264-7,Eiberg - St.Peter ITTERB W,Amprion,Line,Eiberg,St. Peter,220,372.668
+11T0-0000-0253-Q,Eller - Opladen ELLER O,Amprion,Line,Eller,Opladen,220,518.23
+11T0-0000-0495-V,Eller - St. Peter ELLER W,Amprion,Line,Eller,St. Peter,220,512.133
+11T0-0000-0282-H,Elmenhorst - Gersteinwerk CAPPEN S,Amprion,Line,Elmenhorst,Gersteinwerk,220,530.423
+11T0-0000-2054-L,Emscherbruch - Huellen WESTFL W,Amprion,Line,Emscherbruch,Huellen,380,2037.72
+11T0-0000-1497-J,Emscherbruch - Kusenhorst WEHOLT O,Amprion,Line,Emscherbruch,Kusenhorst,380,1871.86
+11T0-0000-1496-M,Emscherbruch - Mengede RECKLI N,Amprion,Line,Emscherbruch,Mengede,380,2073.26
+11T0-0000-2064-H,Emscherbruch - Mengede RECKLI S,Amprion,Line,Emscherbruch,Mengede,380,2073.26
+11T0-0000-2065-E,Emscherbruch- Kusenhorst WEHOLT W,Amprion,Line,Emscherbruch,Kusenhorst,380,1698.1
+10T-DE-FR-00004C,Ensdorf - St. Avold AVOLD,Amprion,Tieline,St. Avold,Ensdorf,220,321.226
+11T0-0000-0604-N,Ensdorf - Uchtelfangen TAUBNT N,Amprion,Line,Ensdorf,Uchtelfangen,380,2073.26
+11T0-0000-0605-K,Ensdorf - Uchtelfangen TAUBNT S,Amprion,Line,Ensdorf,Uchtelfangen,380,2073.26
+10T-DE-FR-00005A,Ensdorf - Vigy VIGY1 N,Amprion,Tieline,Ensdorf,Vigy,380,1790.25
+10T-DE-FR-000068,Ensdorf - Vigy VIGY2 S,Amprion,Tieline,Ensdorf,Vigy,380,1790.25
+11T0-0000-0516-I,FWH-S - Urberach SHWANH O,Amprion,Line,FWH-S,Urberach,220,209.959
+11T0-0000-0517-F,FWH-S - Urberach SHWANH W,Amprion,Line,FWH-S,Urberach,220,209.959
+11T0-0000-0414-T,Fuehlingen - Opladen KASSEL S,Amprion,Line,Fuehlingen,Opladen,220,518.23
+11T0-0000-0267-A,Fuehlingen - Rommerskirchen STOMM S,Amprion,Line,Fuehlingen,Rommerskirchen,220,495.367
+11T0-0000-1934-R,Ganderkesee - St. Huelfe HUNTE SW,Amprion,Tieline,St. Huelfe,Ganderkesee,380,2073.26
+11T0-0000-1935-O,Ganderkesee - St. Huelfe HUNTE WS,Amprion,Tieline,St. Huelfe,Ganderkesee,380,2073.26
+11T0-0000-2180-G,Garenfeld - Kruckel OSTENDE,Amprion,Line,Garenfeld,Kruckel,380,2237.81
+11T0-0000-2181-D,Garenfeld - Kruckel WESTENDE,Amprion,Line,Garenfeld,Kruckel,380,2237.81
+11T0-0000-0607-E,Geithe - Unna HAARST W,Amprion,Line,Geithe,Unna,380,1790.25
+11T0-0000-0364-E,Gellep - Muendelheim STRATM W,Amprion,Line,Gellep,Muendelheim,220,491.556
+11T0-0000-0275-C,Gellep - Osterath GELLEP W,Amprion,Line,Gellep,Osterath,220,478.219
+11T0-0000-0610-V,Gersteinwerk - Lippe WALTRO S,Amprion,Line,Gersteinwerk,Lippe,380,1790.25
+11T0-0000-0729-W,Gersteinwerk - Mengede MENGED N,Amprion,Line,Gersteinwerk,Mengede,380,2073.26
+11T0-0000-0287-2,Gersteinwerk - Wambel WAMBEL O,Amprion,Line,Gersteinwerk,Wambel,220,491.556
+11T0-0000-0289-X,Gersteinwerk - Wambel WAMBEL W,Amprion,Line,Gersteinwerk,Wambel,220,491.556
+11T0-0000-1402-X,Gremberghoven - Siegburg GREMBG W,Amprion,Line,Gremberghoven,Siegburg,220,491.556
+11T0-0000-0617-A,Gronau - Hanekenfaehr GRONAU W,Amprion,Line,Gronau,Hanekenfaehr,380,2369.45
+10T-DE-NL-00004P,Gronau - Hengelo HENGL SW,Amprion,Tieline,Gronau,Hengelo,380,
+10T-DE-NL-00003R,Gronau - Hengelo HENGL WS,Amprion,Tieline,Gronau,Hengelo,380,
+11T0-0000-0618-7,Gronau - Niederrhein PRHAMSBW,Amprion,Line,Gronau,KUES Luengenkamp,380,1896.87
+11T-D2-D7-000318,Grosskrotzenburg - Urberach UMAIN N2,Amprion,Tieline,Urberach,Großkrotzenburg,380,4442.71
+11T0-0000-1955-G,Guetersloh - Hesseln HALLE W,Amprion,Line,Guetersloh,Hesseln,220,240.062
+11T0-0000-1865-H,Guetersloh - Hesseln OSNING O,Amprion,Line,Guetersloh,Hesseln,380,316.584
+11T0-0000-1894-8,Gundelfingen - Koetz GUENZ N,Amprion,Line,Gundelfingen,Koetz,380,1790.25
+11T0-0000-0721-J,Gundelfingen - Meitingen MEITGN N,Amprion,Line,Gundelfingen,Meitingen,380,1790.25
+11T0-0000-0722-G,Gundelfingen - Meitingen MEITGN S,Amprion,Line,Gundelfingen,Meitingen,380,1790.25
+11T0-0000-0626-9,Gundelfingen - Voehringen GUENZ S,Amprion,Line,Gundelfingen,Voehringen,380,1790.25
+11T0-0000-0790-V,Halfeshof - Opladen LEICHL W,Amprion,Line,Halfeshof,Opladen,380,1790.25
+11T0-0000-0382-C,Hamborn - Niederrhein DINSLK W,Amprion,Line,Hamborn,Niederrhein,220,571.577
+11T0-0000-2250-N,Hanekenfaehr - Meppen BACCUM W,Amprion,Line,Hanekenfaehr,Meppen,380,2369.45
+11T0-0000-0641-G,Hanekenfaehr - Wehrendorf NSACHS S,Amprion,Line,Hanekenfaehr,Wehrendorf,380,2369.45
+11T0-0000-2415-E,Hanekenfaehr - Westerkappeln BRAGAU W,Amprion,Line,Hanekenfaehr,Westerkappeln,380,2369.45
+11T0-0000-0915-1,Hattingen - Witten KEMNAD S,Amprion,Line,Hattingen,Witten,380,2237.81
+10T-LU-DE-00003C,Heisdorf - Quint HEI QU N,Amprion,Tieline,Quint,Heisdorf,220,491.556
+11T0-0000-1884-C,Herbertingen - Herbertingen (Amprion)  rt-Uebergabe 42,Amprion,Tieline,Herbertingen,Herbertingen,380,2416.83
+11T0-0000-1883-F,Herbertingen - Herbertingen (Amprion) sw-Uebergabe 41,Amprion,Tieline,Herbertingen,Herbertingen,380,2358.91
+11T-D4-D7-00010V,Herbertingen - Tiengen TIENGN N,Amprion,Line,Herbertingen,Tiengen,380,1179.46
+11T-D4-D7-00014N,Hoheneck - Pulverdingen HO PU WS,Amprion,Tieline,Hoheneck,Pulverdingen,380,2073.26
+11T0-0000-0566-Z,Hoheneck - Rheinau KUGELB O,Amprion,Line,Hoheneck,Rheinau,380,2237.81
+11T0-0000-0567-W,Hoheneck - Rheinau KUGELB W,Amprion,Line,Hoheneck,Rheinau,380,2237.81
+11T0-0000-2073-G,Homburg - Uchtelfangen OTTERB S,Amprion,Line,Homburg,Uchtelfangen,220,312.462
+11T0-0000-0911-D,Ibbenbueren - Westerkappeln IBBENB S,Amprion,Line,Ibbenbueren,Westerkappeln,380,404.78
+11T0-0000-0545-9,Ibbenbueren - Westerkappeln NIKE S,Amprion,Line,Ibbenbueren,Westerkappeln,220,266.736
+11T0-0000-0671-4,Kelsterbach - Kriftel TREBUR N,Amprion,Line,Kelsterbach,Kriftel,380,1645.45
+11T0-0000-0663-2,Knapsack - Sechtem WABERG W,Amprion,Line,Knapsack,Sechtem,380,2073.26
+11T0-0000-0897-5,Koblenz - Weissenthurm KOBLNZ N,Amprion,Line,Koblenz,Weissenthurm,380,1698.1
+11T0-0000-0898-2,Koblenz - Weissenthurm METTER,Amprion,Line,Koblenz,Weissenthurm,380,1698.1
+11T0-0000-2323-L,Koblenz - Y-Buerstadt NASSAU,Amprion,Line,Koblenz,Y-Limburg,380,1790.25
+11T0-0000-2494-M,Koblenz - Y-Koblenz SOONWD O,Amprion,Line,Koblenz,Y-Koblenz,380,2369.45
+11T0-0000-1956-D,Koetz - Voehringen ILLER N,Amprion,Line,Koetz,Voehringen,380,1790.25
+11T0-0000-0030-G,Kriftel - Frankfurt TAUNUS 2,Amprion,Tieline,Kriftel,Frankfurt,380,1816.58
+11T0-0000-0702-O,Kriftel - Limburg HESSEN O,Amprion,Line,Kriftel,Limburg,380,1790.25
+11T0-0000-2487-H,Kriftel - Schwanheim ZEILHM N,Amprion,Line,Kriftel,Schwanheim,380,1790.25
+11T0-0000-0730-I,Kruckel - Mengede KIRCHL O,Amprion,Line,Kruckel,Mengede,380,1790.25
+11T0-0000-0548-0,Kruckel - Unna SHWERT N,Amprion,Line,Kruckel,Unna,380,2237.81
+11T0-0000-0678-K,Kruckel - Witten PERSEBEK,Amprion,Line,Kruckel,Witten,380,2025.88
+11T0-0000-2270-F,Kuehmoos - Maximiliansau ge (Rheingraben),Amprion,Tieline,Maximiliansau,Kuehmoos,380,3396.2
+11T-D4-D7-00012R,Kuehmoos - Tiengen KUEMOS,Amprion,Tieline,Tiengen,Kuehmoos,220,980.064
+11T0-0000-0340-Y,Kusenhorst - Poeppinghausen HOCHLR O,Amprion,Line,Kusenhorst,Poeppinghausen,220,491.556
+11T0-0000-2484-Q,Kusenhorst - Polsum HALTERN O,Amprion,Line,Kusenhorst,Polsum,380,1698.1
+11T0-0000-2482-W,Kusenhorst - Polsum RENNBA O,Amprion,Line,Kusenhorst,Polsum,380,1698.1
+11T0-0000-0347-D,Laer - Poeppinghausen POEPPI W,Amprion,Line,Hattingen,Poeppinghausen,220,491.556
+11T0-0000-2119-H,Lambsheim - Maximiliansau WEINST O,Amprion,Line,Lambsheim,Maximiliansau,380,2073.26
+11T0-0000-0688-G,Lambsheim - Otterbach KAILAU S,Amprion,Line,Lambsheim,Otterbach,380,2369.45
+11T0-0000-0689-D,Lambsheim - Weingarten LAMBSH W,Amprion,Line,Lambsheim,Weingarten,380,2369.45
+10T-CH-DE-000131,Laufenburg - Tiengen ANDLSB,Amprion,Tieline,Laufenburg,Tiengen,380,
+11T0-0000-0723-D,Lechhausen - Meitingen LECHHA W,Amprion,Line,Lechhausen,Meitingen,380,1579.63
+11T0-0000-0694-O,Lechhausen - Oberottmarshausen AUGSBU W,Amprion,Line,Lechhausen,Oberottmarshausen,380,1579.63
+10T-AT-DE-10007U,Leupolz - Westtirol FUESSN O,Amprion,Tieline,Leupolz,Westtirol,380,1579.63
+11T0-0000-0918-T,Leupolz - Woringen KEMPTE O,Amprion,Line,Leupolz,Woringen,380,1816.58
+11T0-0000-0842-3,Liessem - Sechtem LIESSM O,Amprion,Line,Liessem,Sechtem,380,1698.1
+11T0-0000-0700-U,Liessem - Weissenthurm WTHURM O,Amprion,Line,Liessem,Weissenthurm,380,1698.1
+11T0-0000-2324-I,Limburg - Y-Buerstadt NASSAU,Amprion,Line,Limburg,Y-Limburg,380,1790.25
+11T0-0000-0791-S,Linde - Opladen LEICHL O,Amprion,Line,Linde,Opladen,380,1790.25
+11T0-0000-0733-9,Lippe - Mengede MENGED S,Amprion,Line,Lippe,Mengede,380,2073.26
+11T0-0000-0534-G,Luestringen - Wehrendorf BOHMTE O,Amprion,Line,Luestringen,Wehrendorf,220,281.978
+11T0-0000-0535-D,Luestringen - Wehrendorf BOHMTE W,Amprion,Line,Luestringen,Wehrendorf,220,281.978
+11T0-0000-0714-E,Luestringen - Westerkappeln WESTER N,Amprion,Line,Luestringen,Westerkappeln,380,404.78
+11T0-0000-0715-B,Luestringen - Westerkappeln WESTER S,Amprion,Line,Luestringen,Westerkappeln,220,365.809
+10T-DE-NL-00005N,Maasbracht - Oberzier SELFK WS,Amprion,Tieline,Maasbracht,Oberzier,380,
+10T-DE-NL-00006L,Maasbracht - Siersdorf SELFK SW,Amprion,Tieline,Maasbracht,Siersdorf,380,
+11T0-0000-0843-0,Meckenheim - Sechtem BGEIST W,Amprion,Line,Meckenheim,Sechtem,380,1790.25
+11T0-0000-0717-5,Meckenheim - Weissenthurm NETTE W,Amprion,Line,Meckenheim,Weissenthurm,380,1790.25
+11T-D2-D7-000504,Meitingen - Oberbachern OBACHE N,Amprion,Tieline,Meitingen,Oberbachern,380,4099.14
+11T-D2-D7-000512,Meitingen - Oberbachern OBACHE S,Amprion,Tieline,Meitingen,Oberbachern,380,4099.14
+11T0-0000-0724-A,Meitingen - Oberottmarshausen AUGSBU O,Amprion,Line,Meitingen,Oberottmarshausen,380,1790.25
+11T0-0000-0734-6,Mengede - Witten WITTEN W,Amprion,Line,Mengede,Witten,380,1698.1
+11T0-0000-2249-0,Meppen - Hanekenfaehr BACCUM O,Amprion,Line,Hanekenfaehr,Meppen,380,2369.45
+11T0-0000-2414-H,Merzen - Westerkappeln BRAGAU O,Amprion,Line,Merzen,Westerkappeln,380,2369.45
+11T0-0000-0806-7,Mittelbexbach - Otterbach RAMSTE S,Amprion,Line,Mittelbexbach,Otterbach,380,2363.52
+11T0-0000-0740-E,Mittelbexbach - Uchtelfangen BLIES N,Amprion,Line,Mittelbexbach,Uchtelfangen,380,2369.45
+11T0-0000-0741-B,Mittelbexbach - Uchtelfangen BLIES S,Amprion,Line,Mittelbexbach,Uchtelfangen,380,2369.45
+11T0-0000-0367-5,Muendelheim - Rheinhausen RHAUSN W,Amprion,Line,Muendelheim,Rheinhausen,220,338.373
+11T0-0000-0368-2,Muendelheim - Uerdingen MUENDL S,Amprion,Line,Muendelheim,Uerdingen,220,518.23
+11T0-0000-0370-M,Muendelheim - Utfort MUENDL N,Amprion,Line,Muendelheim,Utfort,220,703.42
+11T0-0000-1543-9,Mutterstadt - GKM RHEIN N,Amprion,Tieline,Mutterstadt,GKM,220,525.851
+11T0-0000-1544-6,Mutterstadt - GKM RHEIN S,Amprion,Tieline,Mutterstadt,GKM,220,525.851
+11T-D2-D7-00010G,Nehden - Twistetal TWIST O3,Amprion,Tieline,Nehden,Twistetal,380,3396.2
+11T-D2-D7-00011E,Nehden - Twistetal TWIST W4,Amprion,Tieline,Nehden,Twistetal,380,3396.2
+11T0-0000-0744-2,Nehden - Uentrop SAUERL N,Amprion,Line,Nehden,Uentrop,380,1688.23
+11T0-0000-0385-3,Niederrhein - Pfalzdorf PFALZD N,Amprion,Line,Niederrhein,Pfalzdorf,220,312.462
+11T0-0000-0386-0,Niederrhein - Pfalzdorf PFALZD S,Amprion,Line,Niederrhein,Pfalzdorf,220,312.462
+11T0-0000-2516-6,Niederrhein - Polsum LIPPE N,Amprion,Line,Niederrhein,Polsum,380,2073.26
+11T0-0000-2479-F,Niederrhein - Polsum LIPPE S,Amprion,Line,Niederrhein,Polsum,380,1790.25
+11T0-0000-0387-Y,Niederrhein - Spellen SPELLN S,Amprion,Line,Niederrhein,Spellen,220,518.23
+11T0-0000-1534-A,Niederrhein - Utfort ZENSEN S,Amprion,Line,Niederrhein,Utfort,380,1698.1
+11T0-0000-0750-A,Niederrhein - Walsum NRHEIN W,Amprion,Line,Niederrhein,Walsum,380,1790.25
+11T0-0000-0755-W,Niederstedem - Osburg GILZEM O,Amprion,Line,Niederstedem,Osburg,380,2369.45
+11T0-0000-1631-E,Niederstedem - Rommersheim NIMSTA O,Amprion,Line,Niederstedem,Rommersheim,380,2369.45
+11T0-0000-0756-T,Niederstedem - Uchtelfangen UCHTLF W,Amprion,Line,Niederstedem,Uchtelfangen,380,2363.52
+11T0-0000-2481-Z,Nordlicht - Polsum OVERHAGN,Amprion,Line,Nordlicht,Polsum,380,1790.25
+11T0-0000-0425-M,Norf - Osterath ZONS W,Amprion,Line,Norf,Osterath,220,491.556
+11T0-0000-0496-S,Norf - St. Peter NORF W,Amprion,Line,Norf,St. Peter,220,491.556
+11T0-0000-1445-8,Norf - St. Peter STUERZ O,Amprion,Line,Norf,St. Peter,220,491.556
+11T0-0000-0497-P,Norf - St. Peter STUERZ W,Amprion,Line,Norf,St. Peter,220,518.23
+22T201903146---W,Oberzier - Lixhe ALEGRO,Amprion,Tieline,Oberzier,Lixhe,380,2369.45
+11T0-0000-0776-L,Oberzier - Siersdorf KIRCHB S,Amprion,Line,Oberzier,Siersdorf,380,2073.26
+11T0-0000-0978-5,Ohlensehlen - Wehrendorf DUEMM S1,Amprion,Tieline,Wehrendorf,Ohlensehlen,380,2073.26
+11T0-0000-0793-M,Opladen - Rommerskirchen OPLADN N,Amprion,Line,Opladen,Rommerskirchen,380,2037.72
+11T0-0000-0794-J,Opladen - Rommerskirchen OPLADN S,Amprion,Line,Opladen,Rommerskirchen,380,2037.72
+11T0-0000-1869-5,Opladen - Rommerskirchen STOMM N,Amprion,Line,Opladen,Rommerskirchen,220,491.556
+11T0-0000-1671-Z,Opladen - St. Peter RHFELD,Amprion,Line,Opladen,St. Peter,380,2237.81
+11T0-0000-0798-7,Osburg - Uchtelfangen UCHTLF O,Amprion,Line,Osburg,Uchtelfangen,380,2369.45
+11T0-0000-2509-1,Osterath - Rommerskirchen KNESTE O,Amprion,Line,Osterath,Rommerskirchen,380,1790.25
+11T0-0000-0802-J,Osterath - Rommerskirchen KNESTE W,Amprion,Line,Osterath,Rommerskirchen,380,1790.25
+11T0-0000-1462-9,Osterath - St. Peter ZONS O,Amprion,Line,Osterath,St. Peter,220,518.23
+11T0-0000-2530-G,Osterath - Y-Edelstahl FICHTH O,Amprion,Line,Osterath,Y-Edelstahl,220,491.556
+11T0-0000-0829-R,Paffendorf - Rommerskirchen PAFFEN N,Amprion,Line,Paffendorf,Rommerskirchen,380,2369.45
+11T0-0000-0830-D,Paffendorf - Rommerskirchen PAFFEN S,Amprion,Line,Paffendorf,Rommerskirchen,380,2369.45
+11T0-0000-0872-S,Pfungstadt - Urberach GRIESH O,Amprion,Line,Pfungstadt,Urberach,380,2369.45
+11T0-0000-2483-T,Polsum - Rosenblumendelle ESSEN O,Amprion,Line,Polsum,Rosenblumendelle,380,1790.25
+11T0-0000-0445-E,Quint - Uchtelfangen OSBURG,Amprion,Line,Quint,Uchtelfangen,220,589.867
+11T0-0000-0531-P,Ratsbusch - Wambel RATSBU N,Amprion,Line,Ratsbusch,Wambel,220,293.028
+11T0-0000-1438-3,Ratsbusch - Wambel RATSBU S,Amprion,Line,Ratsbusch,Wambel,220,293.028
+11T0-0000-0831-A,Rommerskirchen - Sechtem VILLE O,Amprion,Line,Rommerskirchen,Sechtem,380,2073.26
+11T0-0000-1011-F,Rommerskirchen - Sechtem VILLE W,Amprion,Line,Rommerskirchen,Sechtem,380,2037.72
+11T0-0000-2134-O,Rommerskirchen - Sechtem VORGBG O,Amprion,Line,Rommerskirchen,Sechtem,380,1816.58
+11T0-0000-0840-9,Roxel - Uentrop UENTRO S,Amprion,Line,Roxel,Uentrop,380,2369.45
+11T0-0000-2062-N,Sechtem - Siegburg NKASSEL N,Amprion,Line,Sechtem,Siegburg,380,1790.25
+11T0-0000-0486-W,Sechtem - Siegburg TROISD O,Amprion,Line,Sechtem,Siegburg,220,518.23
+11T0-0000-0487-T,Sechtem - Siegburg TROISD W,Amprion,Line,Sechtem,Siegburg,220,518.23
+11T0-0000-0844-Y,Sechtem - Weissenthurm MITREI,Amprion,Line,Sechtem,Weissenthurm,380,1698.1
+11T0-0000-0491-6,Spellen - Walsum LOENEN O,Amprion,Line,Spellen,Walsum,220,518.23
+11T0-0000-0492-3,Spellen - Walsum LOENEN W,Amprion,Line,Spellen,Walsum,220,518.23
+11T0-0000-1862-Q,St Peter - Rommerskirchen FRIXHM S,Amprion,Line,St. Peter,Rommerskirchen,220,491.556
+11T0-0000-0738-V,St. Barbara - Mittelbexbach HAGARD O,Amprion,Line,St. Barbara,Mittelbexbach,380,442.955
+11T0-0000-0506-M,St. Barbara - Uchtelfangen BABARA,Amprion,Line,St. Barbara,Uchtelfangen,220,491.556
+11T0-0000-2066-B,St. Huelfe - Wehrendorf OCHSMO O,Amprion,Line,St. Huelfe,Wehrendorf,380,2369.45
+11T0-0000-2067-8,St. Huelfe - Wehrendorf OCHSMO W,Amprion,Line,St. Huelfe,Wehrendorf,380,2369.45
+11T0-0000-0856-O,St. Peter - Rommerskirchen PETER S,Amprion,Line,St. Peter,Rommerskirchen,380,1790.25
+11T0-0000-0739-S,St.Barbara - Mittelbexbach HAGARD W,Amprion,Line,St. Barbara,Mittelbexbach,380,442.955
+11T0-0000-1249-6,TR Brauweiler TR 421,Amprion,Transformer,,,,
+11T0-0000-0571-9,TR Buerstadt TR 421,Amprion,Transformer,,,,
+11T0-0000-2477-L,TR Buerstadt TR 423,Amprion,Transformer,,,,
+11T0-0000-0575-Y,TR Buescherhof TR 421,Amprion,Transformer,,,,
+11T0-0000-0589-I,TR Dauersberg TR 421,Amprion,Transformer,,,,
+11T0-0000-1251-Q,TR Dauersberg TR 422,Amprion,Transformer,,,,
+11T0-0000-0595-Q,TR Eiberg TR 421,Amprion,Transformer,,,,
+11T0-0000-0606-H,TR Ensdorf TR 421,Amprion,Transformer,,,,
+11T0-0000-0614-J,TR Gersteinwerk TR 421,Amprion,Transformer,,,,
+11T0-0000-0615-G,TR Gersteinwerk TR 422,Amprion,Transformer,,,,
+11T0-0000-0620-R,TR Gronau TR 441 E,Amprion,Transformer,,,,
+11T0-0000-1278-Y,TR Hanekenfaehr TR 421,Amprion,Transformer,,,,
+11T0-0000-2122-Y,TR Hanekenfaher TR 441 E,Amprion,Transformer,,,,
+11T0-0000-2123-V,TR Hanekenfaher TR 442 E,Amprion,Transformer,,,,
+11T0-0000-0646-1,TR Hattingen TR 421,Amprion,Transformer,,,,
+11T0-0000-1881-L,TR Herbertingen TR 421,Amprion,Transformer,,,,
+11T0-0000-0683-V,TR Kusenhorst TR 421,Amprion,Transformer,,,,
+11T0-0000-0754-Z,TR Niederrhein TR 421,Amprion,Transformer,,,,
+11T0-0000-0758-N,TR Niederstedem TR 421,Amprion,Transformer,,,,
+11T0-0000-0759-K,TR Niederstedem TR 422,Amprion,Transformer,,,,
+11T0-0000-0760-6,TR Niederstedem TR 423,Amprion,Transformer,,,,
+11T0-0000-2133-R,TR Oberzier TR 442 E,Amprion,Transformer,,,,
+11T0-0000-0796-D,TR Opladen TR 421,Amprion,Transformer,,,,
+11T0-0000-1674-Q,TR Opladen TR 422,Amprion,Transformer,,,,
+11T0-0000-0833-4,TR Rommerskirchen TR 421,Amprion,Transformer,,,,
+11T0-0000-0847-P,TR Sechtem TR 421,Amprion,Transformer,,,,
+11T0-0000-2071-M,TR Siegburg TR 421,Amprion,Transformer,,,,
+11T0-0000-1348-4,TR St. Peter TR 422,Amprion,Transformer,,,,
+11T0-0000-0858-I,TR St. Peter TR 423,Amprion,Transformer,,,,
+11T0-0000-0859-F,TR Tiengen TR 421,Amprion,Transformer,,,,
+11T0-0000-0862-W,TR Uchtelfangen TR 421,Amprion,Transformer,,,,
+11T0-0000-0874-M,TR Urberach TR 421,Amprion,Transformer,,,,
+11T0-0000-0875-J,TR Urberach TR 422,Amprion,Transformer,,,,
+11T0-0000-0878-A,TR Utfort TR 421,Amprion,Transformer,,,,
+11T0-0000-0879-7,TR Utfort TR 422,Amprion,Transformer,,,,
+11T0-0000-0884-I,TR Voehringen TR 421,Amprion,Transformer,,,,
+11T0-0000-1352-I,TR Walsum TR 421,Amprion,Transformer,,,,
+11T0-0000-0893-H,TR Wehrendorf TR 421,Amprion,Transformer,,,,
+11T0-0000-0904-8,TR Weissenthurm TR 421,Amprion,Transformer,,,,
+11T0-0000-2547-S,TR Weissenthurm TR 422,Amprion,Transformer,,,,
+11T0-0000-0914-4,TR Westerkappeln TR 421,Amprion,Transformer,,,,
+11T0-0000-0113-A,Uerdingen - Utfort UERDIN W,Amprion,Line,Uerdingen,Utfort,220,442.019
+11T0-0000-1382-6,Urberach Neu - Urberach ERLENS W,Amprion,Line,Urberach (NEU),Urberach,380,2073.26
+11T0-0000-0890-Q,Utfort - Walsum LOHHEI W,Amprion,Line,Utfort,Walsum,380,1698.1
+10T1001C--00037V,Voehringen - Westtirol FUESSN W,Amprion,Tieline,Voehringen,Westtirol,220,488.508
+11T0-0000-0883-L,Voehringen - Woringen VOEHRG O,Amprion,Line,Voehringen,Woringen,380,1816.58
+11T0-0000-0901-H,Waldlaubersheim - Weissenthurm SOONWD W,Amprion,Line,Waldlaubersheim,Weissenthurm,380,2363.52
+11T0-0000-0891-N,Wehrendorf - Westerkappeln NSACHS N,Amprion,Line,Westerkappeln,Wehrendorf,380,2369.45
+11T0-0000-0537-7,Wehrendorf - Westerkappeln WIEHEN O,Amprion,Line,Wehrendorf,Westerkappeln,220,499.177
+11T0-0000-2120-3,Weingarten - Maximiliansau WEINST W,Amprion,Line,Maximiliansau,Weingarten,380,2073.26
+11T0-0000-2495-J,Weissenthurm - Y-Koblenz SOONWD O,Amprion,Line,Weissenthurm,Y-Koblenz,380,2369.45
+11T0-0000-0540-O,Wengerrohr - Weissenthurm KONDLW,Amprion,Line,Wengerrohr,Weissenthurm,220,495.367
+11T0-0000-0120-F,Y-Altenkleusheim (-Bixterheide - Opladen) BIGGE O,Amprion,Line,Altenkleusheim,Y-Bixterheide,220,281.978
+11T0-0000-0114-7,Y-Altenkleusheim (-Garenfeld - Opladen) BIGGE W,Amprion,Line,Altenkleusheim,Y-Garenfeld,220,281.978
+11T0-0000-0125-0,Y-Amelsbueren (-Hanekenfaehr - Westerkappeln) AMELSB,Amprion,Line,Amelsbueren,Y-Hanekenfaehr,220,675.604
+11T0-0000-1238-D,Y-Asslar (-Dauersberg - Limburg) WESTW W1,Amprion,Tieline,Y-Dauersberg,Asslar,380,3438.33
+11T0-0000-1952-P,Y-BASF (-Mutterstadt - St.Barbara) OTTERB N,Amprion,Line,BASF,Y-Mutterstadt,220,491.556
+11T0-0000-0976-B,Y-Bacharach (-Buerstadt - Waldlaubersheim) WONNEG O,Amprion,Line,Bacharach,Y-Waldlaubersheim,380,2369.45
+11T0-0000-0170-W,Y-Bergmannsglueck (-Bellendorf - Kusenhorst) POLSUM S,Amprion,Line,Bergmannsglueck,Y-Bellendorf,220,731.618
+11T0-0000-0169-9,Y-Bergmannsglueck (-Eiberg - Gelsenberg) GLADBK W,Amprion,Line,Bergmannsglueck,Y-Gelsenberg,220,491.556
+11T0-0000-0563-7,Y-Bischofsheim (-Buerstadt - Pfungstadt) RIED W,Amprion,Line,Bischofsheim,Y-Pfungstadt,380,2369.45
+11T0-0000-2392-X,Y-Bischofsheim (-Kriftel - Schwanheim) TREBUR S,Amprion,Line,Bischofsheim,Y-Kriftel,380,1790.25
+11T0-0000-0175-H,Y-Bixterheide (-Altenkleusheim - Opladen) BIGGE O,Amprion,Line,Bixterheide,Y-Bixterheide,220,530.423
+11T0-0000-0184-G,Y-Bochum (-Hattingen - Welper) WELPER O,Amprion,Line,Bochum,Y-Welper,220,491.556
+11T0-0000-0183-J,Y-Bochum (-Kusenhorst - Poeppinghausen) HOCHLR W,Amprion,Line,Bochum,Y-Poeppinghausen,220,488.508
+11T0-0000-1392-2,Y-Bollenacker (-Brauweiler - Sechtem) GODORF O,Amprion,Line,Bollenacker,Y-Bollenacker,220,491.556
+11T0-0000-1394-X,Y-Brauweiler (-Bollenacker - Sechtem) GODORF O,Amprion,Line,Brauweiler,Y-Bollenacker,220,525.851
+11T-D4-D7-00001W,Y-Buers (-Herbertingen - Tiengen - Werben) BLUDNZ W,Amprion,Tieline,Y-Werben,Buers,220,1303.19
+11T0-0000-0954-P,Y-Buers (-Voehringen - Werben) DELLM O,Amprion,Tieline,Y-Werben,Buers,220,651.598
+11T0-0000-0977-8,Y-Buerstadt (-Bacharach - Waldlaubersheim) WONNEG O,Amprion,Line,Buerstadt,Y-Waldlaubersheim,380,2369.45
+11T0-0000-0573-3,Y-Buerstadt (-Bischofsheim - Pfungstadt) RIED W,Amprion,Line,Buerstadt,Y-Pfungstadt,380,2369.45
+11T0-0000-2302-W,Y-Buerstadt (-Kried - Pfungstadt) RIED O,Amprion,Line,Buerstadt,Y-Ried,380,2369.45
+11T0-0000-0576-V,Y-Buescherhof (-Karnap - Rosenblumendelle) BUESHR W,Amprion,Line,Buescherhof,Y-Karnap,380,1790.25
+11T0-0000-0994-9,Y-Dauersberg (-Asslar - Limburg) WESTW W1,Amprion,Line,Dauersberg,Y-Dauersberg,380,1790.25
+11T-D4-D7-00023M,Y-Dellmensingen (-Hoheneck - Voehringen rt) DONAU O,Amprion,Tieline,Y-Voehringen,Dellmensingen,380,2073.26
+11T0-0000-0218-R,Y-Diefflen (-Ensdorf - Uchtelfangen) ENSDF S,Amprion,Line,Diefflen,Y-Diefflen,220,518.23
+11T0-0000-0246-L,Y-Eiberg (-Bergmannsglueck - Gelsenberg) GLADBK W,Amprion,Line,Eiberg,Y-Gelsenberg,220,384.1
+11T0-0000-0247-I,Y-Eiberg (-Hattingen - Opladen ) ITTERB O,Amprion,Line,Eiberg,Y-Mettmann,220,589.867
+11T0-0000-0259-8,Y-Elmenhorst (-Poeppinghausen - Ruhrzink) ELMENH S,Amprion,Line,Elmenhorst,Y-Elmenhorst,220,586.438
+11T0-0000-0603-Q,Y-Enniger (-Guetersloh - Uentrop) GUETER S,Amprion,Line,Enniger,Y-Guetersloh,380,371.213
+11T0-0000-0265-G,Y-Ensdorf (-Diefflen - Uchtelfangen) ENSDF S,Amprion,Line,Ensdorf,Y-Diefflen,220,518.23
+11T0-0000-0274-F,Y-Garenfeld (-Altenkleusheim - Opladen) BIGGE W,Amprion,Line,Garenfeld,Y-Garenfeld,220,530.423
+11T0-0000-0608-B,Y-Geithe (-Lippborg - Uentrop) GEITHE W,Amprion,Line,Geithe,Y-Lippborg,380,1790.25
+11T0-0000-0279-0,Y-Gelsenberg (-Bergmannsglueck - Eiberg) GLADBK W,Amprion,Line,Gelsenberg,Y-Gelsenberg,220,491.556
+11T0-0000-0941-1,Y-Gersteinwerk (-Guetersloh - Uentrop) GERSTE O,Amprion,Line,Gersteinwerk,Y-Gersteinwerk,380,2037.72
+11T0-0000-0616-D,Y-Gersteinwerk (-Hanekenfaehr - Uentrop) UENTRO N,Amprion,Line,Gersteinwerk,Y-Gersteinwerk,380,2369.45
+11T0-0000-0280-N,Y-Gersteinwerk (-Poeppingshausen - Ruhrzink) CAPPEN N,Amprion,Line,Gersteinwerk,Y-Poeppinghausen,220,530.423
+11T0-0000-1390-8,Y-Gohrpunkt (-Osterath - Rommerskirchen) FRIXHM N,Amprion,Line,Gohrpunkt,Y-Osterath,220,312.462
+11T0-0000-1397-O,Y-Gremberghoven (-Siegburg - Stockem) GREMBG O,Amprion,Line,Gremberghoven,Y-Stockem,220,491.556
+11T0-0000-0631-K,Y-Guetersloh (-Enniger - Uentrop) GUETER S,Amprion,Line,Guetersloh,Y-Guetersloh,380,1790.25
+11T0-0000-0943-W,Y-Guetersloh (-Gersteinwerk - Uentrop) GERSTE O,Amprion,Line,Guetersloh,Y-Gersteinwerk,380,1790.25
+11T0-0000-0304-1,Y-Hamborn ( Schwelgern - Walsum) WALSUM S,Amprion,Line,Hamborn,Y-Schwelgern,220,518.23
+11T0-0000-1455-4,Y-Hamborn (-Schwelgern - Walsum) WALSUM N,Amprion,Line,Hamborn,Y-Walsum,220,518.23
+11T0-0000-0306-W,Y-Hanekenfaehr (-Amelsbueren - Westerkappeln) AMELSB,Amprion,Line,Hanekenfaehr,Y-Hanekenfaehr,220,485.459
+11T0-0000-0644-7,Y-Hanekenfaehr (-Gersteinwerk - Uentrop) UENTRO N,Amprion,Line,Hanekenfaehr,Y-Gersteinwerk,380,2369.45
+11T0-0000-0311-6,Y-Hanekenfaehr (-Gronau - Kusenhorst) GRAFSH W,Amprion,Line,Hanekenfaehr,Y-Hanekenfaehr,220,485.459
+11T0-0000-0643-A,Y-Hanekenfaehr (-Kottigerhook - Kusenhorst) MUENST,Amprion,Line,Hanekenfaehr,Y-Hanekenfaehr,380,2369.45
+11T0-0000-0930-8,Y-Hanekenfaehr (-Oechtel - Uentrop) ROXEL O,Amprion,Line,Hanekenfaehr,Y-Oechtel,380,2369.45
+11T0-0000-0321-2,Y-Hattingen (-Bochum - Welper) WELPER O,Amprion,Line,Hattingen,Y-Welper,220,491.556
+11T0-0000-0319-J,Y-Hattingen (-Eiberg - Opladen) ITTERB O,Amprion,Line,Hattingen,Y-Mettmann,220,589.867
+11T0-0000-0320-5,Y-Hattingen (-Laer - Poeppinghausen) POEPPI O,Amprion,Line,Hattingen,Poeppinghausen,220,491.556
+11T0-0000-1880-O,Y-Herbertingen (-Buers - Tiengen - Werben) BLUDNZ W,Amprion,Line,Herbertingen,Y-Tiengen,220,341.422
+11T0-0000-1879-1,Y-Herbertingen (-Hoheneck - Metzingen) HERBTG W,Amprion,Line,Herbertingen,Herbertingen,380,2132.5
+11T0-0000-0957-G,Y-Hoheneck (-Dellmensingen - Voehringen) DONAU O,Amprion,Line,Hoheneck,Y-Voehringen,380,2073.26
+11T0-0000-0963-O,Y-Hoheneck (-Herbertingen - Metzingen) HERBTG W,Amprion,Line,Hoheneck,Herbertingen,380,2021.93
+11T0-0000-0657-V,Y-Karnap (-Buescherhof - Rosenblumendelle) BUESHR W,Amprion,Line,Karnap,Y-Karnap,380,1790.25
+11T0-0000-0669-L,Y-Kottigerhook (-Hanekenfaehr - Kusenhorst) MUENST,Amprion,Line,Kottigerhook,Y-Hanekenfaehr,380,2369.45
+11T0-0000-0816-3,Y-Kried (-Buerstadt - Pfungstadt) RIED O,Amprion,Line,Pfungstadt,Y-Ried,380,2369.45
+11T0-0000-2393-U,Y-Kriftel (-Bischofsheim - Schwanheim) TREBUR S,Amprion,Line,Kriftel,Y-Kriftel,380,1790.25
+11T0-0000-0677-N,Y-Kruckel (-Lippborg - Uentrop) HAARST O,Amprion,Line,Kruckel,Y-Lippborg,380,2073.26
+11T0-0000-0346-G,Y-Kusenhorst (-Bellendorf - Bergmannsglück) POLSUM S,Amprion,Line,Kusenhorst,Y-Bellendorf,220,731.618
+11T0-0000-0345-J,Y-Kusenhorst (-Bochum - Poeppinghausen) HOCHLR W,Amprion,Line,Kusenhorst,Y-Poeppinghausen,220,488.508
+11T0-0000-0344-M,Y-Kusenhorst (-Gronau - Hanekenfaehr) GRAFSH W,Amprion,Line,Kusenhorst,Y-Hanekenfaehr,220,485.459
+11T0-0000-0684-S,Y-Kusenhorst (-Hanekenfaehr - Kottigerhook) MUENST,Amprion,Line,Kusenhorst,Y-Hanekenfaehr,380,2369.45
+11T0-0000-0693-R,Y-Lambsheim (-Mittelbexbach - Otterbach) KAILAU N,Amprion,Line,Lambsheim,Y-Otterbach,380,2363.52
+11T0-0000-0698-C,Y-Leupolz (-Bidingen - Oberottmarshausen) ALLG O,Amprion,Line,Leupolz,Y-Bidngen,380,1790.25
+11T0-0000-0995-6,Y-Limburg (-Asslar - Dauersberg) WESTW W1,Amprion,Line,Limburg,Y-Dauersberg,380,1790.25
+11T0-0000-0711-N,Y-Lippborg (-Geithe - Uentrop) GEITHE W,Amprion,Line,Lippborg,Y-Lippborg,380,442.955
+11T0-0000-0712-K,Y-Lippborg (-Kruckel - Uentrop) HAARST O,Amprion,Line,Lippborg,Y-Lippborg,380,398.857
+11T0-0000-0983-G,Y-Meppen (-Niederlangen - Doerpen/W) EOWS,Amprion,Tieline,Meppen,Niederlangen,380,4475.62
+11T0-0000-1895-5,Y-Mettmann (-Ohligs - Opladen) OERKHS O,Amprion,Line,Mettmann,Y-Ohligs,380,2237.81
+11T0-0000-1849-D,Y-Mettmann (-Ohligs - St Peter) OERKHS W,Amprion,Line,Mettmann,Y-Ohligs,380,2237.81
+11T-D4-D7-00016J,Y-Metzingen (-Herbertingen - Hoheneck) sw HERBTG W,Amprion,Tieline,Herbentingen,Metzingen,380,4146.53
+11T0-0000-0742-8,Y-Mittelbexbach (-Lambsheim - Otterbach) KAILAU N,Amprion,Line,Mittelbexbach,Y-Otterbach,380,2363.52
+11T0-0000-2074-D,Y-Muendelheim (-Osterath - Rheinhausen) STRATM O,Amprion,Line,Muendelheim,Y-Rheinhausen,220,621.876
+11T0-0000-1953-M,Y-Mutterstadt (-BASF - St.Barbara) OTTERB N,Amprion,Line,Mutterstadt,Y-Mutterstadt,220,518.23
+11T0-0000-0762-0,Y-Niederstedem (-Dahlem - Oberzier) SELHN W,Amprion,Line,Niederstedem,Y-Dahlem,380,2369.45
+11T0-0000-0769-G,Y-Oberottmarshausen (-Bidingen - Leupolz) ALLG O,Amprion,Line,Oberottmarshausen,Y-Bidngen,380,1790.25
+11T0-0000-0784-N,Y-Oberzier (-Dahlem - Niederstedem) SELHN W,Amprion,Line,Oberzier,Y-Dahlem,380,2369.45
+11T0-0000-0783-Q,Y-Oberzier (-Dahlem - Rommersheim) SELHN O,Amprion,Line,Oberzier,Y-Dahlem,380,2369.45
+11T0-0000-0781-W,Y-Oberzier (-Paffendorf - Sechtem) SECHTM N,Amprion,Line,Oberzier,Y-Paffendorf,380,2369.45
+11T0-0000-0782-T,Y-Oberzier (-Paffendorf - Sechtem) SECHTM S,Amprion,Line,Oberzier,Y-Paffendorf,380,2369.45
+11T0-0000-0931-5,Y-Oechtel (-Hanekenfaehr - Roxel) ROXEL O,Amprion,Line,Oechtel,Y-Oechtel,380,539.707
+11T0-0000-1486-Q,Y-Ohligs (-Mettmann - Opladen) OERKHS O,Amprion,Line,Ohligs,Y-Ohligs,380,2237.81
+11T0-0000-1851-X,Y-Ohligs (-Mettmann - St Peter) OERKHS W,Amprion,Line,Ohligs,Y-Ohligs,380,2237.81
+11T0-0000-0419-E,Y-Opladen (-Altenkleusheim - Bixterheide) BIGGE O,Amprion,Line,Opladen,Y-Bixterheide,220,530.423
+11T0-0000-0420-0,Y-Opladen (-Altenkleusheim - Garenfeld) BIGGE W,Amprion,Line,Opladen,Y-Garenfeld,220,530.423
+11T0-0000-0421-Y,Y-Opladen (-Eiberg - Hattingen) ITTERB O,Amprion,Line,Opladen,Y-Mettmann,220,491.556
+11T0-0000-1487-N,Y-Opladen (-Mettmann - Ohligs) OERKHS O,Amprion,Line,Opladen,Y-Ohligs,380,2237.81
+11T0-0000-0423-S,Y-Ossenberg (-Niederrhein - Utfort) WESEL O,Amprion,Line,Ossenberg,Utfort,220,266.736
+11T0-0000-1388-P,Y-Osterath (-Gohrpunkt - Rommerskirchen) FRIXHM N,Amprion,Line,Osterath,Y-Osterath,220,518.23
+11T0-0000-2075-A,Y-Osterath (-Muendelheim - Rheinhausen) STRATM O,Amprion,Line,Osterath,Y-Rheinhausen,220,573.863
+11T0-0000-2175-5,Y-Osterath (-Rath - Selbeck) MEERBU W,Amprion,Line,Osterath,Y-Rath,380,1790.25
+11T0-0000-0805-A,Y-Osterath (-Selbeck - Utfort) TOESEE W,Amprion,Line,Osterath,Y-Osterath,380,1790.25
+11T0-0000-0809-Z,Y-Otterbach (-Lambsheim - Mittelbexbach) KAILAU N,Amprion,Line,Otterbach,Y-Otterbach,380,2363.52
+11T0-0000-0814-9,Y-Paffendorf (-Oberzier - Sechtem) SECHTM N,Amprion,Line,Paffendorf,Y-Paffendorf,380,2369.45
+11T0-0000-0815-6,Y-Paffendorf (-Oberzier - Sechtem) SECHTM S,Amprion,Line,Paffendorf,Y-Paffendorf,380,2369.45
+11T0-0000-0819-V,Y-Pfungstadt (-Bischofsheim - Buerstadt) RIED W,Amprion,Line,Pfungstadt,Y-Pfungstadt,380,2369.45
+11T0-0000-2304-Q,Y-Pfungstadt (-Buerstadt - Kried) RIED O,Amprion,Line,Ried,Y-Ried,380,1790.25
+11T0-0000-0443-K,Y-Poeppinghausen (-Bochum - Kusenhorst) HOCHLR W,Amprion,Line,Poeppinghausen,Y-Poeppinghausen,220,488.508
+11T0-0000-0442-N,Y-Poeppinghausen (-Elmenhorst - Ruhrzink) ELMENH S,Amprion,Line,Poeppinghausen,Y-Elmenhorst,220,586.438
+11T0-0000-0441-Q,Y-Poeppinghausen (-Gersteinwerk - Ruhrzink) CAPPEN N,Amprion,Line,Poeppinghausen,Y-Poeppinghausen,220,530.423
+11T0-0000-2176-2,Y-Rath (-Osterath -Selbeck) MEERBU W,Amprion,Line,Rath,Y-Rath,380,425.184
+11T0-0000-2076-7,Y-Rheinhausen (-Muendelheim - Osterath) STRATM O,Amprion,Line,Rheinhausen,Y-Rheinhausen,220,338.373
+11T0-0000-1629-V,Y-Rommersheim (-Dahlem - Oberzier) SELHN O,Amprion,Line,Rommersheim,Y-Dahlem,380,2369.45
+11T0-0000-1389-M,Y-Rommerskirchen (-Gohrpunkt - Osterath) FRIXHM N,Amprion,Line,Rommerskirchen,Y-Osterath,220,518.23
+11T0-0000-0838-Q,Y-Rosenblumendelle (-Buescherhof - Karnap) BUESHR W,Amprion,Line,Rosenblumendelle,Y-Karnap,380,1790.25
+11T0-0000-0932-2,Y-Roxel (-Hanekenfaehr - Oechtel) ROXEL O,Amprion,Line,Roxel,Y-Oechtel,380,2369.45
+11T0-0000-0465-6,Y-Ruhrzink (-Elmenhorst - Poeppinghausen) ELMENH S,Amprion,Line,Ruhrzink,Y-Elmenhorst,220,586.438
+11T0-0000-0464-9,Y-Ruhrzink (-Gersteinwerk - Poeppinghausen) CAPPEN N,Amprion,Line,Ruhrzink,Y-Poeppinghausen,220,530.423
+11T0-0000-2394-R,Y-Schwanheim (-Bischofsheim -Kriftel) TREBUR S,Amprion,Line,Schwanheim,Y-Kriftel,,
+11T0-0000-1456-1,Y-Schwelgern (-Hamborn - Walsum) WALSUM N,Amprion,Line,Schwelgern,Y-Walsum,220,533.472
+11T0-0000-1395-U,Y-Sechtem (-Brauweiler - Bollenacker) GODORF O,Amprion,Line,Sechtem,Y-Bollenacker,220,525.851
+11T0-0000-0848-M,Y-Sechtem (-Oberzier - Paffendorf) SECHTM N,Amprion,Line,Sechtem,Y-Paffendorf,380,2369.45
+11T0-0000-0849-J,Y-Sechtem (-Oberzier - Paffendorf) SECHTM S,Amprion,Line,Sechtem,Y-Paffendorf,380,2369.45
+11T0-0000-2178-X,Y-Selbeck (-Osterath - Rath) MEERBU W,Amprion,Line,Selbeck,Y-Rath,380,1790.25
+11T0-0000-0851-2,Y-Selbeck (-Osterath - Utfort) TOESEE W,Amprion,Line,Selbeck,Y-Osterath,380,1790.25
+11T0-0000-1398-L,Y-Siegburg (-Gremberghoven - Stockem) GREMBG O,Amprion,Line,Siegburg,Y-Stockem,220,491.556
+11T0-0000-1852-U,Y-St Peter (-Ohligs - Mettmann) OERKHS W,Amprion,Line,St. Peter,Y-Ohligs,380,2237.81
+11T0-0000-1951-S,Y-St.Barbara (-BASF - Mutterstadt) OTTERB N,Amprion,Line,St. Barbara,Y-Mutterstadt,220,518.23
+11T0-0000-1399-I,Y-Stockem (-Gremberghoven - Siegburg) GREMBG O,Amprion,Line,Stockem,Y-Stockem,220,240.062
+11T0-0000-0962-R,Y-Tiengen (-Buers - Herbertingen - Werben) BLUDNZ W,Amprion,Line,Tiengen,Y-Tiengen,220,341.422
+11T0-0000-0511-X,Y-Uchtelfangen (-Diefflen - Ensdorf) ENSDF S,Amprion,Line,Uchtelfangen,Y-Diefflen,220,518.23
+11T0-0000-0867-H,Y-Uentrop (-Enniger - Guetersloh) GUETER S,Amprion,Line,Uentrop,Y-Guetersloh,380,1698.1
+11T0-0000-0866-K,Y-Uentrop (-Geithe - Lippborg) GEITHE W,Amprion,Line,Uentrop,Y-Lippborg,380,1698.1
+11T0-0000-0942-Z,Y-Uentrop (-Gersteinwerk - Guetersloh) GERSTE O,Amprion,Line,Uentrop,Y-Gersteinwerk,380,2025.88
+11T0-0000-0869-B,Y-Uentrop (-Gersteinwerk - Hanekenfaehr) UENTRO N,Amprion,Line,Uentrop,Y-Gersteinwerk,380,2369.45
+11T0-0000-0868-E,Y-Uentrop (-Kruckel - Lippborg) HAARST O,Amprion,Line,Uentrop,Y-Lippborg,380,1688.23
+11T0-0000-0880-U,Y-Utfort (-Osterath - Selbeck) TOESEE W,Amprion,Line,Utfort,Y-Osterath,380,1790.25
+11T0-0000-1374-4,Y-Voehringen (-Buers - Werben) DELLM O,Amprion,Line,Voehringen,Y-Werben,220,651.598
+11T0-0000-0956-J,Y-Voehringen (-Dellmensingen - Hoheneck) DONAU O,Amprion,Line,Voehringen,Y-Voehringen,380,2073.26
+11T0-0000-0975-E,Y-Waldlaubersheim (-Bacharach - Buerstadt) WONNEG O,Amprion,Line,Waldlaubersheim,Y-Waldlaubersheim,380,2369.45
+11T0-0000-1457-Z,Y-Walsum (-Hamborn - Schwelgern) WALSUM N,Amprion,Line,Walsum,Y-Walsum,220,518.23
+11T0-0000-0529-5,Y-Walsum (-Hamborn - Schwelgern) WALSUM S,Amprion,Line,Walsum,Y-Schwelgern,220,518.23
+11T0-0000-0542-I,Y-Welper (-Bochum - Hattingen) WELPER O,Amprion,Line,Welper,Y-Welper,220,491.556
+10T-AT-DE-00025Y,Y-Werben  (-Buers - Herbertingen - Tiengen) BLUDNZ W,Amprion,Tieline,Werben,Y-Werben,220,563.956
+10T-AT-DE-00026W,Y-Werben (-Buers - Voehringen) DELLM O,Amprion,Tieline,Werben,Y-Werben,220,586.819
+11T0-0000-0546-6,Y-Westerkappeln (-Amelsbueren - Hanekenfaehr) AMELSB,Amprion,Line,Westerkappeln,Y-Hanekenfaehr,220,675.604
+11T0-0000-1620-L,Y-Y (-Buers - Herbertingen - Tiengen - Werben) BLUDNZ W,Amprion,Line,Y-Werben,Y-Tiengen,220,560.907
+11T0-0000-1946-H,Alfstedt - Dollern gelb,TenneT,Line,Alfstedt,Dollern,380,2625.48
+11T0-0000-1945-K,Alfstedt - Dollern rot,TenneT,Line,Alfstedt,Dollern,380,2625.48
+11T0-0000-1943-Q,Alfstedt - Elsfleth/W schwarz,TenneT,Line,Elsfleth/W,Alfstedt,380,2625.48
+11T0-0000-1944-N,Alfstedt - Farge blau,TenneT,Line,Farge,Alfstedt,380,2625.48
+11TD2L000000002N,Algermissen - Grohnde 2,TenneT,Line,Grohnde,Algermissen,380,2073.26
+11T0-0000-1911-7,Algermissen - Mehrum/N 2,TenneT,Line,Algermissen,Mehrum/N,380,2073.26
+11TD2L000000003L,Altheim - Sittling 219,TenneT,Line,Altheim,Sittling,220,572.034
+11TD2L000000004J,Altheim - Sittling 220,TenneT,Line,Altheim,Sittling,220,572.034
+11T0-0000-0044-0,Aschaffenburg - Bergrheinfeld/W 418,TenneT,Line,Aschaffenburg,Bergrheinfeld/W,380,1974.54
+11TD2L000000006F,Aschaffenburg - Grosskrotzenburg 412,TenneT,Line,Grosskrotzenburg,Aschaffenburg,380,1974.54
+11TD2L0000000099,Audorf - Audorf/S T421,TenneT,Line,Audorf,Audorf/S,220,549.095
+11T0-0000-0017-3,Audorf - Audorf/S T422,TenneT,Line,Audorf,Audorf/S,220,549.095
+11TD2L000000014G,Audorf - Kiel/S gelb,TenneT,Line,Kiel/S,Audorf,220,361.618
+11TD2L000000015E,Audorf - Kiel/W rot,TenneT,Line,Kiel/W,Audorf,220,361.618
+11T0-0000-0032-A,Audorf/S - Hamburg/N 50H weiss,TenneT,Tieline,Audorf/S,Hamburg/N 50H,380,2369.45
+11T0-0000-1517-9,Audorf/S - Handewitt blau,TenneT,Line,Handewitt,Audorf/S,380,2625.48
+11T0-0000-1516-C,Audorf/S - Handewitt gruen,TenneT,Line,Audorf/S,Handewitt,380,2625.48
+11T0-0000-0039-Q,Audorf/S - Kummerfeld schwarz,TenneT,Line,Audorf/S,Kummerfeld,380,2369.45
+11T0-0000-1475-X,Audorf/S - Schuby/W schwarz,TenneT,Line,Schuby/W,Audorf/S,380,2204.24
+11T0-0000-1473-2,Audorf/S - Schuby/W weiss,TenneT,Line,Schuby/W,Audorf/S,380,2204.24
+11TD2L0000000625,Bechterdissen - Eickum 1,TenneT,Line,Bechterdissen,Eickum,380,2073.26
+11T0-0000-1548-V,Bechterdissen - Eickum 3,TenneT,Line,Bechterdissen,Eickum,380,2073.26
+11TD2L000000017A,Bechterdissen - Elsen 1,TenneT,Line,Elsen,Bechterdissen,380,2073.26
+11TD2L000000335X,Bechterdissen - Elsen 2,TenneT,Line,Elsen,Bechterdissen,380,2073.26
+11TD2L0000003055,Bechterdissen - Lage A03,TenneT,Line,Bechterdissen,Lage,220,762.102
+11TD2L000000356P,Bechterdissen - Veltheim A01,TenneT,Line,Bechterdissen,Veltheim,220,499.177
+11T0-0000-0029-U,Bergrheinfeld/W - Grafenrheinfeld 426,TenneT,Line,Grafenrheinfeld,Bergrheinfeld/W,380,1895.56
+11TD2L000000359J,Bergrheinfeld/W - Grafenrheinfeld 427,TenneT,Line,Grafenrheinfeld,Bergrheinfeld/W,380,1895.56
+11T0-0000-1675-N,Bergrheinfeld/W - Grafenrheinfeld 487,TenneT,Line,Grafenrheinfeld,Bergrheinfeld/W,380,1895.56
+11T0-0000-0045-Y,Bergrheinfeld/W - Grosskrotzenburg 417,TenneT,Line,Grosskrotzenburg,Bergrheinfeld/W,380,2632.72
+11TD2L000000024D,Bergshausen - Borken 1,TenneT,Line,Borken,Bergshausen,380,2073.26
+11TD2L000000262Y,Bergshausen - Borken 2,TenneT,Line,Bergshausen,Borken,380,2073.26
+11T0-0000-1833-Z,Bergshausen - Wuergassen 1,TenneT,Line,Bergshausen,Wuergassen,380,2073.26
+11TD2L0000000285,Borken - Giessen/N 1,TenneT,Line,Borken,Giessen/N,380,2073.26
+11TD2L0000000293,Borken - Giessen/N 2,TenneT,Line,Borken,Giessen/N,380,2073.26
+11TD2L000000030I,Borken - Mecklar 1,TenneT,Line,Borken,Mecklar,380,2632.72
+11TD2L000000031G,Borken - Mecklar 2,TenneT,Line,Borken,Mecklar,380,2632.72
+49T000000000057W,Borssele-Rilland380 G,TenneT,Line,Borssele 380,Rilland 380,380,2632.06
+49T000000000059S,Borssele-Rilland380 Z,TenneT,Line,Borssele 380,Rilland 380,380,2632.06
+49T0000000001513,Borssele-Zeeuwse Kust Landstation380 O,TenneT,Line,Borssele 380,Zeeuwse Kust Landstation 380,380,
+49T0000000001521,Borssele-Zeeuwse Kust Landstation380 P,TenneT,Line,Borssele 380,Zeeuwse Kust Landstation 380,380,
+49T000000000154Y,Borssele-Zeeuwse Kust Landstation380 W,TenneT,Line,Borssele 380,Zeeuwse Kust Landstation 380,380,
+49T000000000155W,Borssele-Zeeuwse Kust Landstation380 Z,TenneT,Line,Borssele 380,Zeeuwse Kust Landstation 380,380,
+49T0000000000088,Breukelen Kortrijk-Diemen380 W,TenneT,Line,Breukelen Kortrijk 380,Diemen 380,380,2328.64
+11TD2L000000034A,Brokdorf - Itzehoe/W gruen,TenneT,Line,Itzehoe/W,Brokdorf,220,348.662
+11TD2L0000000374,Brunsbuettel - Buettel blau,TenneT,Line,Buettel,Brunsbuettel,380,2075.9
+11TD2L0000000382,Brunsbuettel - Buettel gruen,TenneT,Line,Buettel,Brunsbuettel,380,2075.9
+11TD2L0000000390,Brunsbuettel - Itzehoe/W rot,TenneT,Line,Itzehoe/W,Brunsbuettel,220,747.241
+11TD2L000000344W,Brunsbuettel - Suederdonn blau,TenneT,Line,Suederdonn,Brunsbuettel,380,2204.24
+11TD2L000000343Y,Brunsbuettel - Suederdonn gelb,TenneT,Line,Suederdonn,Brunsbuettel,380,2204.24
+11TD2L0000000439,Buettel - Wilster/W gelb,TenneT,Line,Wilster/W,Buettel,380,2075.9
+11TD2L0000000447,Buettel - Wilster/W rot,TenneT,Line,Wilster/W,Buettel,380,2075.9
+49T000000000236W,Compensatie Filterstation Eemshaven-Eemshaven Oudeschip380 W,TenneT,Line,Compensatie Filterstation Eemshaven 380,Eemshaven Oudeschip 380,380,
+49T000000000237U,Compensatie Filterstation Eemshaven-Eemshaven Oudeschip380 Z,TenneT,Line,Compensatie Filterstation Eemshaven 380,Eemshaven Oudeschip 380,380,
+11TD2L0000000455,Conneforde - Cloppenburg/O gruen,TenneT,Line,Cloppenburg/O,Conneforde,220,313.224
+11T0-0000-0079-A,Conneforde - Conneforde/O blau,TenneT,Line,Conneforde,Conneforde/O,380,2632.72
+11T0-0000-0999-V,Conneforde - Conneforde/O rot,TenneT,Line,Conneforde,Conneforde/O,380,2632.72
+11T0-0000-2397-I,Conneforde - Conneforde/O weiss,TenneT,Line,Conneforde,Conneforde/O,380,2632.72
+11TD2L0000000471,Conneforde - Diele rot,TenneT,Line,Conneforde,Diele,380,2019.95
+11TD2L000000049Y,Conneforde - Diele weiss,TenneT,Line,Conneforde,Diele,380,2019.95
+11T0-0000-1677-H,Conneforde - Emden/O gelb,TenneT,Line,Emden/O,Conneforde,380,2338.51
+11T0-0000-1614-D,Conneforde - Fedderwarden blau,TenneT,Line,Conneforde,Fedderwarden,220,1143.15
+11T0-0000-1613-G,Conneforde - Fedderwarden rot,TenneT,Line,Conneforde,Fedderwarden,220,1143.15
+11T0-0000-2299-H,Conneforde/O - Elsfleth/W gelb/rot,TenneT,Line,Conneforde/O,Elsfleth/W,380,2019.95
+11T0-0000-1678-E,Conneforde/O - Emden/O blau,TenneT,Line,Emden/O,Conneforde/O,380,2333.9
+49T0000000000347,Crayestein-Krimpen aan den IJssel380 W,TenneT,Line,Crayestein 380,Krimpen aan den IJssel 380,380,
+49T0000000000339,Crayestein-Krimpen aan den IJssel380 Z,TenneT,Line,Crayestein 380,Krimpen aan den IJssel 380,380,
+49T000000000210D,Delesto-Weiwerd220 W,TenneT,Line,Delesto 220,Weiwerd 220,220,
+49T000000000211B,Delesto-Weiwerd220 Z,TenneT,Line,Delesto 220,Weiwerd 220,220,
+11TD2L0000000536,Diele - Doerpen/W gelb,TenneT,Line,Diele,Doerpen/W,380,2073.26
+10T-DE-NL-00001V,Diele - Meeden 380 schwarz,TenneT,Tieline,Meeden,Diele,380,1645.45
+10T-DE-NL-00002T,Diele - Meeden 380 weiss,TenneT,Tieline,Meeden,Diele,380,1645.45
+49T0000000000096,Diemen-Lelystad380 W,TenneT,Line,Diemen 380,Lelystad 380,380,
+49T000000000010L,Diemen-Lelystad380 Z,TenneT,Line,Diemen 380,Lelystad 380,380,
+11TD2L000000337T,Dipperz - Grosskrotzenburg 2,TenneT,Line,Dipperz,Grosskrotzenburg,380,1974.54
+49T000000000011J,Dodewaard-Doetinchem380 W,TenneT,Line,Dodewaard 380,Doetinchem 380,380,2328.64
+49T000000000012H,Dodewaard-Doetinchem380 Z,TenneT,Line,Dodewaard 380,Doetinchem 380,380,2328.64
+49T000000000014D,Doetinchem-Hengelo380 W,TenneT,Line,Doetinchem 380,Hengelo 380,380,2328.64
+49T000000000015B,Doetinchem-Hengelo380 Z,TenneT,Line,Doetinchem 380,Hengelo 380,380,2328.64
+49T000000000581F,Eemshaven Oudeschip-Eemshaven380 W,TenneT,Line,Eemshaven Oudeschip 380,Eemshaven 380,380,
+49T000000000101I,Eemshaven Oudeschip-Eemshaven380 Z,TenneT,Line,Eemshaven Oudeschip 380,Eemshaven 380,380,
+49T000000000100K,Eemshaven Synergieweg-Eemshaven Oudeschip380 W,TenneT,Line,Eemshaven Synergieweg 380,Eemshaven Oudeschip 380,380,
+49T0000000001505,Eemshaven Synergieweg-Eemshaven Oudeschip380 Z,TenneT,Line,Eemshaven Synergieweg 380,Eemshaven Oudeschip 380,380,
+49T000000000073Y,Eemshaven-Eemshaven Converterstation380 Z,TenneT,Line,Eemshaven 380,Eemshaven Converterstation 380,380,
+49T000000000193O,Eemshaven-Eemshaven Oost220 W,TenneT,Line,Eemshaven 220,Eemshaven Oost 220,220,
+49T000000000194M,Eemshaven-Eemshaven Oost220 Z,TenneT,Line,Eemshaven 220,Eemshaven Oost 220,220,
+49T000000000004G,Eemshaven-Meeden380 W,TenneT,Line,Eemshaven 380,Meeden 380,380,
+49T000000000003I,Eemshaven-Meeden380 Z,TenneT,Line,Eemshaven 380,Meeden 380,380,
+Unknown,Eemshaven-Robbenplaat220 W,TenneT,Line,Borssele 380,Rilland 380,380,
+11TD2L0000002326,Elsen - Twistetal 1,TenneT,Line,Elsen,Twistetal,380,2073.26
+11TD2L0000002318,Elsen - Twistetal 2,TenneT,Line,Elsen,Twistetal,380,2073.26
+11T0-0000-1005-7,Elsfleth/W - Farge gruen,TenneT,Line,Elsfleth/W,Farge,380,2075.9
+11T0-0000-0982-J,Elsfleth/W - Ganderkesee rot,TenneT,Line,Elsfleth/W,Ganderkesee,380,2625.48
+11T0-0000-1003-D,Elsfleth/W - Niedervieland gruen,TenneT,Line,Elsfleth/W,Niedervieland,380,2073.26
+11TD2L0000000641,Eltmann - Grafenrheinfeld 422,TenneT,Line,Grafenrheinfeld,Eltmann,380,2632.72
+11TD2L000000088O,Eltmann - Redwitz 428,TenneT,Line,Eltmann,Redwitz,380,2160.14
+49T000000000024A,Ens-Zwolle380 W,TenneT,Line,Ens 380,Zwolle 380,380,
+49T0000000000258,Ens-Zwolle380 Z,TenneT,Line,Ens 380,Zwolle 380,380,
+11T0-0000-2273-6,Etzenricht - Mechlenreuth 437/479,TenneT,Line,Etzenricht,Mechlenreuth,380,1990.33
+11T0-0000-2203-Y,Etzenricht - Schwandorf 455,TenneT,Line,Schwandorf,Etzenricht,380,2632.72
+11T0-0000-2232-P,Etzenricht - Schwandorf 456,TenneT,Line,Schwandorf,Etzenricht,380,2632.72
+11T0-0000-1488-K,Fedderwarden - Conneforde gelb,TenneT,Line,Conneforde,Fedderwarden,380,1691.52
+11T0-0000-1489-H,Fedderwarden - Conneforde gruen,TenneT,Line,Conneforde,Fedderwarden,380,1691.52
+11T0-0000-1616-7,Fedderwarden - Maade schwarz,TenneT,Line,Fedderwarden,Maade,220,952.628
+11T0-0000-1615-A,Fedderwarden - Maade weiss,TenneT,Line,Fedderwarden,Maade,220,952.628
+11TD2L0000000730,Frankfurt/SW - Karben 3,TenneT,Line,Karben,Frankfurt/SW,380,1450.63
+11TD2L000000074Z,Ganderkesee - Niedervieland schwarz,TenneT,Line,Niedervieland,Ganderkesee,380,2073.26
+49T0000000000193,Geertruidenberg-Eindhoven380 G,TenneT,Line,Geertruidenberg 380,Eindhoven 380,380,2328.64
+49T000000000020I,Geertruidenberg-Eindhoven380 W,TenneT,Line,Geertruidenberg 380,Eindhoven 380,380,2328.64
+49T000000000021G,Geertruidenberg-Eindhoven380 Z,TenneT,Line,Geertruidenberg 380,Eindhoven 380,380,2328.64
+49T000000000058U,Geertruidenberg-Rilland380 W,TenneT,Line,Geertruidenberg 380,Rilland 380,380,2632.06
+49T0000000000606,Geertruidenberg-Rilland380 Z,TenneT,Line,Geertruidenberg 380,Rilland 380,380,2632.06
+11TD2L000000075X,Giessen/N - Asslar 4,TenneT,Line,Giessen/N,Asslar,380,2073.26
+11TD2L000000076V,Giessen/N - Dillenburg 3,TenneT,Line,Giessen/N,Dillenburg,380,2073.26
+11T0-0000-0055-U,Giessen/N - Karben 1,TenneT,Line,Giessen/N,Karben,380,2632.72
+11TD2L0000003144,Giessen/N - Karben 2,TenneT,Line,Giessen/N,Karben,380,2632.72
+11TD2L000000085U,Grafenrheinfeld - Oberhaid 423,TenneT,Line,Grafenrheinfeld,Oberhaid,380,2632.72
+11TD2L000000086S,Grafenrheinfeld - Raitersaich 433,TenneT,Line,Grafenrheinfeld,Raitersaich,380,1579.63
+11TD2L000000087Q,Grafenrheinfeld - Raitersaich 434,TenneT,Line,Grafenrheinfeld,Raitersaich,380,1579.63
+11T0-0000-1913-1,Grohnde - Mehrum/N 1,TenneT,Line,Grohnde,Mehrum/N,380,2073.26
+11TD2L000000092X,Grohnde - Wuergassen 2,TenneT,Line,Wuergassen,Grohnde,380,2073.26
+11TD2L000000101L,Grosskrotzenburg - Frankfurt/N 3,TenneT,Line,Grosskrotzenburg,Frankfurt/N,220,476.314
+11TD2L0000003128,Grosskrotzenburg - Karben 1,TenneT,Line,Karben,Grosskrotzenburg,380,2632.72
+11TD2L0000003136,Grosskrotzenburg - Karben 3,TenneT,Line,Karben,Grosskrotzenburg,380,2632.72
+11T0-0000-2183-7,Grosskrotzenburg - Mecklar 1,TenneT,Line,Mecklar,Grosskrotzenburg,380,2328.64
+11TD2L000000103H,Grosskrotzenburg - Trennfeld 217,TenneT,Line,Grosskrotzenburg,Trennfeld,220,486.983
+11TD2L000000105D,Hamburg/N - Brokdorf blau,TenneT,Line,Hamburg/N,Brokdorf,220,348.662
+11TD2L000000319V,Hamburg/N - Hamburg/N 50H blau,TenneT,Tieline,Hamburg/N,Hamburg/N 50H,220,513.276
+11T-D2-D8-000035,Hamburg/N - Hamburg/N 50H rot,TenneT,Tieline,Hamburg/N,Hamburg/N 50H,220,513.276
+11TD2L000000106B,Hamburg/N - Itzehoe/W rot,TenneT,Line,Hamburg/N,Itzehoe/W,220,348.662
+11TD2L0000001079,Hamburg/N - Luebeck gelb,TenneT,Line,Luebeck,Hamburg/N,220,457.261
+11TD2L0000001087,Hamburg/N - Luebeck rot,TenneT,Line,Luebeck,Hamburg/N,220,457.261
+11T0-0000-0966-F,Hamburg/N 50H - Dollern blau,TenneT,Tieline,Dollern,Hamburg/N 50H,380,2075.9
+11T0-0000-0926-V,Handewitt - Jardelund blau,TenneT,Line,Jardelund,Handewitt,380,2625.48
+11T0-0000-0925-Y,Handewitt - Jardelund gruen,TenneT,Line,Jardelund,Handewitt,380,2625.48
+10T1001C--00063U,Handewitt - Kassoe 1,TenneT,Tieline,Handewitt,Kassoe,380,2204.24
+10T1001C--00064S,Handewitt - Kassoe 2,TenneT,Tieline,Handewitt,Kassoe,380,2204.24
+11TD2L0000001095,Hattorf - Helmstedt 2,TenneT,Line,Hattorf,Helmstedt,380,2073.26
+11T0-0000-1634-5,Heide/W - Husum/N schwarz,TenneT,Line,Husum/N,Heide/W,380,2204.24
+11T0-0000-1635-2,Heide/W - Husum/N weiss,TenneT,Line,Husum/N,Heide/W,380,2204.24
+49T000000000197G,Hessenweg-Ens220 W,TenneT,Line,Hessenweg 220,Ens 220,220,
+49T000000000198E,Hessenweg-Ens220 Z,TenneT,Line,Hessenweg 220,Ens 220,220,
+49T000000000575A,Hollandse Kust Noord Landstation-Wijk aan Zee380 B,TenneT,Line,Hollandse Kust Noord Landstation 380,Wijk aan Zee 380,380,
+49T000000000574C,Hollandse Kust Noord Landstation-Wijk aan Zee380 O,TenneT,Line,Hollandse Kust Noord Landstation 380,Wijk aan Zee 380,380,
+49T0000000005768,Hollandse Kust Noord Landstation-Wijk aan Zee380 R,TenneT,Line,Hollandse Kust Noord Landstation 380,Wijk aan Zee 380,380,
+10T-CZ-DE-00001W,Hradec - Etzenricht 441,TenneT,Tieline,Etzenricht,Hradec,380,1316.36
+11T0-0000-1861-T,Husum/N - Klixbuell/S schwarz,TenneT,Line,Husum/N,Klixbuell/S,380,2204.24
+11T0-0000-1860-W,Husum/N - Klixbuell/S weiss,TenneT,Line,Husum/N,Klixbuell/S,380,2204.24
+11TD2L000000115A,Ingolstadt - Raitersaich 265,TenneT,Line,Ingolstadt,Raitersaich,220,756.006
+11TD2L0000001168,Ingolstadt - Raitersaich 266,TenneT,Line,Ingolstadt,Raitersaich,220,756.006
+11TD2L0000001176,Ingolstadt - Sittling 227,TenneT,Line,Sittling,Ingolstadt,220,762.102
+11TD2L0000001184,Ingolstadt - Sittling 228,TenneT,Line,Sittling,Ingolstadt,220,762.102
+11TD2L0000001192,Irsching - Ottenhofen 421,TenneT,Line,Irsching,Ottenhofen,380,1530.92
+11TD2L000000120H,Irsching - Raitersaich 424,TenneT,Line,Irsching,Raitersaich,380,1579.63
+11TD2L000000121F,Irsching - Raitersaich 425,TenneT,Line,Irsching,Raitersaich,380,1645.45
+11TD2L000000122D,Irsching - Zolling 262,TenneT,Line,Zolling,Irsching,220,609.682
+11TD2L000000123B,Isar - Ottenhofen 443,TenneT,Line,Isar,Ottenhofen,380,2632.72
+11TD2L0000001265,Isar - Pleinting 451,TenneT,Line,Isar,Pleinting,380,2632.72
+10T-DE-DK-00001I,Jardelund - Kassoe 1,TenneT,Tieline,Jardelund,Kassoe,380,1458.53
+10T-DE-DK-00002G,Jardelund - Kassoe 2,TenneT,Tieline,Kassoe,Jardelund,380,1458.53
+11TD2L0000001346,Kiel/W - Kiel/S blau,TenneT,Line,Kiel/W,Kiel/S,220,457.261
+11T0-0000-1914-Z,Klein Ilsede - Mehrum/N 1,TenneT,Line,Mehrum/N,Klein Ilsede,380,2073.26
+10T-DK-DE-00121R,Klixbuell/S - Endrup 1,TenneT,Tieline,Klixbuell/S,Endrup,380,2369.45
+10T-DK-DE-00122P,Klixbuell/S - Endrup 2,TenneT,Tieline,Klixbuell/S,Endrup,380,2369.45
+11T0-0000-2192-6,Krempermarsch - Stade/W gelb,TenneT,Line,Krempermarsch,Stade/W,380,2068
+11T0-0000-2198-P,Krempermarsch - Stade/W rot,TenneT,Line,Krempermarsch,Stade/W,380,2068
+11T0-0000-2199-M,Krempermarsch - Wilster/W rot,TenneT,Line,Wilster/W,Krempermarsch,380,2068
+49T0000000000452,Krimpen aan den IJssel-Bleiswijk380 W,TenneT,Line,Krimpen aan den IJssel 380,Bleiswijk 380,380,
+49T0000000000444,Krimpen aan den IJssel-Bleiswijk380 Z,TenneT,Line,Krimpen aan den IJssel 380,Bleiswijk 380,380,
+49T0000000000266,Krimpen aan den IJssel-Breukelen Kortrijk380 W,TenneT,Line,Krimpen aan den IJssel 380,Breukelen Kortrijk 380,380,2328.64
+49T000000000220A,Krimpen aan den IJssel-Diemen380 Z,TenneT,Line,Krimpen aan den IJssel 380,Diemen 380,380,2328.64
+49T0000000000274,Krimpen aan den IJssel-Geertruidenberg380 W,TenneT,Line,Krimpen aan den IJssel 380,Geertruidenberg 380,380,
+49T0000000000282,Krimpen aan den IJssel-Geertruidenberg380 Z,TenneT,Line,Krimpen aan den IJssel 380,Geertruidenberg 380,380,
+11TD2L000000166U,Kruemmel - Lueneburg gruen,TenneT,Line,Lueneburg,Kruemmel,380,2632.72
+11TD2L0000002261,Kruemmel - Stadorf blau/2,TenneT,Line,Kruemmel,Stadorf,380,2632.72
+11T0-0000-1684-M,Kuehtai - Silz 264,TenneT,Line,Kuehtai,Silz,220,3810.13
+11T0-0000-1685-J,Kuehtai - Silz 265,TenneT,Line,Kuehtai,Silz,220,3810.13
+11T0-0000-0969-6,Kummerfeld - Dollern gruen,TenneT,Line,Kummerfeld,Dollern,380,2075.9
+11T0-0000-1694-I,Lamspringe - Wahle 3,TenneT,Line,Wahle,Lamspringe,380,2369.45
+11T0-0000-1695-F,Lamspringe - Wahle 4,TenneT,Line,Wahle,Lamspringe,380,2369.45
+11TD2L0000001419,Landesbergen - Grohnde 1,TenneT,Line,Landesbergen,Grohnde,380,2073.26
+11TD2L0000001427,Landesbergen - Grohnde 2,TenneT,Line,Landesbergen,Grohnde,380,2073.26
+11TD2L0000001435,Landesbergen - Hannover/W 3,TenneT,Line,Landesbergen,Hannover/W,220,457.261
+11TD2L0000001443,Landesbergen - Hannover/W 4,TenneT,Line,Landesbergen,Hannover/W,220,384.1
+11T0-0000-2295-T,Landesbergen - Mehringen 3,TenneT,Line,Mehringen,Landesbergen,380,2032.46
+11TD2L0000003322,Landesbergen - Ohlensehlen 1,TenneT,Line,Ohlensehlen,Landesbergen,380,2073.26
+11TD2L000000158T,Lehrte - Landesbergen 1,TenneT,Line,Landesbergen,Lehrte,220,457.261
+11TD2L000000159R,Lehrte - Mehrum 1,TenneT,Line,Mehrum,Lehrte,220,457.261
+11TD2L0000001605,Lehrte - Mehrum 2,TenneT,Line,Mehrum,Lehrte,220,457.261
+11TD2L0000001613,Lehrte - Wahle 1,TenneT,Line,Wahle,Lehrte,220,476.314
+49T000000000022E,Lelystad-Ens380 W,TenneT,Line,Lelystad 380,Ens 380,380,
+49T000000000023C,Lelystad-Ens380 Z,TenneT,Line,Lelystad 380,Ens 380,380,
+49T0000000000614,Louwsmeer-Bergum220 W,TenneT,Line,Louwsmeer 220,Bergum 220,220,
+49T0000000000622,Louwsmeer-Bergum220 Z,TenneT,Line,Louwsmeer 220,Bergum 220,220,
+49T000000000064Z,Louwsmeer-Oudehaske220 W,TenneT,Line,Louwsmeer 220,Oudehaske 220,220,
+49T000000000065X,Louwsmeer-Oudehaske220 Z,TenneT,Line,Louwsmeer 220,Oudehaske 220,220,
+11TD2L0000001621,Ludersheim - Raitersaich 237,TenneT,Line,Ludersheim,Raitersaich,220,762.102
+11TD2L000000164Y,Ludersheim - Schwandorf 223,TenneT,Line,Schwandorf,Ludersheim,220,443.163
+11TD2L000000165W,Ludersheim - Sittling 221,TenneT,Line,Ludersheim,Sittling,220,419.918
+11TD2L000000168Q,Maade - Inhausen schwarz,TenneT,Line,Inhausen,Maade,220,548.714
+11TD2L000000169O,Maade - Voslapp weiss,TenneT,Line,Voslapp,Maade,220,548.714
+49T000000000013F,Maasbracht-Dodewaard380 W,TenneT,Line,Maasbracht 380,Dodewaard 380,380,
+49T0000000000290,Maasbracht-Eindhoven380 W,TenneT,Line,Maasbracht 380,Eindhoven 380,380,
+49T000000000030F,Maasbracht-Eindhoven380 Z,TenneT,Line,Maasbracht 380,Eindhoven 380,380,
+10T-BE-NL-00002G,Maasbracht-Van Eyck 380 W,TenneT,Tieline,Maasbracht,Van Eyck,380,
+10T-BE-NL-00001I,Maasbracht-Van Eyck 380 Z,TenneT,Tieline,Maasbracht,Van Eyck,380,
+49T0000000007647,Maasvlakte-Hollandse Kust Zuid Landstation380 W,TenneT,Line,Maasvlakte 380,Hollandse Kust Zuid Landstation 380,380,
+49T0000000007655,Maasvlakte-Hollandse Kust Zuid Landstation380 Z,TenneT,Line,Maasvlakte 380,Hollandse Kust Zuid Landstation 380,380,
+49T0000000000371,Maasvlakte-Simonshaven380 W,TenneT,Line,Maasvlakte 380,Simonshaven 380,380,
+49T000000000039Y,Maasvlakte-Simonshaven380 Z,TenneT,Line,Maasvlakte 380,Simonshaven 380,380,
+11TD2L0000001710,Marienberg - Neufinsing 250,TenneT,Line,Marienberg,Neufinsing,220,443.163
+11T0-0000-1689-7,Mechlenreuth - Redwitz 476,TenneT,Line,Redwitz,Mechlenreuth,380,2632.72
+11T0-0000-1688-A,Mechlenreuth - Redwitz 477,TenneT,Line,Redwitz,Mechlenreuth,380,2632.72
+11TD2L000000178N,Mecklar - Dipperz 2,TenneT,Line,Mecklar,Dipperz,380,1974.54
+11T0-0000-2470-5,Mehringen - Dollern gruen-4,TenneT,Line,Mehringen,Dollern,380,2032.46
+11T0-0000-2471-2,Mehringen - Dollern schwarz-3,TenneT,Line,Mehringen,Dollern,380,2032.46
+11TD2L000000181Y,Mehrum - Hallendorf 1,TenneT,Line,Mehrum,Hallendorf,220,317.797
+11T0-0000-1893-B,Mehrum - Mehrum/N T421,TenneT,Line,Mehrum,Mehrum,220,538.425
+11T0-0000-1892-E,Mehrum - Mehrum/N T422,TenneT,Line,Mehrum,Mehrum,220,538.425
+11T0-0000-1912-4,Mehrum/N - Wahle 2,TenneT,Line,Mehrum/N,Wahle,380,2073.26
+11TD2L000000339P,Meissen - Veltheim A09,TenneT,Line,Meissen,Veltheim,220,422.205
+11TD2L000000184S,Neufinsing - Oberbachern 263,TenneT,Line,Oberbachern,Neufinsing,220,762.102
+11TD2L000000185Q,Neufinsing - Oberbachern 264,TenneT,Line,Oberbachern,Neufinsing,220,762.102
+11TD2L000000186O,Neufinsing - Ottenhofen 286,TenneT,Line,Neufinsing,Ottenhofen,220,688.559
+11TD2L000000187M,Neufinsing - Ottenhofen 287,TenneT,Line,Neufinsing,Ottenhofen,220,688.559
+11TD2L000000188K,Neufinsing - Zolling 258,TenneT,Line,Neufinsing,Zolling,220,839.837
+10T-NO-DE-00002J,Nordlink Cable,TenneT,Tieline,Wilster/W,Ertsmyra,380,1441.41
+11TD2L000000194P,Oberbachern - Oberbrunn 270,TenneT,Line,Oberbrunn,Oberbachern,220,762.102
+11TD2L000000195N,Oberbachern - Ottenhofen 461,TenneT,Line,Ottenhofen,Oberbachern,380,2050.23
+11TD2L000000196L,Oberbachern - Ottenhofen 462,TenneT,Line,Ottenhofen,Oberbachern,380,1530.92
+11TD2L000000197J,Oberhaid - Redwitz 435,TenneT,Line,Oberhaid,Redwitz,380,2160.14
+11T-D2-D7-00004B,Ohlensehlen - Wehrendorf DS1,TenneT,Tieline,Ohlensehlen,Wehrendorf,380,2073.26
+49T0000000000525,Oostzaan-Diemen380 G,TenneT,Line,Oostzaan 380,Diemen 380,380,
+49T000000000219W,Oostzaan-Diemen380 Z,TenneT,Line,Oostzaan 380,Diemen 380,380,
+49T000000000066V,Oudehaske-Ens220 W,TenneT,Line,Oudehaske 220,Ens 220,220,
+49T000000000067T,Oudehaske-Ens220 Z,TenneT,Line,Oudehaske 220,Ens 220,220,
+11TD2T000000035V,PST Diele T441,TenneT,Transformer,,,,
+11TD2T000000036T,PST Diele T442,TenneT,Transformer,,,,
+11T0-0000-2314-M,PST Krempermarsch T441A,TenneT,Transformer,,,,
+11T0-0000-2318-A,PST Krempermarsch T441B,TenneT,Transformer,,,,
+11T0-0000-2320-U,PST Krempermarsch T442A,TenneT,Transformer,,,,
+11T0-0000-2316-G,PST Krempermarsch T442B,TenneT,Transformer,,,,
+49T000000000078O,PST Meeden PST W,TenneT,Transformer,,,1520,4001.73
+49T000000000077Q,PST Meeden PST Z,TenneT,Transformer,,,1520,4001.73
+11T0-0000-1915-W,PST Wuergau T441A,TenneT,Transformer,,,,
+11T0-0000-1916-T,PST Wuergau T441B,TenneT,Transformer,,,,
+11T0-0000-1917-Q,PST Wuergau T442A,TenneT,Transformer,,,,
+11T0-0000-1918-N,PST Wuergau T442B,TenneT,Transformer,,,,
+11TD2L000000201H,Pirach - Pleinting 257,TenneT,Line,Pleinting,Pirach,220,762.102
+10T-AT-DE-000029,Pirach - St. Peter 256,TenneT,Tieline,Pirach,St. Peter,220,762.102
+11TD2L000000204B,Pleinting - Schwandorf 226,TenneT,Line,Schwandorf,Pleinting,220,548.714
+10T-AT-DE-000037,Pleinting - St. Peter 258,TenneT,Tieline,Pleinting,St. Peter,220,762.102
+10T-CZ-DE-00004Q,Prestice - Etzenricht 442,TenneT,Tieline,Etzenricht,Prestice,380,1490.78
+11TD2L0000002075,Raitersaich - Trennfeld 211,TenneT,Line,Raitersaich,Trennfeld,220,762.102
+11T0-0000-2186-Z,Raitersaich - Trennfeld 212,TenneT,Line,Raitersaich,Trennfeld,220,432.874
+11TD2L000000255V,Redwitz - Wuergau 436,TenneT,Line,Wuergau,Redwitz,380,2160.14
+11T0-0000-1906-X,Redwitz - Wuergau 457,TenneT,Line,Wuergau,Redwitz,380,2632.72
+11TD2L0000002083,Regensburg - Schwandorf 275,TenneT,Line,Schwandorf,Regensburg,220,548.714
+10T-BE-NL-00003E,Rilland-Zandvliet 380 G,TenneT,Tieline,Rilland,Zandvliet,380,
+10T-BE-NL-00004C,Rilland-Zandvliet 380 W,TenneT,Tieline,Rilland,Zandvliet,380,
+49T0000000002048,Robbenplaat-Weiwerd220 G,TenneT,Line,Robbenplaat 220,Weiwerd 220,220,
+49T000000000203A,Robbenplaat-Weiwerd220 P,TenneT,Line,Robbenplaat 220,Weiwerd 220,220,
+11T0-0000-1472-5,Schuby/W - Handewitt gelb,TenneT,Line,Handewitt,Schuby/W,380,2204.24
+11T0-0000-1471-8,Schuby/W - Handewitt rot,TenneT,Line,Handewitt,Schuby/W,380,2204.24
+11TD2L0000002156,Siems - Luebeck blau,TenneT,Line,Siems,Luebeck,220,361.999
+49T0000000000363,Simonshaven-Crayestein380 Z,TenneT,Line,Simonshaven 380,Crayestein 380,380,
+11TD2L0000002164,Sottrum - Blockland blau,TenneT,Line,Sottrum,Blockland,220,361.618
+11T0-0000-2306-K,Sottrum - Stade/W schwarz,TenneT,Line,Stade/W,Sottrum,380,2632.72
+11T0-0000-2464-Y,Sottrum - Stade/W weiss,TenneT,Line,Stade/W,Sottrum,380,2632.72
+11TD2L000000228Y,Stadorf - Lueneburg 1,TenneT,Line,Lueneburg,Stadorf,380,2632.72
+11T0-0000-0971-Q,Suederdonn - Heide/W blau,TenneT,Line,Heide/W,Suederdonn,380,2204.24
+11T0-0000-0970-T,Suederdonn - Heide/W gruen,TenneT,Line,Heide/W,Suederdonn,380,2204.24
+11TD2T0000000142,TR Audorf/S T421,TenneT,Transformer,,,,
+11T0-0000-0019-Y,TR Audorf/S T422,TenneT,Transformer,,,,
+11TD2T000000245K,TR Bechterdissen T423,TenneT,Transformer,,,,
+11TD2T000000246I,TR Bechterdissen T424,TenneT,Transformer,,,,
+11TD2T000000208Q,TR Buettel 441,TenneT,Transformer,,,,
+11TD2T000000209O,TR Buettel 442,TenneT,Transformer,,,,
+11TD2T000000033Z,TR Conneforde/O T422,TenneT,Transformer,,,,
+11T0-0000-1608-5,TR Conneforde/O T423,TenneT,Transformer,,,,
+11TD2T000000219L,TR Diele T1,TenneT,Transformer,,,,
+11TD2T000000229I,TR Doerpen/W T441,TenneT,Transformer,,,,
+11TD2T000000230X,TR Doerpen/W T442,TenneT,Transformer,,,,
+11TD2T000000227M,TR Doerpen/W T443,TenneT,Transformer,,,,
+11TD2T000000228K,TR Doerpen/W T444,TenneT,Transformer,,,,
+49T000000000181V,TR Eemshaven 380kV TR 401,TenneT,Transformer,,,1140,2250.97
+49T000000000182T,TR Eemshaven 380kV TR 402,TenneT,Transformer,,,1140,2250.97
+49T000000000183R,TR Eemshaven 380kV TR 423,TenneT,Transformer,,,1140,2250.97
+49T000000000184P,TR Eemshaven Hogeland 380kV TR 421,TenneT,Transformer,,,1140,2250.97
+11T0-0000-0070-0,TR Emden/O T425,TenneT,Transformer,,,,
+11T0-0000-1589-C,TR Emden/O T428,TenneT,Transformer,,,,
+49T000000000185N,TR Ens 380kV TR 402,TenneT,Transformer,,,760,1000.43
+49T000000000186L,TR Ens 380kV TR 403,TenneT,Transformer,,,760,1000.43
+49T000000000187J,TR Ens 380kV TR 404,TenneT,Transformer,,,1140,2250.97
+11TD2T000000129M,TR Fedderwarden T421,TenneT,Transformer,,,,
+11TD2T0000001300,TR Fedderwarden T422,TenneT,Transformer,,,,
+11TD2T000000070T,TR Grosskrotzenburg T421,TenneT,Transformer,,,,
+11TD2T000000071R,TR Grosskrotzenburg T422,TenneT,Transformer,,,,
+11TD2T000000072P,TR Grosskrotzenburg T423,TenneT,Transformer,,,,
+11TD2T000000096B,TR Irsching T421,TenneT,Transformer,,,,
+11TD2T000000116V,TR Landesbergen T422,TenneT,Transformer,,,,
+11TD2T000000117T,TR Landesbergen T423,TenneT,Transformer,,,,
+49T000000000188H,TR Meeden 380kV TR 402,TenneT,Transformer,,,1140,2250.97
+11TD2T000000143S,TR Oberbachern T421,TenneT,Transformer,,,,
+11TD2T000000146M,TR Ottenhofen T426,TenneT,Transformer,,,,
+11TD2T000000147K,TR Ottenhofen T427,TenneT,Transformer,,,,
+11TD2T000000155L,TR Pleinting T421,TenneT,Transformer,,,,
+11TD2T000000156J,TR Pleinting T422,TenneT,Transformer,,,,
+11TD2T000000160S,TR Raitersaich T421,TenneT,Transformer,,,,
+11TD2T000000172L,TR Siems T421,TenneT,Transformer,,,,
+11TD2T000000180M,TR Sottrum T421,TenneT,Transformer,,,,
+11T0-0000-1686-G,TR Stade/W T421,TenneT,Transformer,,,,
+11T0-0000-1687-D,TR Stade/W T422,TenneT,Transformer,,,,
+11TD2T000000206U,TR Unterweser T421,TenneT,Transformer,,,,
+11TD2T000000191H,TR Wahle T421,TenneT,Transformer,,,,
+11TD2T000000192F,TR Wahle T422,TenneT,Transformer,,,,
+11TD2T0000001975,TR Wuergassen T421,TenneT,Transformer,,,,
+11T0-0000-2102-5,TR Wuergassen T423,TenneT,Transformer,,,,
+11TD2L0000002350,Unterweser - Conneforde rot,TenneT,Line,Conneforde,Unterweser,220,844.409
+11T0-0000-1004-A,Unterweser - Elsfleth/W weiss,TenneT,Line,Unterweser,Elsfleth/W,380,1579.63
+11TD2L0000003411,Veltheim - Bechterdissen A07,TenneT,Line,Bechterdissen,Veltheim,220,422.205
+11TD2L0000003403,Veltheim - Lage A06,TenneT,Line,Lage,Veltheim,220,422.205
+49T0000000005849,Vierverlaten-Eemshaven Oudeschip380 P,TenneT,Line,Vierverlaten 380,Eemshaven Oudeschip 380,380,
+49T000000000583B,Vierverlaten-Eemshaven Oudeschip380 W,TenneT,Line,Vierverlaten 380,Eemshaven Oudeschip 380,380,
+49T0000000002064,Vierverlaten-Zeyerveen220 W,TenneT,Line,Vierverlaten 220,Zeyerveen 220,220,
+49T0000000002072,Vierverlaten-Zeyerveen220 Z,TenneT,Line,Vierverlaten 220,Zeyerveen 220,220,
+11TD2L000000237X,Voslapp - Inhausen rot,TenneT,Line,Voslapp,Inhausen,220,548.714
+11TD2L000000239T,Wahle - Braunschweig/N 1,TenneT,Line,Wahle,Braunschweig/N,220,317.797
+11TD2L0000002407,Wahle - Braunschweig/N 2,TenneT,Line,Wahle,Braunschweig/N,220,317.797
+11TD2L0000002415,Wahle - Gleidingen 2,TenneT,Line,Wahle,Gleidingen,220,609.682
+11TD2L0000002423,Wahle - Hallendorf 3,TenneT,Line,Wahle,Hallendorf,220,548.714
+11TD2L0000002431,Wahle - Hattorf 2,TenneT,Line,Wahle,Hattorf,380,2073.26
+11TD2L000000246W,Wahle - Klein Ilsede 3,TenneT,Line,Klein Ilsede,Wahle,380,2073.26
+11TD2L000000247U,Wahle - Stadorf 1,TenneT,Line,Stadorf,Wahle,380,2632.72
+11TD2L000000248S,Wahle - Stadorf 2,TenneT,Line,Stadorf,Wahle,380,2632.72
+49T0000000000428,Wateringen-Bleiswijk380 W,TenneT,Line,Wateringen 380,Bleiswijk 380,380,
+49T0000000000436,Wateringen-Bleiswijk380 Z,TenneT,Line,Wateringen 380,Bleiswijk 380,380,
+49T000000000041A,Wateringen-Westerlee380 W,TenneT,Line,Wateringen 380,Westerlee 380,380,
+49T000000000040C,Wateringen-Westerlee380 Z,TenneT,Line,Wateringen 380,Westerlee 380,380,
+49T000000000201E,Weiwerd-Meeden220 B,TenneT,Line,Weiwerd 220,Meeden 220,220,
+49T000000000202C,Weiwerd-Meeden220 O,TenneT,Line,Weiwerd 220,Meeden 220,220,
+49T000000000069P,Westerlee-Maasvlakte380 W,TenneT,Line,Westerlee 380,Maasvlakte 380,380,
+49T0000000000703,Westerlee-Maasvlakte380 Z,TenneT,Line,Westerlee 380,Maasvlakte 380,380,
+10T1001C--000340,Westtirol - Silz 274E,TenneT,Tieline,Silz,Westtirol,220,792.586
+10T1001C--00035Z,Westtirol - Silz 413,TenneT,Tieline,Silz,Westtirol,220,792.586
+10T1001C--00036X,Westtirol - Silz 414,TenneT,Tieline,Silz,Westtirol,220,792.586
+11TD2L000000249Q,Wilster/W - Audorf/S blau,TenneT,Line,Audorf/S,Wilster/W,380,2625.48
+11TD2L0000002504,Wilster/W - Audorf/S rot,TenneT,Line,Audorf/S,Wilster/W,380,2625.48
+11T0-0000-2191-9,Wilster/W - Krempermarsch gelb,TenneT,Line,Wilster/W,Krempermarsch,380,2068
+11T0-0000-0984-D,Y-Altheim (-Simbach - St. Peter) 233/230,TenneT,Line,Altheim,Y-Simbach,220,571.958
+11T0-0000-0986-7,Y-Altheim (-Simbach - St. Peter) 234/230,TenneT,Line,Altheim,Y-Simbach,220,571.958
+11T0-0000-1073-M,Y-Bergshausen (-Sandershausen/O - Wuergassen) 2,TenneT,Line,Bergshausen,Y-Wuergassen,380,2073.26
+11T0-0000-1123-0,Y-Blockland (-Huntorf - Conneforde) weiss,TenneT,Line,Y-Huntorf,Blockland,220,361.618
+11T0-0000-1465-0,Y-Borken (-Waldeck - Twistetal) 2,TenneT,Line,Y-Waldeck,Borken,380,2550.45
+11T0-0000-1015-3,Y-Borken (-Waldeck - Twistetal) 3,TenneT,Line,Y-Waldeck,Borken,380,2550.45
+11T0-0000-1074-J,Y-Brunsbuettel (-Brunsbuettel 50H - Hamburg/N 50H) 951,TenneT,Tieline,Brunsbuettel,Brunsbuettel 50H,380,2369.45
+11T0-0000-1077-A,Y-Brunsbuettel (-Brunsbuettel 50H - Hamburg/N 50H) 952,TenneT,Tieline,Brunsbuettel,Brunsbuettel 50H,380,2369.45
+11T0-0000-1121-6,Y-Conneforde (-Huntorf - Blockland) weiss,TenneT,Line,Y-Huntorf,Conneforde,220,493.842
+11T0-0000-1118-Q,Y-Conneforde (-Huntorf - Sottrum) gelb,TenneT,Line,Y-Huntorf,Conneforde,220,548.714
+11T0-0000-1018-V,Y-Diele (-Rhede - Doerpen/W) schwarz,TenneT,Line,Y-Rhede,Diele,380,1458.53
+11T0-0000-1041-3,Y-Doernigheim (-Frankfurt/N - Grosskrotzenburg) 1,TenneT,Line,Y-Doernigheim,Doernigheim,220,760.197
+11T0-0000-1044-V,Y-Doernigheim (-Frankfurt/N - Grosskrotzenburg) 2,TenneT,Line,Y-Doernigheim,Doernigheim,220,499.177
+11T0-0000-0990-L,Y-Doerpen/W (-Niederlangen - Meppen) EOWS,TenneT,Line,Y-Niederlangen,Doerpen/W,380,2237.81
+11T0-0000-1020-E,Y-Doerpen/W (-Rhede - Diele) schwarz,TenneT,Line,Y-Rhede,Doerpen/W,380,1458.53
+11T0-0000-2221-W,Y-Eickum (-Landesbergen - Ovenstaedt) 4/4,TenneT,Line,Ovenstaedt,Eickum,380,2073.26
+11T0-0000-2224-N,Y-Eickum (-Sottrum - Ovenstaedt) 2/3,TenneT,Line,Ovenstaedt,Eickum,380,2073.26
+11T0-0000-2029-I,Y-Erzhausen (-Hardegsen - Lamspringe) 4,TenneT,Line,Erzhausen,Y-Erzhausen,220,288.837
+11T0-0000-1110-D,Y-Erzhausen (-Hardegsen - Lehrte) 2,TenneT,Line,Erzhausen,Y-Erzhausen,220,288.837
+11T0-0000-1967-6,Y-Erzhausen (-Lehrte - Hardegsen - Goettingen) 1/3,TenneT,Line,Y-Erzhausen,Erzhausen,220,288.837
+11T0-0000-1042-0,Y-Frankfurt/N (-Doernigheim - Grosskrotzenburg) 1,TenneT,Line,Y-Doernigheim,Frankfurt/N,220,508.322
+11T0-0000-1045-S,Y-Frankfurt/N (-Doernigheim - Grosskrotzenburg) 2,TenneT,Line,Frankfurt/N,Y-Doernigheim,220,497.653
+11T0-0000-0988-1,Y-Frankfurt/SW (-Karben - Kriftel) 2,TenneT,Line,Y-Frankfurt/SW,Frankfurt/SW,380,1579.63
+11T0-0000-1054-R,Y-Gleidingen (-Hallendorf - Mehrum) 2,TenneT,Line,Y-Hallendorf,Gleidingen,220,518.23
+11T0-0000-1838-K,Y-Grohnde (-Voerden - Wuergassen) 1,TenneT,Line,Y-Voerden,Grohnde,380,2073.26
+11T0-0000-1040-6,Y-Grosskrotzenburg (-Doernigheim - Frankfurt/N) 1,TenneT,Line,Grosskrotzenburg,Y-Doernigheim,220,476.314
+11T0-0000-1043-Y,Y-Grosskrotzenburg (-Doernigheim - Frankfurt/N) 2,TenneT,Line,Grosskrotzenburg,Y-Doernigheim,220,476.314
+11T0-0000-2028-L,Y-Hardegsen (-Erzhausen - Lamspringe) 4,TenneT,Line,Hardegsen,Y-Erzhausen,380,2442.5
+11T0-0000-2025-U,Y-Hardegsen (-Erzhausen - Lamspringe) 5,TenneT,Line,Hardegsen,Y-Erzhausen,380,2442.5
+11T0-0000-2254-B,Y-Helmstedt (-Hattorf - Wahle) 1,TenneT,Line,Helmstedt,Hattorf,380,2073.26
+11T0-0000-1122-3,Y-Huntorf (-Conneforde - Blockland) weiss,TenneT,Line,Y-Huntorf,Huntorf,220,361.618
+11T0-0000-1119-N,Y-Huntorf (-Conneforde - Sottrum) gelb,TenneT,Line,Y-Huntorf,Huntorf,220,361.618
+11T0-0000-0989-Z,Y-Karben (-Frankfurt/SW - Kriftel) 2,TenneT,Line,Y-Frankfurt/SW,Karben,380,1724.43
+11T0-0000-1842-Y,Y-Kriegenbrunn (-Raitersaich - Wuergau) 431/438,TenneT,Line,Kriegenbrunn,Y-Kriegenbrunn,380,1974.54
+11T0-0000-1908-R,Y-Kriegenbrunn (-Raitersaich - Wuergau) 438/432,TenneT,Line,Kriegenbrunn,Y-Kriegenbrunn,380,1974.54
+11T0-0000-1032-4,Y-Kriftel (-Frankfurt/SW - Karben) 2,TenneT,Tieline,Y-Frankfurt/SW,Kriftel,380,1816.58
+10T1001C--00069I,Y-Kruen (-Oberbrunn - Silz) 250,TenneT,Line,Kruen,Y-Kruen,220,475.171
+11T0-0000-1874-G,Y-Kruen (-Oberbrunn - Silz) 251,TenneT,Line,Kruen,Y-Kruen,220,475.171
+11T0-0000-2027-O,Y-Lamspringe (-Hardegsen - Erzhausen) 4,TenneT,Line,Lamspringe,Y-Erzhausen,380,2632.72
+11T0-0000-2024-X,Y-Lamspringe (-Hardegsen - Erzhausen) 5,TenneT,Line,Lamspringe,Y-Erzhausen,380,2632.72
+11T0-0000-2220-Z,Y-Landesbergen (-Ovenstaedt - Eickum) 4/4,TenneT,Line,Ovenstaedt,Landesbergen,380,2073.26
+11T0-0000-1046-P,Y-Landesbergen (-Wechold - Sottrum) gelb/2,TenneT,Line,Y-Wechold,Landesbergen,220,422.205
+11T0-0000-1049-G,Y-Landesbergen (-Wechold - Sottrum) rot/1,TenneT,Line,Y-Wechold,Landesbergen,220,422.205
+11T0-0000-1949-8,Y-Lehrte (-Erzhausen - Hardegsen - Goettingen) 1/3,TenneT,Line,Y-Erzhausen,Lehrte,220,254.161
+11T0-0000-2296-Q,Y-Mehringen (-Ovenstaedt - Eickum) 2/3,TenneT,Line,Mehringen,Ovenstaedt,380,2032.46
+11T0-0000-1053-U,Y-Mehrum (-Gleidingen - Hallendorf) 2,TenneT,Line,Mehrum,Y-Hallendorf,220,317.797
+11T0-0000-0991-I,Y-Niederlangen (-Doerpen/W - Meppen) EOWS,TenneT,Line,Y-Niederlangen,Niederlangen,380,427.817
+10T1001C--00070X,Y-Oberbrunn (-Kruen - Silz) 250,TenneT,Line,Oberbrunn,Y-Kruen,220,809.353
+11T0-0000-1872-M,Y-Oberbrunn (-Kruen - Silz) 251,TenneT,Line,Oberbrunn,Y-Kruen,220,809.353
+11T0-0000-1060-Z,Y-Plattling (-Pleinting - Schwandorf) 465,TenneT,Line,Plattling,Y-Plattling,380,537.074
+11T0-0000-1059-C,Y-Pleinting (-Plattling - Schwandorf) 465,TenneT,Line,Pleinting,Y-Plattling,380,1579.63
+11T0-0000-1843-V,Y-Raitersaich (-Kriegenbrunn - Wuergau) 431/438,TenneT,Line,Raitersaich,Y-Kriegenbrunn,380,2613.63
+11T0-0000-1909-O,Y-Raitersaich (-Kriegenbrunn - Wuergau) 438/432,TenneT,Line,Raitersaich,Y-Kriegenbrunn,380,2613.63
+11T0-0000-1019-S,Y-Rhede (-Diele - Doerpen/W) schwarz,TenneT,Line,Rhede,Y-Rhede,380,98.727
+11T0-0000-1072-P,Y-Sandershausen/O (-Bergshausen - Wuergassen) 2,TenneT,Line,Sandershausen/O,Y-Wuergassen,380,210.617
+11T0-0000-1061-W,Y-Schwandorf (-Plattling - Pleinting) 465,TenneT,Line,Schwandorf,Y-Plattling,380,1673.75
+10T1001C--00071V,Y-Silz (-Kruen - Oberbrunn) 250,TenneT,Line,Silz,Y-Kruen,220,792.586
+11T0-0000-1873-J,Y-Silz (-Kruen - Oberbrunn) 251,TenneT,Line,Silz,Y-Kruen,220,792.586
+11T0-0000-0985-A,Y-Simbach (-St. Peter - Altheim) 233/230,TenneT,Line,Simbach,Y-Simbach,220,485.459
+11T0-0000-0987-4,Y-Simbach (-St. Peter - Altheim) 234/230,TenneT,Line,Simbach,Y-Simbach,220,485.459
+11T0-0000-1120-9,Y-Sottrum (-Huntorf - Conneforde) gelb,TenneT,Line,Y-Huntorf,Sottrum,220,457.261
+11T0-0000-1048-J,Y-Sottrum (-Wechold - Landesbergen) gelb/2,TenneT,Line,Y-Wechold,Sottrum,220,422.205
+11T0-0000-1052-X,Y-Sottrum (-Wechold - Landesbergen) rot/1,TenneT,Line,Y-Wechold,Sottrum,220,422.205
+10T1001C--00061Y,Y-St. Peter (-Simbach - Altheim) 233/230,TenneT,Tieline,St. Peter,Y-Simbach,220,756.006
+10T1001C--00062W,Y-St. Peter (-Simbach - Altheim) 234/230,TenneT,Tieline,St. Peter,Y-Simbach,220,756.006
+11T0-0000-1467-V,Y-Twistetal (-Waldeck - Borken) 2,TenneT,Line,Y-Waldeck,Twistetal,380,2550.45
+11T0-0000-1017-Y,Y-Twistetal (-Waldeck - Borken) 3,TenneT,Line,Y-Waldeck,Twistetal,380,2550.45
+11T0-0000-1839-H,Y-Voerden (-Grohnde - Wuergassen) 1,TenneT,Line,Y-Voerden,Voerden,380,581.172
+11T0-0000-2253-E,Y-Wahle (-Hattorf - Helmstedt) 1,TenneT,Line,Hattorf,Wahle,380,2506.35
+11T0-0000-1466-Y,Y-Waldeck (-Borken - Twistetal) 2,TenneT,Line,Waldeck,Y-Waldeck,380,1579.63
+11T0-0000-1016-0,Y-Waldeck (-Borken - Twistetal) 3,TenneT,Line,Waldeck,Y-Waldeck,380,1579.63
+11T0-0000-1047-M,Y-Wechold (-Landesbergen - Sottrum) gelb/2,TenneT,Line,Y-Wechold,Wechold,220,422.205
+11T0-0000-1050-2,Y-Wechold (-Landesbergen - Sottrum) rot/1,TenneT,Line,Y-Wechold,Wechold,220,422.205
+11T0-0000-1071-S,Y-Wuergassen (-Sandershausen/O - Bergshausen) 2,TenneT,Line,Wuergassen,Y-Wuergassen,380,2073.26
+11T0-0000-1840-3,Y-Wuergassen (-Voerden - Grohnde) 1,TenneT,Line,Wuergassen,Y-Voerden,380,2073.26
+11T0-0000-1844-S,Y-Wuergau (-Kriegenbrunn - Raitersaich) 431/438,TenneT,Line,Wuergau,Y-Kriegenbrunn,380,2613.63
+11T0-0000-1910-A,Y-Wuergau (-Kriegenbrunn - Raitersaich) 438/432,TenneT,Line,Wuergau,Y-Kriegenbrunn,380,2613.63
+49T000000000199C,Zeyerveen-Hessenweg220 W,TenneT,Line,Zeyerveen 220,Hessenweg 220,220,
+49T000000000200G,Zeyerveen-Hessenweg220 Z,TenneT,Line,Zeyerveen 220,Hessenweg 220,220,
+49T000000000000O,Zwolle-Hengelo380 W,TenneT,Line,Zwolle 380,Hengelo 380,380,2328.64
+49T000000000031D,Zwolle-Hengelo380 Z,TenneT,Line,Zwolle 380,Hengelo 380,380,2328.64
+49T000000000001M,Zwolle-Meeden380 W,TenneT,Line,Zwolle 380,Meeden 380,380,
+49T000000000002K,Zwolle-Meeden380 Z,TenneT,Line,Zwolle 380,Meeden 380,380,
+11TD400000598-LE,Altbach - Muehlhausen ws,TransnetBW,Line,Altbach,Muehlhausen,380,2014.03
+11TD400000597-LI,Altbach - Wendlingen bl,TransnetBW,Line,Altbach,Wendlingen,380,1316.36
+11TD400000568-LT,Altlussheim - Daxlanden bl,TransnetBW,Line,Altlussheim,Daxlanden,220,863.843
+11TD400000580-LE,Altlussheim - GKM bl,TransnetBW,Line,Altlussheim,GKMB,220,1143.15
+11T0-0000-1937-I,Asphard - Eichstetten rt/sw,TransnetBW,Tieline,Asphard,Eichstetten,380,
+11TD400000559-LU,Beuren - Gurtweil ge,TransnetBW,Line,Beuren,Gurtweil,220,762.102
+11TD400000569-LP,Beuren - Stockach bl,TransnetBW,Line,Beuren,Stockach,220,754.481
+11TD400000581-LA,Birkenfeld - Daxlanden ge,TransnetBW,Line,Birkenfeld,Daxlanden,220,488.889
+11T0-0000-2488-E,Birkenfeld - Pulverdingen ge,TransnetBW,Line,Birkenfeld,Pulverdingen,380,2073.26
+11TD400000566-L0,Buehl - Weier gn,TransnetBW,Line,Buehl,Weier,220,607.777
+11TD400000600-LB,Buenzwangen - Laichingen gn,TransnetBW,Line,Buenzwangen,Laichingen,380,1974.54
+11TD400000601-L7,Buenzwangen - Wendlingen ge,TransnetBW,Line,Buenzwangen,Wendlingen,380,2073.26
+10T-AT-DE-000231,Buers - Meiningen gn (406A),TransnetBW,Tieline,Buers,Meiningen,220,777.344
+11TD400000538-L7,Buers - Obermooweiler bl,TransnetBW,Line,Buers,Obermooweiler,380,1750.76
+11TD400000537-LB,Buers - Obermooweiler ws,TransnetBW,Line,Buers,Obermooweiler,380,1579.63
+10T-AT-DE-10024U,Buers - Walgau or (405A),TransnetBW,Tieline,Buers,Walgau,220,777.344
+10T-AT-DE-000061,Buers - Westtirol rt (422),TransnetBW,Tieline,Buers,Westtirol,380,1293.32
+10T-AT-DE-000053,Buers - Westtirol ws (421),TransnetBW,Tieline,Buers,Westtirol,220,820.784
+11T0-D4NOEIC-003,DCPH1 - Phillipsburg gn,TransnetBW,Line,DC Phillipsburg,Philippsburg,380,2369.45
+11T0-D4NOEIC-004,DCPH1 - Phillipsburg sw,TransnetBW,Line,DC Phillipsburg,Philippsburg,380,2369.45
+11TD400000588-LJ,Daxlanden - Eichstetten C1 gn,TransnetBW,Line,Daxlanden,Eichstetten C1,380,1921.88
+11TD400000590-L9,Daxlanden - KarlsruheWest ge,TransnetBW,Line,Daxlanden,KarlsruheWest,220,293.028
+11TD400000584-LZ,Daxlanden - KarlsruheWest rt,TransnetBW,Line,Daxlanden,KarlsruheWest,220,293.028
+11TD400000577-LS,Daxlanden - Kork rt,TransnetBW,Line,Daxlanden,Kork,380,2073.26
+11T0-0000-2271-C,Daxlanden - Maximiliansau ge (Rheingraben prov),TransnetBW,Tieline,Maximiliansau,Daxlanden,380,2073.26
+11TD400000567-LX,Daxlanden - Neurott ws,TransnetBW,Line,Daxlanden,Neurott,220,558.621
+11TD400000586-LR,Daxlanden - Oberwald rt,TransnetBW,Line,Daxlanden,Oberwald,220,730.094
+11TD400000562-LG,Daxlanden - Philippsburg ge,TransnetBW,Line,Daxlanden,Philippsburg,380,2073.26
+11TD400000585-LV,Daxlanden - Philippsburg rt,TransnetBW,Line,Daxlanden,Philippsburg,380,2073.26
+11TD400000552-LL,Daxlanden - RDK7 sw,TransnetBW,Line,Daxlanden,RDK7,380,789.815
+11TD400000547-L6,Daxlanden - RDK8 gn,TransnetBW,Line,Daxlanden,RDK8,380,1974.54
+11TD400000526-LK,Dellmensingen - Laichingen ws,TransnetBW,Line,Dellmensingen,Laichingen,380,1974.54
+11TD400000535-LJ,Dellmensingen - Obermooweiler gn,TransnetBW,Line,Dellmensingen,Obermooweiler,380,2073.26
+11TD400000593-LY,Dellmensingen - Rotensohl bl,TransnetBW,Line,Dellmensingen,Rotensohl,380,1316.36
+11T0-0000-2512-I,Eichstetten - Eichstetten C1 bl,TransnetBW,Line,Eichstetten,Eichstetten C1,380,2369.45
+11TD400000571-LF,Eichstetten - Gurtweil ge,TransnetBW,Line,Eichstetten,Gurtweil,220,457.261
+11TD400000572-LB,Eichstetten - Gurtweil rt,TransnetBW,Line,Eichstetten,Gurtweil,220,565.861
+11TD400000573-L7,Eichstetten - Kuehmoos ws,TransnetBW,Line,Eichstetten,Kuehmoos,380,1974.54
+10T-DE-FR-00002G,Eichstetten - Muhlbach rt (Ill),TransnetBW,Tieline,Eichstetten,Muhlbach,380,
+10T-DE-FR-00003E,Eichstetten - Vogelgrun ge (Kaiserstuhl),TransnetBW,Tieline,Eichstetten,Vogelgrun,220,
+11TD400000579-LK,Eichstetten - Weier ge,TransnetBW,Line,Eichstetten,Weier,220,952.628
+11TD400000578-LO,Eichstetten - Weier rt,TransnetBW,Line,Eichstetten,Weier,220,607.777
+11TDNOTAVAILABLE,Eichstetten C1 - Eichstetten C2 vi,TransnetBW,Line,Eichstetten C1,Eichstetten C2,380,4738.89
+11T0-0000-2510-O,Eichstetten C2 - Kork bl,TransnetBW,Line,Eichstetten C2,Kork,380,1974.54
+11TD400000528-LC,Endersbach - Wendlingen bl,TransnetBW,Line,Endersbach,Wendlingen,380,2073.26
+11T0-0000-0097-8,Engstlatt - Oberjettingen ws,TransnetBW,Line,Engstlatt,Oberjettingen,380,2073.26
+11TD40000A548-L6,Engstlatt - Trossingen rt,TransnetBW,Line,Engstlatt,Trossingen,380,2053.52
+11TD400000529-L8,GKN2 - Grossgartach sw,TransnetBW,Line,GKN2,Grossgartach,380,1974.54
+11TD400000545-LE,Goldshoefe - Kupferzell gn,TransnetBW,Line,Goldshoefe,Kupferzell,380,2073.26
+11TD400000544-LI,Goldshoefe - Rotensohl gn,TransnetBW,Line,Goldshoefe,Rotensohl,380,1316.36
+11T-D2-D4-000014,Grafenrheinfeld - Hoepfingen ge (411),TransnetBW,Tieline,Grafenrheinfeld,Hoepfingen,380,
+11T-D2-D4-000022,Grafenrheinfeld - Stalldorf rt (416),TransnetBW,Tieline,Grafenrheinfeld,Stalldorf,380,
+11T0-0000-1507-D,Grossgartach - Großgartach C2 gn,TransnetBW,Line,Grossgartach,Großgartach C2,380,3290.9
+11TD400000527-LG,Grossgartach - Heilbronn rt,TransnetBW,Line,Grossgartach,Heilbronn,380,1316.36
+11TD400000551-LP,Grossgartach - Hueffenhardt bl,TransnetBW,Line,Grossgartach,Hueffenhardt,380,2073.26
+11TD400000524-LS,Grossgartach - Kupferzell ws,TransnetBW,Line,Grossgartach,Kupferzell,380,1700.08
+11TD40000A530-L6,Grossgartach - Pulverdingen rt,TransnetBW,Line,Grossgartach 2,Pulverdingen,380,2073.26
+11TD400000525-LO,Grossgartach - Pulverdingen ws,TransnetBW,Line,Grossgartach,Pulverdingen,380,2073.26
+11TD400000534-LN,Gruenkraut - Herbertingen rt,TransnetBW,Line,Gruenkraut,Herbertingen,380,1184.72
+11TD40000A536-LJ,Gruenkraut - Obermooweiler bl,TransnetBW,Line,Gruenkraut,Obermooweiler,380,1184.72
+10T-CH-DE-00007X,Gurtweil - Laufenburg ge,TransnetBW,Tieline,Gurtweil,Laufenburg,220,457.261
+10T1001C--000227,Gurtweil - Oftringen bl,TransnetBW,Tieline,Gurtweil,Oftringen,220,
+11TD40000A853-L6,Gurtweil-Stockach rt,TransnetBW,Line,Gurtweil,Stockach,220,754.481
+11TD400000543-LM,Hoepfingen - Hueffenhardt ge,TransnetBW,Line,Hoepfingen,Hueffenhardt,380,2073.26
+11TD40000A575-L3,Karlsruhe Ost - Oberwald rt,TransnetBW,Line,Karlsruhe,Oberwald,220,274.357
+10T-CH-DE-00008V,Kuehmoos - Laufenburg br,TransnetBW,Tieline,Kuehmoos,Laufenburg,380,
+10T-CH-DE-00009T,Kuehmoos - Laufenburg ge (Seelbach),TransnetBW,Tieline,Kuehmoos,Laufenburg,380,
+10T-CH-DE-000107,Kuehmoos - Laufenburg rt,TransnetBW,Tieline,Kuehmoos,Laufenburg,380,
+10T-CH-DE-000123,Kuehmoos - Laufenburg ws,TransnetBW,Tieline,Kuehmoos,Laufenburg,220,
+11TD400000565-L4,Kuehmoos - Schwoerstadt ge,TransnetBW,Line,Kuehmoos,Schwoerstadt,220,571.577
+11TD400000557-L1,Kuehmoos - Schwoerstadt gn,TransnetBW,Line,Kuehmoos,Schwoerstadt,220,571.577
+11TD400000605-LS,Kupferzell - Stalldorf rot,TransnetBW,Line,Kupferzell,Stalldorf,380,2369.45
+10T-CH-DE-000050,Laufenburg - Trossingen rt,TransnetBW,Tieline,Laufenburg,Trossingen,380,
+11T0-0000-0099-2,Marbach - Pulverdingen gn,TransnetBW,Line,Marbach,Pulverdingen,220,571.577
+11TD400000602-L3,Metzingen - Wendlingen ge,TransnetBW,Line,Metzingen,Wendlingen,380,1316.36
+11TD400000550-LT,Muehlhausen - Pulverdingen bl,TransnetBW,Line,Muehlhausen,Pulverdingen,380,2044.31
+11TD400000563-LC,Neurott - Heidelberg Sued ge,TransnetBW,Line,Heidelberg,Neurott,220,206.53
+11TD400000570-LJ,Neurott - Heidelberg Sued rt,TransnetBW,Line,Heidelberg,Neurott,220,206.53
+11TD400000589-LF,Neurott - Philippsburg gn,TransnetBW,Line,Neurott,Philippsburg,380,2073.26
+11TD400000582-L6,Neurott - Wiesloch bl,TransnetBW,Line,Neurott,Wiesloch,220,309.795
+11TD400000519-LD,Oberjettingen - Pulverdingen ws,TransnetBW,Line,Oberjettingen,Pulverdingen,380,2053.52
+11T0-0000-0082-R,PST / 380-220kV / Buers / Trafo 37,TransnetBW,Transformer,,,,
+11T0-0000-0091-Q,TR / 380-220kV / Buers / Trafo 31,TransnetBW,Transformer,,,,
+11T0-0000-0092-N,TR / 380-220kV / Buers / Trafo 32,TransnetBW,Transformer,,,,
+11T0-0000-0093-K,TR / 380-220kV / Buers / Trafo 33,TransnetBW,Transformer,,,,
+11T0-0000-0094-H,TR / 380-220kV / Buers / Trafo 34,TransnetBW,Transformer,,,,
+11TD400000023-T9,TR / 380-220kV / Daxlanden / Trafo 401,TransnetBW,Transformer,,,,
+11TD400000028-TQ,TR / 380-220kV / Daxlanden / Trafo 402,TransnetBW,Transformer,,,,
+11TD400000041-T7,TR / 380-220kV / Eichstetten / Trafo 401,TransnetBW,Transformer,,,,
+12T-0000000591-H,TR / 380-220kV / Kuehmoos Trafo 401,TransnetBW,Transformer,,,,
+11TD400000125-TW,TR / 380-220kV / Neurott / Trafo 401,TransnetBW,Transformer,,,,
+11TD400000127-TO,TR / 380-220kV / Neurott / Trafo 402,TransnetBW,Transformer,,,,
+11TD400000144-TQ,TR / 380-220kV / Pulverdingen / Trafo 323,TransnetBW,Transformer,,,,
+11T0-0000-2490-Y,Y- Birkenfeld (-Bruchsal/Kaendelweg - Philippsburg) ws,TransnetBW,Line,Birkenfeld,Y-Birkenfeld,380,2369.45
+11T0-0000-2491-V,Y-Bruchsal/Kaendelweg (-Birkenfeld - Philippsburg) ws,TransnetBW,Line,Bruchsal/Kaendelweg,Y-Birkenfeld,380,2369.45
+11TD400000521-24,Y-Bruchsal/Kaendelweg (-Philippsburg - Pulverdingen) rt,TransnetBW,Line,Y-Bruchsal/Kaendelweg,Bruchsal/Kaendelweg,380,383.719
+11T0-0000-1478-O,Y-Buehl (-Daxlanden - Kuppenheim) rt,TransnetBW,Line,Y-Buehl,Buehl,220,599.775
+11T0-0000-1479-L,Y-Daxlanden (-Buehl - Kuppenheim) rt,TransnetBW,Line,Y-Buehl,Daxlanden,220,603.585
+11TD400000574-24,Y-Daxlanden (-Kuppenheim - Weier) ge,TransnetBW,Line,Daxlanden,Y-Daxlanden,220,1065.8
+11T0-0000-1365-5,Y-Dellmensingen (-Goldshoefe - Niederstotzingen) ws,TransnetBW,Line,Y-Dellmensingen,Dellmensingen,380,1582.26
+11T0-0000-0950-0,Y-Endersbach (-Grossgartach - Muehlhausen - Neckarwestheim) gn,TransnetBW,Line,Y-Endersbach,Endersbach,380,2073.26
+11TD400000587-1Q,Y-Engstlatt (-Kuehmoos - Villingen) gn,TransnetBW,Line,Y-Engstlatt,Engstlatt,380,2053.52
+11TD400000520-1A,Y-Engstlatt (-Oberjettingen - Pulverdingen) rt,TransnetBW,Line,Engstlatt,Y-Oberjettingen,380,2053.52
+11T0-0000-1638-U,Y-GKM (-Neurott - Weinheim) rt,TransnetBW,Line,GKM,GKMB,220,792.586
+11T0-0000-1366-2,Y-Goldshoefe (-Dellmensingen - Niederstotzingen) ws,TransnetBW,Line,Y-Dellmensingen,Goldshoefe,380,2073.26
+11T0-0000-2290-7,Y-Grafenrheinfeld (-Hoepfingen  - Stalldorf) 411/416,TransnetBW,Tieline,Y-Grafenrheinfeld,Grafenrheinfeld,380,4749.42
+11T0-0000-0951-Y,Y-Grossgartach (-Endersbach - Muelhausen - Neckarwestheim) gn,TransnetBW,Line,Y-Endersbach,Grossgartach,380,2073.26
+11T0-0000-2291-4,Y-Hoepfingen -(Grafenrheinfeld-Stalldorf) ge/rt,TransnetBW,Tieline,Y-Grafenrheinfeld,Hoepfingen,380,1856.07
+11TD400000542-1T,Y-Hueffenhardt (-Neurott - Wiesloch) ge,TransnetBW,Line,Y-Hueffenhardt,Hueffenhardt,380,2073.26
+11TD400000587-2O,Y-Kuehmoos (-Engstlatt - Villingen) gn,TransnetBW,Line,Y-Engstlatt,Kuehmoos,380,1974.54
+10T-CH-DE-000115,Y-Kuehmoos (-Laufenburg - Lindenholz) bl,TransnetBW,Tieline,Kuehmoos,Y-Kuehmoos,220,
+11T0-0000-1480-7,Y-Kuppenheim (-Buehl - Daxlanden) rt,TransnetBW,Line,Y-Buehl,Kuppenheim,220,325.799
+11TD400000574-16,Y-Kuppenheim (-Daxlanden - Weier) ge,TransnetBW,Line,Y-Daxlanden,Kuppenheim,220,325.799
+11T0-0000-1627-0,Y-Laufenburg (-Gurtweil - Stokach) rtge,TransnetBW,Tieline,Gurtweil,Y-Laufenburg,220,
+11T0-0000-0952-V,Y-Muehlhausen (-Endersbach - Grossgartach - Neckarwestheim) gn,TransnetBW,Line,Y-Endersbach,Muehlhausen,380,2073.26
+11T0-D4NOEIC-001,Y-Neckarwestheim (-Muehlhausen -Endersbach - Grossgartach) gn,TransnetBW,Line,Y-Neckarwestheim,Neckarwestheim,380,789.815
+11T0-0000-1639-R,Y-Neurott (-GKM - Weinheim) rt,TransnetBW,Line,GKMB,Neurott,220,491.556
+11TD400000542-2R,Y-Neurott (-Hueffenhardt - Wiesloch) ge,TransnetBW,Line,Y-Hueffenhardt,Neurott,380,2073.26
+11T0-0000-1368-X,Y-Niederstotzingen (-Dellmensingen - Goldshoefe) ws,TransnetBW,Line,Y-Dellmensingen,Niederstotzingen,380,365.948
+11TD400000520-28,Y-Oberjettingen (-Engstlatt - Pulverdingen) rt,TransnetBW,Line,Y-Oberjettingen,Oberjettingen,380,2053.52
+11T0-0000-2492-S,Y-Philippsburg (-Bruchsal/Kaendelweg - Birkenfeld) ws,TransnetBW,Line,Philippsburg,Y-Birkenfeld,380,2369.45
+11TD400000521-16,Y-Philippsburg (-Bruchsal/Kaendelweg - Pulverdingen) rt,TransnetBW,Line,Y-Bruchsal/Kaendelweg,Philippsburg,380,2369.45
+11TD40000A521-36,Y-Pulverdingen (-Bruchsal/Kaendelweg -Philippsburg) rt,TransnetBW,Line,Y-Bruchsal/Kaendelweg,Pulverdingen,380,2073.26
+11TD400000520-36,Y-Pulverdingen (-Engstlatt - Oberjettingen) rt,TransnetBW,Line,Y-Oberjettingen,Pulverdingen,380,1895.56
+11T0-0000-2292-1,Y-Stalldorf -(Grafenrheinfeld-Hoepfingen) ge/rt,TransnetBW,Tieline,Y-Grafenrheinfeld,Stalldorf,380,1875.81
+11TD400000587-3M,Y-Villingen (-Engstlatt - Kuehmoss) gn,TransnetBW,Line,Y-Engstlatt,Villingen,380,314.61
+11TD40000A574-36,Y-Weier (-Daxlanden - Kuppenheim) ge,TransnetBW,Line,Y-Daxlanden,Weier,220,1065.8
+11T0-0000-1640-D,Y-Weinheim (-GKM - Neurott) rt,TransnetBW,Line,GKM,Weinheim,220,1109.62
+11TD400000542-3P,Y-Wiesloch (-Hueffenhardt - Neurott) ge,TransnetBW,Line,Y-Hueffenhardt,Wiesloch,380,473.889
